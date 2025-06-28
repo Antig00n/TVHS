@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale =1" />
+  <title>TVHS</title>
+
+<link rel="stylesheet" href="css/reset.css">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"/>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <ul class="navbar-nav mx-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link  btn-sm btn-red-active" href="TVHS.html">SHOWS</a>
+        </li>
+        <li class="nav-item mx-3">
+          <a class="navbar-brand" href="index.html"><img src="img/TVHSLL.png"></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="muziek.html" >MUSIC</a>
+        </li>
+      </ul>
+        <div class="col-md-2 col-sm-12 side-item" style="width: 5%; position: fixed;">
+        <img
+          src="img/guytje.png"
+          class="img-fluid"
+          alt="Cartoon placeholder"
+        />
+      </div>
+    </div>
+  </nav>
+
+<main class="container d-flex flex-column align-items-center justify-content-center">
+        <section class="container mt-4">
+            <p class="animated-text animatedt">TVHS</p>
+            <div class="row g-4">
+
+                <article class="col-6 col-md-4">
+                    
+                    <div class="project-card">
+                        <a href="project.html"><img src="img/NMK.png" alt="Project 1" class="project-img"></a>
+                     <figcaption></figcaption>
+                    </div>
+                    <h6>Natuur Met Kleine Kova</h6>
+                </article>
+
+                <article class="col-6 col-md-4">
+                    
+                    <div class="project-card">
+                        <a href="project2.html"><img src="img/IDMR.png" alt="Project 2" class="project-img"></a>
+                     <figcaption></figcaption>
+                    </div>
+                    <h6>Iets Doen ft ROI</h6>
+                </article>
+
+                <article class="col-6 col-md-4">
+                    
+                    <div class="project-card">
+                        <a href="project3.html"><img src="img/TMS.jpg" alt="Project 3" class="project-img"></a>
+                     <figcaption></figcaption>
+                    </div>
+                    <h6>Trivia Met Slagter</h6>
+                </article>
+
+                <article class="col-6 col-md-4">
+                    <div class="project-card">
+                        <a href="project4.html"><img src="img/PTKC.png" alt="Project 4" class="project-img"></a>
+                     <figcaption></figcaption>
+                    </div>
+                    <h6>Parenting Tips Met Kleine Crack</h6>
+                </article>
+
+                <article class="col-6 col-md-4">
+                    <div class="project-card">
+                        <a href="project5.html"><img src="img/ECMP.png" alt="Project 5" class="project-img"></a>
+                   <figcaption></figcaption>
+                    </div>
+                    <h6>Enge Chap Avec Parsa</h6>
+                </article>
+
+                <article class="col-6 col-md-4">
+                    <div class="project-card">
+                          
+                        <a href="project6.html"><img src="img/GVHSS.jpg" alt="Project 6" class="project-img"></a>
+ <figcaption></figcaption>
+                    </div>
+                    <h6>De Grote VHS Show</h6>
+                       
+                </article>
+
+            </div>
+        </section>
+    </main>
+
+      <!-- CARTOON CHARACTER (smaller & off to side) -->
+    
+
+
+
+  <footer class="footers2">
+    <div class="footer-logos">
+      <img src="img/yuhd.png" alt="VHS logo" />
+      <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS bundle (includes Popper) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+ <script>
+  const carousel = document.getElementById('weeklySpotlightCarousel');
+  const videos = carousel.querySelectorAll('video');
+
+  carousel.addEventListener('slide.bs.carousel', () => {
+    // Pause and reset ALL videos
+    videos.forEach(video => {
+      video.pause();
+      video.currentTime = 0;
+    });
+  });
+</script>
+</body>
+</html>
