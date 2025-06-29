@@ -161,7 +161,8 @@ margin-top: -25px;
 
   .navbar > .container {
   position: relative;
-  padding-bottom: 5rem  /* lift content off the line if you like */
+    border-bottom: 2px solid #fff;
+  padding-bottom: 10rem  /* lift content off the line if you like */
 }
    #dates {
 margin-top: 0px;
