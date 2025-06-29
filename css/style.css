@@ -37,7 +37,7 @@ body {
 /* keep your logo overlapping that line */
 .navbar-brand {
   position: relative;
-  bottom: -8px;       /* tweak this to nudge into place */
+  bottom: -10px;       /* tweak this to nudge into place */
   padding: 0 0.5rem;
   line-height: 1;
 }
