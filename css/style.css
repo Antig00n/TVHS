@@ -157,16 +157,6 @@ margin-top: -25px;
 
 
 
-
-
-
-
-
-
-
-/* ---- Responsive Breakpoints ---- */
-
-/* ≥ 576px: Small devices (e.g. phones landscape) */
 @media (min-width: 576px) {
 
   .navbar > .container {
@@ -177,15 +167,5 @@ margin-top: -25px;
 margin-top: 0px;
 
     }
-}
-
-/* ≥ 768px: Medium devices (e.g. tablets) */
-@media (min-width: 768px) {
- 
-}
-
-/* ≥ 992px: Large devices (e.g. laptops/desktops) */
-@media (min-width: 992px) {
- 
 }
 
