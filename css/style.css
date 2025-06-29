@@ -40,10 +40,13 @@ body {
 /* keep your logo overlapping that line */
 .navbar-brand {
   position: relative;
-  bottom: -24px;       /* tweak this to nudge into place */
+
   padding: 0 0.5rem;
   line-height: 1;
 }
+.logo {
+      margin-bottom: -24%;
+    }
     .nav-link {
       color: #fff;
       margin-bottom: -20%;
@@ -171,7 +174,7 @@ margin-top: 0px;
 
     }
 
-   .nav-link {
+   .logo {
       margin-bottom: 5%;
     } 
 }
