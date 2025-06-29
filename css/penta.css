@@ -11,9 +11,14 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  max-width: 500px; /* slightly tighter container */
+  max-width: 400px;
   margin: 0 auto;
+  background-image: url('img/pentagram-bg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
+
 
 .pentagram-item {
   position: absolute;
