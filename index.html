@@ -77,22 +77,24 @@
         <h2>WEEKLY SPOTLIGHT</h2>
     
 <div id="weeklySpotlightCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="30000">
+ 
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <iframe id="video1" class="w-100" controls autoplay playsinline>
+      <iframe id class="w-100" controls autoplay playsinline>
 
       </iframe>
     </div>
     <div class="carousel-item">
-      <iframe id="video2" class="w-100" controls playsinline>
+      <iframe class="w-100" controls playsinline>
 
       </iframe>
     </div>
     <div class="carousel-item">
-      <iframe id="video3" class="w-100" controls playsinline>
+      <iframe class="w-100" controls playsinline>
       </iframe>
     </div>
   </div>
+  
 
   <!-- White Dots / Indicators -->
   <div class="carousel-indicators position-relative mt-3">
@@ -129,15 +131,12 @@
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
   ></script>
-
-
-
-<iframe id="video1" width="560" height="315" frameborder="0" allowfullscreen></iframe>
-<iframe id="video2" width="560" height="315" frameborder="0" allowfullscreen></iframe>
-<iframe id="video3" width="560" height="315" frameborder="0" allowfullscreen></iframe>
  <script>
   const carousel = document.getElementById('weeklySpotlightCarousel');
   const videos = carousel.querySelectorAll('video');
+
+  const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
+  const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
 
   const maxResults = 3;
 
@@ -174,6 +173,50 @@
   }
 
   loadLatestVideos();
+</script>
+
+
+<iframe id="video1" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+<iframe id="video2" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+<iframe id="video3" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+
+<script>
+ 
+
+  async function loadLatestVideos() {
+    try {
+      const playlistRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
+      );
+      const playlistData = await playlistRes.json();
+      console.log('Playlist response:', playlistData);
+
+      if (!playlistData.items || playlistData.items.length === 0) {
+        throw new Error("No playlist data returned. Check your API key and channel ID.");
+      }
+
+      const uploadsPlaylistId = playlistData.items[0].contentDetails.relatedPlaylists.uploads;
+
+      const videosRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${apiKey}`
+      );
+      const videosData = await videosRes.json();
+      console.log('Videos:', videosData);
+
+      videosData.items.forEach((item, index) => {
+        const videoId = item.snippet.resourceId.videoId;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        const videoEl = document.getElementById(`video${index + 1}`);
+        if (videoEl) videoEl.src = embedUrl;
+      });
+
+    } catch (error) {
+      console.error('Failed to load videos:', error);
+    }
+  }
+
+  loadLatestVideos();
+
 </script>
 
 </body>
