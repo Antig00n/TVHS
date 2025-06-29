@@ -28,7 +28,7 @@ body {
 }
 
 /* add a centered, content-width underline */
-.navbar > .container {
+.navvy {
   position: relative;
   border-bottom: 2px solid #fff;
   padding-bottom: 0rem  /* lift content off the line if you like */
@@ -159,7 +159,7 @@ margin-top: -25px;
 
 @media (max-width: 576px) {
 
-  .navbar > .container {
+  .navvy{
   position: relative;
     border-bottom: 2px solid #00000000;
 
