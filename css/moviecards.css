@@ -2,7 +2,6 @@
 html, body {
   height: 100vh;
   overflow-y: hidden;
-  touch-action: pan-x; /* Only allow horizontal swipe */
 }
 
  body {
@@ -148,11 +147,6 @@ html, body {
 
 
 
-
-html, body {
-    width: 100%;
-    height: 100%;
-}
 
 
 body {
