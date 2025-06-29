@@ -177,26 +177,6 @@
 
 
 </script>
-<script>let currentIndex = 0;
-const videoIds = ['video1', 'video2', 'video3'];
-
-function goToSlide(index) {
-  if (index < 0 || index >= videoIds.length) return;
-  
-  // Pause other videos
-  pauseOtherVideos(videoIds[index]);
-
-  // Show the selected video (your carousel logic here)
-  // e.g., slideContainer.style.transform = `translateX(-${index * 100}%)`;
-
-  currentIndex = index;
-}
-
-// Example: clicking "next"
-document.getElementById('nextBtn').addEventListener('click', () => {
-  const nextIndex = (currentIndex + 1) % videoIds.length;
-  goToSlide(nextIndex);
-});</script>
 
 
 
