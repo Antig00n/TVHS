@@ -156,6 +156,7 @@
 <script>
   const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
   const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
+
   const maxResults = 3;
 
   async function loadLatestVideos() {
@@ -164,25 +165,34 @@
         `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
       );
       const playlistData = await playlistRes.json();
+      console.log('Playlist response:', playlistData);
+
+      if (!playlistData.items || playlistData.items.length === 0) {
+        throw new Error("No playlist data returned. Check your API key and channel ID.");
+      }
+
       const uploadsPlaylistId = playlistData.items[0].contentDetails.relatedPlaylists.uploads;
 
       const videosRes = await fetch(
         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${apiKey}`
       );
       const videosData = await videosRes.json();
+      console.log('Videos:', videosData);
 
       videosData.items.forEach((item, index) => {
         const videoId = item.snippet.resourceId.videoId;
-        const videoUrl = `https://www.youtube.com/embed/${videoId}`;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
         const videoEl = document.getElementById(`video${index + 1}`);
-        videoEl.src = videoUrl;
+        if (videoEl) videoEl.src = embedUrl;
       });
+
     } catch (error) {
       console.error('Failed to load videos:', error);
     }
   }
 
   loadLatestVideos();
+
 </script>
 
 </body>
