@@ -93,15 +93,26 @@
       position: relative;
     }
 
-    @media (max-width: 576px) {
-      .movie-card {
-        width: 150px;
-      }
+    @media (max-width: 992px) {
+  .movie-card {
+    width: calc(33.33vw - 1.2rem); /* ~3 cards max */
+  }
+}
 
-      .movie-title {
-        font-size: 0.85rem;
-      }
-    }
+@media (max-width: 576px) {
+  .movie-card {
+    width: calc(50vw - 1.2rem); /* ~2 cards visible */
+  }
+
+  .movie-title {
+    font-size: 0.85rem;
+  }
+
+  .arrow-btn {
+    display: none; /* Hide arrows on small screens (optional) */
+  }
+}
+
 
     .movie-card button {
   background-color: #22222200;
