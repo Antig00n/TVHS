@@ -14,10 +14,10 @@
 </head>
 <body>
   <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg border-bottom" style="border-color: white;">
-  <div class="container-fluid d-flex flex-column flex-lg-row align-items-center justify-content-between">
+<nav class="navbar navbar-expand-lg border-bottom" style="border-color: white; position: relative;">
+  <div class="container-fluid d-flex flex-column flex-lg-row align-items-center justify-content-between position-relative">
 
-    <!-- Left group: Guytje + Shows -->
+    <!-- Left: Guytje + Shows -->
     <div class="d-flex flex-column flex-lg-row align-items-center gap-2 order-0 mb-2 mb-lg-0">
       <div style="width: 5%;">
         <img src="img/guytje.png" class="img-fluid" alt="Cartoon placeholder" />
@@ -29,12 +29,12 @@
       </ul>
     </div>
 
-    <!-- Logo centered -->
-    <a class="navbar-brand order-1 my-2 my-lg-0 px-2" href="index.html">
+    <!-- Centered Logo - absolutely centered -->
+    <a class="navbar-brand position-absolute top-50 start-50 translate-middle-y translate-middle-x my-2 my-lg-0 px-2" href="index.html" style="z-index: 1;">
       <img src="img/TVHSLL.png" alt="Logo">
     </a>
 
-    <!-- Right group: Music + Dates -->
+    <!-- Right: Music + Dates -->
     <div class="d-flex flex-row align-items-center gap-2 order-2">
       <ul class="navbar-nav d-flex flex-row align-items-center p-0 m-0">
         <li class="nav-item d-flex align-items-center">
@@ -48,6 +48,7 @@
 
   </div>
 </nav>
+
 
 
 
