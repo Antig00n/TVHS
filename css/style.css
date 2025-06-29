@@ -144,7 +144,7 @@ margin-top: -25px;
       transform: translateY(0);
     }
     50% {
-      transform: translateY(-20px);
+      transform: translateY(-30px);
     }
     100% {
       transform: translateY(0); 
