@@ -30,7 +30,7 @@ html, body {
 
     .slider-container {
       overflow-x: auto;
-      overflow-x: scroll;
+    
       white-space: nowrap;
       scroll-behavior: smooth;
       padding: 0 3.5rem;
