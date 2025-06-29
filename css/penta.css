@@ -45,23 +45,23 @@
 }
 
 .pentagram-item:nth-child(2) {
-  top: 37%;
-  left: 87%;
+  top: 40%;
+  left: 100%;
 }
 
 .pentagram-item:nth-child(3) {
-  top: 94%;
-  left: 68%;
+  top: 100%;
+  left: 80%;
 }
 
 .pentagram-item:nth-child(4) {
-  top: 94%;
-  left: 32%;
+  top: 100%;
+  left: 40%;
 }
 
 .pentagram-item:nth-child(5) {
-  top: 37%;
-  left: 13%;
+  top: 40%;
+  left: 0%;
 }
 
 @media (max-width: 576px) {
