@@ -75,7 +75,7 @@
 
     <div class="movies slider-container" id="movieSlider">
       <div class="movie-card">
-        <button onclick="alert('Clicked Poop Cruise')">
+        <button onclick="showVideo(this)" data-src="video1.mp4">
           <div class="position-relative">
             <img src="img/NMK.png" alt="Movie 1">
             <div class="badge-custom">Recently Added</div>
@@ -146,6 +146,42 @@
     </div>
   </footer>
   
+  <button onclick="showVideo(this)" data-src="video1.mp4">Play Video 1</button>
+  <button onclick="showVideo(this)" data-src="video2.mp4">Play Video 2</button>
+
+  <div id="overlay" onclick="closeVideo()"></div>
+  <div id="videoPopup">
+    <video id="videoElement" width="600" controls autoplay>
+      <source id="videoSource" src="" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <script>
+    function showVideo(button) {
+      const src = button.getAttribute('data-src');
+      const video = document.getElementById('videoElement');
+      const source = document.getElementById('videoSource');
+
+      source.src = src;
+      video.load();
+      video.play();
+
+      document.getElementById('videoPopup').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+
+    function closeVideo() {
+      const video = document.getElementById('videoElement');
+      video.pause();
+      video.currentTime = 0;
+
+      document.getElementById('videoPopup').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+  </script>
+
+
 <script>
   function scrollSlider(direction) {
     const container = document.getElementById("movieSlider");
