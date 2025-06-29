@@ -1,4 +1,11 @@
-  body {
+ 
+ html, body {
+  height: 100vh;
+  overflow-y: hidden;
+  touch-action: pan-x; /* Only allow horizontal swipe */
+}
+
+ body {
       background-color: #1b1b1b;
       color: white;
       margin: 0;
