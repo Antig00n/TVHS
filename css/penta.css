@@ -1,6 +1,6 @@
 .pentagram-wrapper {
   width: 100%;
-  max-width: 500px;
+  max-width: 650px;
   margin: 0 auto;
   padding: 2rem 1rem;
   position: relative;
@@ -11,7 +11,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  max-width: 400px;
+  max-width: 450px;
   margin: 0 auto;
   background-image: url('pentagram.png'); /* Adjust the image path as needed */
   background-size: contain;
