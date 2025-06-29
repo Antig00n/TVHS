@@ -2,6 +2,7 @@
 html, body {
   height: 100vh;
   overflow-x: hidden;
+  touch-action: pan-x;
 }
 
  body {
@@ -29,9 +30,11 @@ html, body {
 
     .slider-container {
       overflow-x: auto;
+      overflow-x: scroll;
       white-space: nowrap;
       scroll-behavior: smooth;
       padding: 0 3.5rem;
+      touch-action: pan-x;
     }
 
     .slider-container::-webkit-scrollbar {
