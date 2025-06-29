@@ -1,36 +1,61 @@
+/* Container that fits into your site */
+.pentagram-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  position: relative;
+}
 
+/* Pentagram layout */
 .pentagram-container {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .pentagram-item {
   position: absolute;
-  width: 100px;
-  text-align: center;
+  width: 140px;
   transform: translate(-50%, -50%);
+  text-align: center;
 }
 
-/* Place each item at pentagram points */
+.pentagram-item img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.pentagram-item img:hover {
+  transform: scale(1.05);
+}
+
+/* Star placement points */
 .pentagram-item:nth-child(1) {
   top: 0%;
   left: 50%;
 }
+
 .pentagram-item:nth-child(2) {
-  top: 38%;
-  left: 90%;
+  top: 35%;
+  left: 93%;
 }
+
 .pentagram-item:nth-child(3) {
-  top: 100%;
-  left: 75%;
+  top: 98%;
+  left: 73%;
 }
+
 .pentagram-item:nth-child(4) {
-  top: 100%;
-  left: 25%;
+  top: 98%;
+  left: 27%;
 }
+
 .pentagram-item:nth-child(5) {
-  top: 38%;
-  left: 10%;
+  top: 35%;
+  left: 7%;
 }
