@@ -171,7 +171,6 @@ margin-top: -25%;
 
   .navbar > .container {
   position: relative;
-  border-bottom: 0px transparent ;
   padding-bottom: 0rem  /* lift content off the line if you like */
 }
   
