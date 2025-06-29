@@ -23,6 +23,10 @@ body {
   font-display: swap;
 }
 
+.guytje {
+  width: 5%;
+}
+
 .navbar {
   border-bottom: none;
 }
@@ -180,6 +184,10 @@ margin-top: 0px;
   .slanted {
     margin-top: 20%;
     }
+
+    .guytje {
+  width: 10%;
+}
     
 }
 
