@@ -68,4 +68,30 @@
   .pentagram-item {
     width: 80px;
   }
+
+  /* Updated tighter coordinates */
+.pentagram-item:nth-child(1) {
+  top: 15%;
+  left: 50%;
+}
+
+.pentagram-item:nth-child(2) {
+  top: 40%;
+  left: 80%;
+}
+
+.pentagram-item:nth-child(3) {
+  top: 100%;
+  left: 80%;
+}
+
+.pentagram-item:nth-child(4) {
+  top: 100%;
+  left: 20%;
+}
+
+.pentagram-item:nth-child(5) {
+  top: 40%;
+  left: 20%;
+}
 }
