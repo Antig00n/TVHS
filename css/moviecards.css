@@ -1,0 +1,121 @@
+  body {
+      background-color: #1b1b1b;
+      color: white;
+      margin: 0;
+      font-family: system-ui, sans-serif;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem 1rem;
+    }
+
+    .slider-wrapper {
+      position: relative;
+    }
+
+    .slider-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .slider-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      padding: 0 3.5rem;
+    }
+
+    .slider-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .movie-card {
+      display: inline-block;
+      width: 220px;
+      margin-right: 1.2rem;
+    }
+
+  
+    .movie-card img {
+      width: 100%;
+      display: block;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .movie-title {
+      padding: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: center;
+      color: #f1f1f1;
+    }
+
+    .badge-custom {
+      position: absolute;
+      bottom: 60px;
+      left: 10px;
+      background-color: #e50914;
+      color: white;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+
+    .arrow-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: white;
+      font-size: 3.2rem;
+      z-index: 10;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .arrow-left {
+      left: -3rem;
+    }
+
+    .arrow-right {
+      right: 0rem;
+    }
+
+    .arrow-btn:hover {
+      color: #e50914;
+    }
+
+    .position-relative {
+      position: relative;
+    }
+
+    @media (max-width: 576px) {
+      .movie-card {
+        width: 150px;
+      }
+
+      .movie-title {
+        font-size: 0.85rem;
+      }
+    }
+
+    .movie-card button {
+  background-color: #22222200;
+  border: none;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.movie-card button:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}

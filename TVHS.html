@@ -12,6 +12,7 @@
     rel="stylesheet"/>
 
     <link rel="stylesheet" href="css/style.css">
+       <link rel="stylesheet" href="css/moviecards.css">
 </head>
 <body>
  <!-- NAVBAR -->
@@ -61,74 +62,79 @@
 
 </div>
 
+<main>
+  <div class="slider-wrapper">
+    <div class="slider-title">TVHS Productions</div>
 
+    <button class="arrow-btn arrow-left" onclick="scrollSlider(-1)">
+      ‹
+    </button>
 
-<main class="container d-flex flex-column align-items-center justify-content-center">
-        <section class="container mt-4">
-            <p class="animated-text animatedt">TVHS</p>
-            <div class="row g-4">
+    <div class="slider-container" id="movieSlider">
+      <div class="movie-card">
+        <button onclick="alert('Clicked Poop Cruise')">
+          <div class="position-relative">
+            <img src="img/NMK.png" alt="Movie 1">
+            <div class="badge-custom">Recently Added</div>
+          </div>
+          <div class="movie-title">Natuur Met Kleine Kova</div>
+        </button>
+      </div>
 
-                <article class="col-6 col-md-4">
-                    
-                    <div class="project-card">
-                        <a href="project.html"><img src="img/NMK.png" alt="Project 1" class="project-img"></a>
-                     <figcaption></figcaption>
-                    </div>
-                    <h6>Natuur Met Kleine Kova</h6>
-                </article>
+      <div class="movie-card">
+        <button onclick="alert('Clicked K-Pop Demon Hunters')">
+          <div class="position-relative">
+            <img src="img/IDMR.png" alt="Movie 2">
+            <div class="badge-custom">Recently Added</div>
+          </div>
+          <div class="movie-title">Iets Doen ft Roi</div>
+        </button>
+      </div>
 
-                <article class="col-6 col-md-4">
-                    
-                    <div class="project-card">
-                        <a href="project2.html"><img src="img/IDMR.png" alt="Project 2" class="project-img"></a>
-                     <figcaption></figcaption>
-                    </div>
-                    <h6>Iets Doen ft ROI</h6>
-                </article>
+      <div class="movie-card">
+        <button onclick="alert('Clicked Wicked')">
+          <div class="position-relative">
+            <img src="img/TMS.jpg" alt="Movie 3">
+            <div class="badge-custom">Recently Added</div>
+          </div>
+          <div class="movie-title">Trivia Met Slagter</div>
+        </button>
+      </div>
 
-                <article class="col-6 col-md-4">
-                    
-                    <div class="project-card">
-                        <a href="project3.html"><img src="img/TMS.jpg" alt="Project 3" class="project-img"></a>
-                     <figcaption></figcaption>
-                    </div>
-                    <h6>Trivia Met Slagter</h6>
-                </article>
+      <div class="movie-card">
+        <button onclick="alert('Clicked Case 39')">
+          <div class="position-relative">
+            <img src="img/ECMP.png"Movie 4">
+          </div>
+          <div class="movie-title">Enge Chap avec Parsa</div>
+        </button>
+      </div>
 
-                <article class="col-6 col-md-4">
-                    <div class="project-card">
-                        <a href="project4.html"><img src="img/PTKC.png" alt="Project 4" class="project-img"></a>
-                     <figcaption></figcaption>
-                    </div>
-                    <h6>Parenting Tips Met Kleine Crack</h6>
-                </article>
+      <div class="movie-card">
+        <button onclick="alert('Clicked R.I.F')">
+          <div class="position-relative">
+            <img src="img/PTKC.png" alt="Movie 5">
+          </div>
+          <div class="movie-title">Parenting Tips Met Crack</div>
+        </button>
+      </div>
 
-                <article class="col-6 col-md-4">
-                    <div class="project-card">
-                        <a href="project5.html"><img src="img/ECMP.png" alt="Project 5" class="project-img"></a>
-                   <figcaption></figcaption>
-                    </div>
-                    <h6>Enge Chap Avec Parsa</h6>
-                </article>
+      <div class="movie-card">
+        <button onclick="alert('Clicked Straw')">
+          <div class="position-relative">
+            <img src="img/ECMP.png" alt="Movie 6">
+            <div class="badge-custom">Recently Added</div>
+          </div>
+          <div class="movie-title">Gay Seks Met Antigoon</div>
+        </button>
+      </div>
+    </div>
 
-                <article class="col-6 col-md-4">
-                    <div class="project-card">
-                          
-                        <a href="project6.html"><img src="img/GVHSS.jpg" alt="Project 6" class="project-img"></a>
- <figcaption></figcaption>
-                    </div>
-                    <h6>De Grote VHS Show</h6>
-                       
-                </article>
-
-            </div>
-        </section>
-    </main>
-
-      <!-- CARTOON CHARACTER (smaller & off to side) -->
-    
-
-
+    <button class="arrow-btn arrow-right" onclick="scrollSlider(1)">
+      ›
+    </button>
+  </div>
+</main>
 
   <footer class="footers2">
     <div class="footer-logos">
@@ -136,22 +142,17 @@
       <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
     </div>
   </footer>
-
-  <!-- Bootstrap JS bundle (includes Popper) -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-  ></script>
- <script>
-  const carousel = document.getElementById('weeklySpotlightCarousel');
-  const videos = carousel.querySelectorAll('video');
-
-  carousel.addEventListener('slide.bs.carousel', () => {
-    // Pause and reset ALL videos
-    videos.forEach(video => {
-      video.pause();
-      video.currentTime = 0;
+  
+<script>
+  function scrollSlider(direction) {
+    const container = document.getElementById("movieSlider");
+    const scrollAmount = 260;
+    container.scrollBy({
+      left: direction * scrollAmount,
+      behavior: "smooth"
     });
-  });
+  }
 </script>
+
 </body>
 </html>
