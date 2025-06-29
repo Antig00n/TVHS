@@ -47,7 +47,7 @@ body {
       font-size: 2rem;
     }
     #dates {
-margin-top: -25%;
+margin-top: -25px;
 
     }
 
@@ -173,7 +173,10 @@ margin-top: -25%;
   position: relative;
   padding-bottom: 0rem  /* lift content off the line if you like */
 }
-  
+   #dates {
+margin-top: 0px;
+
+    }
 }
 
 /* ≥ 768px: Medium devices (e.g. tablets) */
