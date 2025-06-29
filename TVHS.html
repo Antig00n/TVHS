@@ -150,12 +150,14 @@
   <button onclick="showVideo(this)" data-src="video2.mp4">Play Video 2</button>
 
   <div id="overlay" onclick="closeVideo()"></div>
-  <div id="videoPopup">
-    <video id="videoElement" width="600" controls autoplay>
-      <source id="videoSource" src="" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
+  <!-- Add a fullscreen toggle inside the videoPopup -->
+<div id="videoPopup">
+  <video id="videoElement" width="100%" controls>
+    <source id="videoSource" src="" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  <button onclick="toggleFullscreen()">Fullscreen</button>
+</div>
 
   <script>
     function showVideo(button) {
@@ -179,6 +181,17 @@
       document.getElementById('videoPopup').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
     }
+
+    function toggleFullscreen() {
+  const video = document.getElementById('videoElement');
+  if (video.requestFullscreen) {
+    video.requestFullscreen();
+  } else if (video.webkitRequestFullscreen) { // Safari
+    video.webkitRequestFullscreen();
+  } else if (video.msRequestFullscreen) { // IE11
+    video.msRequestFullscreen();
+  }
+}
   </script>
 
 
