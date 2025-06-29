@@ -118,7 +118,8 @@ html, body {
   }
 
   .arrow-btn {
-    display: none; /* Hide arrows on small screens (optional) */
+    display:; /* Hide arrows on small screens (optional) */
+right: 0rem;
   }
 }
 
