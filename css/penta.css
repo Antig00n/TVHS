@@ -13,7 +13,7 @@
   aspect-ratio: 1 / 1;
   max-width: 400px;
   margin: 0 auto;
-  background-image: url('img/pentagram-bg.png');
+  background-image: url('img/pentagram(1).png'); /* Adjust the image path as needed */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
