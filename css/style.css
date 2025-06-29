@@ -38,7 +38,6 @@ body {
 .navbar-brand {
   position: relative;
   bottom: -4px;       /* tweak this to nudge into place */
-  background: #000;
   padding: 0 0.5rem;
   line-height: 1;
 }
