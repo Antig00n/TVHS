@@ -145,5 +145,45 @@
     });
   });
 </script>
+
+
+<div id="carousel">
+  <video id="video1" controls></video>
+  <video id="video2" controls></video>
+  <video id="video3" controls></video>
+</div>
+
+<script>
+  const apiKey = 'YOUR_API_KEY';
+  const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
+  const maxResults = 3;
+
+  async function loadLatestVideos() {
+    try {
+      const playlistRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
+      );
+      const playlistData = await playlistRes.json();
+      const uploadsPlaylistId = playlistData.items[0].contentDetails.relatedPlaylists.uploads;
+
+      const videosRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${apiKey}`
+      );
+      const videosData = await videosRes.json();
+
+      videosData.items.forEach((item, index) => {
+        const videoId = item.snippet.resourceId.videoId;
+        const videoUrl = `https://www.youtube.com/embed/${videoId}`;
+        const videoEl = document.getElementById(`video${index + 1}`);
+        videoEl.src = videoUrl;
+      });
+    } catch (error) {
+      console.error('Failed to load videos:', error);
+    }
+  }
+
+  loadLatestVideos();
+</script>
+
 </body>
 </html>
