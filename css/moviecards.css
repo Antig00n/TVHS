@@ -37,10 +37,7 @@ html, body {
       touch-action: pan-x;
     }
 
-    .slider-container::-webkit-scrollbar {
-      display: none;
-    }
-
+    
     .movie-card {
       display: inline-block;
       width: 220px;
