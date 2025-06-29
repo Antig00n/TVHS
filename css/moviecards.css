@@ -137,6 +137,9 @@ html, body {
   z-index: 2;
 }
 
+.movie-card button:active {
+  transform: scale(0.97);
+}
 
 
 
