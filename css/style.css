@@ -147,3 +147,39 @@ body {
     animation: upAndDown 5s ease-in-out infinite; 
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---- Responsive Breakpoints ---- */
+
+/* ≥ 576px: Small devices (e.g. phones landscape) */
+@media (min-width: 576px) {
+
+  .navbar > .container {
+  position: relative;
+  border-bottom: 0px;
+  padding-bottom: 0rem  /* lift content off the line if you like */
+}
+  
+}
+
+/* ≥ 768px: Medium devices (e.g. tablets) */
+@media (min-width: 768px) {
+ 
+}
+
+/* ≥ 992px: Large devices (e.g. laptops/desktops) */
+@media (min-width: 992px) {
+ 
+}
+
