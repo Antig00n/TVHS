@@ -28,10 +28,13 @@ body {
 }
 
 /* add a centered, content-width underline */
-.navvy {
+.navbar > .container {
   position: relative;
-  border-bottom: 2px solid #fff;
+  
   padding-bottom: 0rem  /* lift content off the line if you like */
+}
+.navvy {
+  border-bottom: 2px solid #fff;
 }
 
 /* keep your logo overlapping that line */
@@ -160,7 +163,6 @@ margin-top: -25px;
 @media (max-width: 576px) {
 
   .navvy{
-  position: relative;
     border-bottom: 2px solid #00000000;
 
 }
