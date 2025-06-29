@@ -191,3 +191,30 @@ margin-top: 0px;
     
 }
 
+
+@media (max-width: 765px) {
+
+  .navvy{
+    border-bottom: 2px solid #00000000;
+
+}
+   #dates {
+margin-top: 0px;
+
+    }
+
+   .logo {
+      margin-bottom: -10%;
+      margin-top: -30%;
+    } 
+
+  .slanted {
+    margin-top: 20%;
+    }
+
+    .guytje {
+  width: 10%;
+}
+    
+}
+
