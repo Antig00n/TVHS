@@ -85,9 +85,10 @@
     </div>
   </div>
 </section>
-<div id="spotify-player" class="spotify-embed d-none">
-  <iframe src="" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-</div>
+<a id="spotify-logo-link" class="d-none" target="_blank">
+  <img src="img/spotifylogo.png" alt="Spotify" id="spotify-logo">
+</a>
+
 
     </main>
 
@@ -121,22 +122,22 @@
 </script>
 <script>
   const spotifyLinks = [
-    "https://open.spotify.com/embed/track/1", // Replace with real link 1
-    "https://open.spotify.com/embed/track/2", // Replace with real link 2
-    "https://open.spotify.com/embed/track/3", // Replace with real link 3
-    "https://open.spotify.com/embed/track/4", // Replace with real link 4
-    "https://open.spotify.com/embed/track/5"  // Replace with real link 5
+    "https://open.spotify.com/track/1", // Replace with your real links
+    "https://open.spotify.com/track/2",
+    "https://open.spotify.com/track/3",
+    "https://open.spotify.com/track/4",
+    "https://open.spotify.com/track/5"
   ];
 
   const items = document.querySelectorAll(".pentagram-item img");
-  const player = document.getElementById("spotify-player");
-  const iframe = player.querySelector("iframe");
+  const logoLink = document.getElementById("spotify-logo-link");
+  const logoImg = document.getElementById("spotify-logo");
 
   items.forEach((img, index) => {
     img.addEventListener("click", event => {
-      event.preventDefault(); // Prevents any <a> navigation
-      iframe.src = spotifyLinks[index];
-      player.classList.remove("d-none");
+      event.preventDefault();
+      logoLink.href = spotifyLinks[index];
+      logoLink.classList.remove("d-none");
     });
   });
 </script>
