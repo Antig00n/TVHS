@@ -85,17 +85,17 @@
     </div>
   </div>
 </section>
-<h2 id="pentagram-title" class="text-center mb-4"></h2>
-<a id="spotify-logo-link" class="d-none" target="_blank">
-  <img src="img/spotify.svg" alt="Spotify" id="spotify-logo">
-</a>
-<a id="soundcloud-logo-link" class="d-none" target="_blank">
-  <img src="img/soundcloudlogo.png" alt="SoundCloud" id="soundcloud-logo">
-</a>
-
-<a id="youtube-logo-link" class="d-none" target="_blank">
-  <img src="img/youtubelogo.png" alt="YouTube" id="youtube-logo">
-</a>
+<div id="logo-container" class="d-none">
+  <a id="spotify-logo-link" target="_blank">
+    <img src="img/spotifylogo.png" alt="Spotify" />
+  </a>
+  <a id="soundcloud-logo-link" target="_blank">
+    <img src="img/soundcloudlogo.png" alt="SoundCloud" />
+  </a>
+  <a id="youtube-logo-link" target="_blank">
+    <img src="img/youtubelogo.png" alt="YouTube" />
+  </a>
+</div>
 
 
     </main>
@@ -162,24 +162,27 @@
   ];
 
   const items = document.querySelectorAll(".pentagram-item img");
+  const titleEl = document.getElementById("pentagram-title");
+
+  const logoContainer = document.getElementById("logo-container");
   const logoSpotify = document.getElementById("spotify-logo-link");
   const logoSoundCloud = document.getElementById("soundcloud-logo-link");
   const logoYouTube = document.getElementById("youtube-logo-link");
-  const titleEl = document.getElementById("pentagram-title");
 
   items.forEach((img, index) => {
     img.addEventListener("click", event => {
       event.preventDefault();
 
+      // Set platform URLs
       logoSpotify.href = spotifyLinks[index];
       logoSoundCloud.href = soundcloudLinks[index];
       logoYouTube.href = youtubeLinks[index];
 
-      logoSpotify.classList.remove("d-none");
-      logoSoundCloud.classList.remove("d-none");
-      logoYouTube.classList.remove("d-none");
-
+      // Set and show title
       titleEl.textContent = titles[index];
+
+      // Show logo container
+      logoContainer.classList.remove("d-none");
     });
   });
 </script>
