@@ -108,7 +108,7 @@
   z-index: 15;
 }
 
-#spotify-logo-link { left: 45%; }
+#spotify-logo-link { left: 45%; top: 5%; }
 #soundcloud-logo-link { left: 45%; bottom: 20%; }
 #youtube-logo-link { left: 45%; bottom: 30%; }
 
