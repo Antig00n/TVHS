@@ -64,47 +64,6 @@
   left: 0%;
 }
 
-@media (max-width: 576px) {
-  .pentagram-item {
-    width: 80px;
-  }
-
-  /* Updated tighter coordinates */
-.pentagram-item:nth-child(1) {
-  top: 15%;
-  left: 50%;
-}
-
-.pentagram-item:nth-child(2) {
-  top: 40%;
-  left: 88%;
-}
-
-.pentagram-item:nth-child(3) {
-  top: 100%;
-  left: 80%;
-}
-
-.pentagram-item:nth-child(4) {
-  top: 100%;
-  left: 20%;
-}
-
-.pentagram-item:nth-child(5) {
-  top: 40%;
-  left: 12%;
-}
-
-#soundcloud-logo,
-#youtube-logo,
-#spotify-logo {
-  width: 25px;
-  height: auto;
-  transition: transform 0.3s ease;
-}
-
-}
-
 
 
 
@@ -155,3 +114,46 @@
 .pentagram-item.clicked.move-in {
   transform: translate(-50%, -50%) scale(1.25);
 }
+
+
+@media (max-width: 576px) {
+  .pentagram-item {
+    width: 80px;
+  }
+
+  /* Updated tighter coordinates */
+.pentagram-item:nth-child(1) {
+  top: 15%;
+  left: 50%;
+}
+
+.pentagram-item:nth-child(2) {
+  top: 40%;
+  left: 88%;
+}
+
+.pentagram-item:nth-child(3) {
+  top: 100%;
+  left: 80%;
+}
+
+.pentagram-item:nth-child(4) {
+  top: 100%;
+  left: 20%;
+}
+
+.pentagram-item:nth-child(5) {
+  top: 40%;
+  left: 12%;
+}
+
+#soundcloud-logo,
+#youtube-logo,
+#spotify-logo {
+  width: 25px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+}
+
