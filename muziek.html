@@ -85,6 +85,7 @@
     </div>
   </div>
 </section>
+<h2 id="pentagram-title" class="text-center mb-4"></h2>
 <a id="spotify-logo-link" class="d-none" target="_blank">
   <img src="img/spotify.svg" alt="Spotify" id="spotify-logo">
 </a>
@@ -128,6 +129,14 @@
   });
 </script>
 <script>
+  const titles = [
+    "VHS",
+    "Kleine Crack",
+    "Parsa",
+    "ROI",
+    "Kleine Kova"
+  ];
+
   const spotifyLinks = [
     "https://open.spotify.com/track/1",
     "https://open.spotify.com/track/2",
@@ -156,20 +165,21 @@
   const logoSpotify = document.getElementById("spotify-logo-link");
   const logoSoundCloud = document.getElementById("soundcloud-logo-link");
   const logoYouTube = document.getElementById("youtube-logo-link");
+  const titleEl = document.getElementById("pentagram-title");
 
   items.forEach((img, index) => {
     img.addEventListener("click", event => {
       event.preventDefault();
 
-      // Assign links
       logoSpotify.href = spotifyLinks[index];
       logoSoundCloud.href = soundcloudLinks[index];
       logoYouTube.href = youtubeLinks[index];
 
-      // Show all three logos
       logoSpotify.classList.remove("d-none");
       logoSoundCloud.classList.remove("d-none");
       logoYouTube.classList.remove("d-none");
+
+      titleEl.textContent = titles[index];
     });
   });
 </script>
