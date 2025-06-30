@@ -109,14 +109,14 @@
   size: 50%;
 }
 
-#spotify-logo-link { left: 43%; bottom: 28%; }
-#soundcloud-logo-link { left: 43%; bottom: 40%; }
-#youtube-logo-link { left: 43%; bottom: 70%; }
+#spotify-logo-link { left: 43%; bottom: 45%; }
+#soundcloud-logo-link { left: 43%; bottom: 25%; }
+#youtube-logo-link { left: 43%; bottom: 60%; }
 
 #soundcloud-logo,
 #youtube-logo,
 #spotify-logo {
-  width: 70px;
+  width: 45px;
   height: auto;
   transition: transform 0.3s ease;
 }
