@@ -158,38 +158,38 @@
   <button onclick="closeVideo()">Sloate</button>
 </div>
 
-  <script>
+<script>
   function showVideo(button) {
-  const src = button.getAttribute('data-src');
-  const video = document.getElementById('videoElement');
-  const source = document.getElementById('videoSource');
+    const src = button.getAttribute('data-src');
+    const description = button.getAttribute('data-description');
+    const video = document.getElementById('videoElement');
+    const source = document.getElementById('videoSource');
 
-  source.src = src;
-  video.load();
-  video.play();
+    source.src = src;
+    video.load();
+    video.play();
 
-  document.getElementById('videoPopup').style.display = 'block';
-  document.getElementById('overlay').style.display = 'block';
-}
+    document.getElementById('videoDescription').textContent = description;
+    document.getElementById('videoPopup').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+  }
 
-function closeVideo() {
-  const video = document.getElementById('videoElement');
-  video.pause();
-  video.currentTime = 0;
+  function closeVideo() {
+    const video = document.getElementById('videoElement');
+    video.pause();
+    video.currentTime = 0;
 
-  document.getElementById('videoPopup').style.display = 'none';
-  document.getElementById('overlay').style.display = 'none';
-}
+    document.getElementById('videoPopup').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+  }
 
-function toggleFullscreen() {
-  const video = document.getElementById('videoElement');
-  if (video.requestFullscreen) video.requestFullscreen();
-  else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-  else if (video.msRequestFullscreen) video.msRequestFullscreen();
-}
-
-  </script>
-
+  function toggleFullscreen() {
+    const video = document.getElementById('videoElement');
+    if (video.requestFullscreen) video.requestFullscreen();
+    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    else if (video.msRequestFullscreen) video.msRequestFullscreen();
+  }
+</script>
 
 <script>
   function scrollSlider(direction) {
