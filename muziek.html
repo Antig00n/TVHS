@@ -177,6 +177,14 @@
     });
   });
 </script>
+
+<script>// Remove active class from all items
+document.querySelectorAll(".pentagram-item").forEach(item => {
+  item.classList.remove("active");
+});
+
+// Add active class to the clicked item
+img.closest(".pentagram-item").classList.add("active");</script>
 </body>
 </html>
 
