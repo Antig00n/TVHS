@@ -178,21 +178,24 @@
   });
 </script>
 
-<script>// Remove active class from all pentagram items
-document.querySelectorAll(".pentagram-item").forEach(item => {
-  item.classList.remove("active");
-});
 
-// Add active class to the clicked item
-img.closest(".pentagram-item").classList.add("active");</script>
 
-<script>// Remove active class from all pentagram items
-document.querySelectorAll(".pentagram-items").forEach(item => {
-  item.classList.remove("active");
-});
+<script>
+  const pentagramItems = document.querySelectorAll(".pentagram-item");
 
-// Add active class to the clicked item
-img.closest(".pentagram-items").classList.add("active");</script>
+  pentagramItems.forEach(item => {
+    item.addEventListener("click", event => {
+      event.preventDefault();
+
+      // Remove 'clicked' from all
+      pentagramItems.forEach(p => p.classList.remove("clicked"));
+
+      // Add 'clicked' to the one that was clicked
+      item.classList.add("clicked");
+    });
+  });
+</script>
+
 </body>
 </html>
 
