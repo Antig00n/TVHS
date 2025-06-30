@@ -23,7 +23,7 @@
 .pentagram-item {
   position: absolute;
   width: 120px; /* smaller width pulls items inward */
-  transform: translate(-50%, -50%);
+
   text-align: center;
 }
 
