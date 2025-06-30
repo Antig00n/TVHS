@@ -81,8 +81,6 @@
             <div class="badge-custom">Recently Added</div>
           </div>
           <div class="movie-title">Natuur Met Kleine Kova</div>
-          <p id="videoDescription">YUUUUUUh</p>
-
         </button>
       </div>
 
@@ -161,9 +159,8 @@
 </div>
 
   <script>
- function showVideo(button) {
+  function showVideo(button) {
   const src = button.getAttribute('data-src');
-  const description = button.getAttribute('data-description');
   const video = document.getElementById('videoElement');
   const source = document.getElementById('videoSource');
 
@@ -171,9 +168,17 @@
   video.load();
   video.play();
 
-  document.getElementById('videoDescription').textContent = description;
   document.getElementById('videoPopup').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
+}
+
+function closeVideo() {
+  const video = document.getElementById('videoElement');
+  video.pause();
+  video.currentTime = 0;
+
+  document.getElementById('videoPopup').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
 }
 
 function toggleFullscreen() {
