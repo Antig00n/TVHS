@@ -94,6 +94,15 @@
   top: 40%;
   left: 12%;
 }
+
+#soundcloud-logo,
+#youtube-logo,
+#spotify-logo {
+  width: 25px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
 }
 
 
