@@ -64,23 +64,23 @@
    <section class="pentagram-wrapper my-5">
   <div class="pentagram-container">
     <div class="pentagram-item">
-      <a href="project.html"><img src="img/GVHSS.jpg" alt="VHS" /></a>
+      <a href="project.html"><img src="img/GVHSS.jpg"  class="pentagram-items" alt="VHS" /></a>
       <h6>VHS</h6>
     </div>
     <div class="pentagram-item">
-      <a href="project2.html"><img src="img/PTKC.png" alt="Kleine Crack" /></a>
+      <a href="project2.html"><img src="img/PTKC.png"  class="pentagram-items" alt="Kleine Crack" /></a>
       <h6>Kleine Crack</h6>
     </div>
     <div class="pentagram-item">
-      <a href="project3.html"><img src="img/ECMP.png" alt="Parsa" /></a>
+      <a href="project3.html"><img src="img/ECMP.png"  class="pentagram-items" alt="Parsa" /></a>
       <h6>Parsa</h6>
     </div>
     <div class="pentagram-item">
-      <a href="project4.html"><img src="img/IDMR.png" alt="ROI" /></a>
+      <a href="project4.html"><img src="img/IDMR.png"  class="pentagram-items" alt="ROI" /></a>
       <h6>ROI</h6>
     </div>
     <div class="pentagram-item">
-      <a href="project5.html"><img src="img/NMK.png" alt="Kleine Kova" /></a>
+      <a href="project5.html"><img src="img/NMK.png" class="pentagram-items" alt="Kleine Kova" /></a>
       <h6>Kleine Kova</h6>
     </div>
   
@@ -178,13 +178,21 @@
   });
 </script>
 
-<script>// Remove active class from all items
+<script>// Remove active class from all pentagram items
 document.querySelectorAll(".pentagram-item").forEach(item => {
   item.classList.remove("active");
 });
 
 // Add active class to the clicked item
 img.closest(".pentagram-item").classList.add("active");</script>
+
+<script>// Remove active class from all pentagram items
+document.querySelectorAll(".pentagram-items").forEach(item => {
+  item.classList.remove("active");
+});
+
+// Add active class to the clicked item
+img.closest(".pentagram-items").classList.add("active");</script>
 </body>
 </html>
 

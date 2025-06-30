@@ -136,11 +136,20 @@
   transform: scale(1.15);
 }
 
-.pentagram-item.active img {
+.pentagram-items.active img {
   transform: scale(1.15);
   z-index: 5;
 }
 
+.pentagram-items img {
+  transition: transform 0.3s ease;
+}
+
 .pentagram-item img {
   transition: transform 0.3s ease;
+}
+
+.pentagram-item.active img {
+  transform: scale(1.15);
+  z-index: 5;
 }
