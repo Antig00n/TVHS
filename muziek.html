@@ -133,28 +133,28 @@
 </script>
 <script>
   const spotifyLinks = [
-    "https://open.spotify.com/track/1",
-    "https://soundcloud.com/kleinecrack-music",
-    "https://open.spotify.com/track/3",
-    "https://open.spotify.com/track/4",
-    "https://open.spotify.com/track/5"
-  ];
+  "https://open.spotify.com/track/abc1",
+  null,
+  "https://open.spotify.com/track/abc3",
+  null,
+  "https://open.spotify.com/track/abc5"
+];
 
-  const soundcloudLinks = [
-    "https://soundcloud.com/artist/track1",
-    "https://soundcloud.com/kleinecrack-music",
-    "https://soundcloud.com/artist/track3",
-    "https://soundcloud.com/artist/track4",
-    "https://soundcloud.com/artist/track5"
-  ];
+const soundcloudLinks = [
+  "https://soundcloud.com/artist/track1",
+  "https://soundcloud.com/artist/track2",
+  null,
+  null,
+  "https://soundcloud.com/artist/track5"
+];
 
-  const youtubeLinks = [
-    "https://youtube.com/watch?v=XXXX1",
-    "https://youtube.com/watch?v=XXXX2",
-    "https://youtube.com/watch?v=XXXX3",
-    "https://youtube.com/watch?v=XXXX4",
-    "https://youtube.com/watch?v=XXXX5"
-  ];
+const youtubeLinks = [
+  "https://youtube.com/watch?v=xyz1",
+  "https://youtube.com/watch?v=xyz2",
+  "https://youtube.com/watch?v=xyz3",
+  "https://youtube.com/watch?v=xyz4",
+  null
+];
 
   const items = document.querySelectorAll(".pentagram-item img");
   const logoSpotify = document.getElementById("spotify-logo-link");
@@ -176,6 +176,33 @@
       logoYouTube.classList.remove("d-none");
     });
   });
+
+
+  // Assign links or hide logos if no link
+if (spotifyLinks[index]) {
+  logoSpotify.href = spotifyLinks[index];
+  logoSpotify.classList.remove("d-none");
+} else {
+  logoSpotify.classList.add("d-none");
+}
+
+if (soundcloudLinks[index]) {
+  logoSoundCloud.href = soundcloudLinks[index];
+  logoSoundCloud.classList.remove("d-none");
+} else {
+  logoSoundCloud.classList.add("d-none");
+}
+
+if (youtubeLinks[index]) {
+  logoYouTube.href = youtubeLinks[index];
+  logoYouTube.classList.remove("d-none");
+} else {
+  logoYouTube.classList.add("d-none");
+}
+
+
+
+  
 </script>
 
 
