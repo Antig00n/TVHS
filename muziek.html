@@ -165,6 +165,7 @@ const youtubeLinks = [
     img.addEventListener("click", event => {
       event.preventDefault();
 
+      
   // Assign links or hide logos if no link
 if (spotifyLinks[index]) {
   logoSpotify.href = spotifyLinks[index];
@@ -189,10 +190,9 @@ if (youtubeLinks[index]) {
 
 
 
-      // Show all three logos
-      logoSpotify.classList.remove("d-none");
-      logoSoundCloud.classList.remove("d-none");
-      logoYouTube.classList.remove("d-none");
+  
+
+      
     });
   });
 
