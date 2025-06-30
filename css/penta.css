@@ -106,6 +106,7 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 15;
+  size: 50%;
 }
 
 #spotify-logo-link { left: 43%; bottom: 28%; }
