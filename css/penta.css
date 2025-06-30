@@ -95,3 +95,16 @@
   left: 12%;
 }
 }
+
+
+.spotify-embed {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: #000;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}

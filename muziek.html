@@ -85,8 +85,10 @@
     </div>
   </div>
 </section>
+<div id="spotify-player" class="spotify-embed d-none">
+  <iframe src="" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+</div>
 
-<main class="container d-flex flex-column align-items-center justify-content-center"></main>
     </main>
 
       <!-- CARTOON CHARACTER (smaller & off to side) -->
@@ -114,6 +116,27 @@
     videos.forEach(video => {
       video.pause();
       video.currentTime = 0;
+    });
+  });
+</script>
+<script>
+  const spotifyLinks = [
+    "https://open.spotify.com/embed/track/1", // Replace with real link 1
+    "https://open.spotify.com/embed/track/2", // Replace with real link 2
+    "https://open.spotify.com/embed/track/3", // Replace with real link 3
+    "https://open.spotify.com/embed/track/4", // Replace with real link 4
+    "https://open.spotify.com/embed/track/5"  // Replace with real link 5
+  ];
+
+  const items = document.querySelectorAll(".pentagram-item img");
+  const player = document.getElementById("spotify-player");
+  const iframe = player.querySelector("iframe");
+
+  items.forEach((img, index) => {
+    img.addEventListener("click", event => {
+      event.preventDefault(); // Prevents any <a> navigation
+      iframe.src = spotifyLinks[index];
+      player.classList.remove("d-none");
     });
   });
 </script>
