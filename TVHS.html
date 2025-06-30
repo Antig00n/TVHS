@@ -75,7 +75,7 @@
 
     <div class="movies slider-container" id="movieSlider">
       <div class="movie-card">
-        <button onclick="showVideo(this)" data-src="videos/ROI1.mp4">
+        <button onclick="showVideo(this)" data-src="videos/ROI1.mp4" data-description="Een aflevering over de wonderen van de natuur met Kleine Kova.">
           <div class="position-relative">
             <img src="img/NMK.png" alt="Movie 1">
             <div class="badge-custom">Recently Added</div>
@@ -154,23 +154,32 @@
     <source id="videoSource" src="" type="video/mp4" />
     Your browser does not support the video tag.
   </video>
+
+  <div id="videoDescription" class="mt-3 text-white px-2"></div> <!-- 👈 New Description -->
+
   <button onclick="toggleFullscreen()">Vollenbak</button>
   <button onclick="closeVideo()">Sloate</button>
 </div>
 
+
   <script>
   function showVideo(button) {
   const src = button.getAttribute('data-src');
+  const description = button.getAttribute('data-description') || ""; // 👈 fallback if missing
   const video = document.getElementById('videoElement');
   const source = document.getElementById('videoSource');
+  const descriptionBox = document.getElementById('videoDescription');
 
   source.src = src;
   video.load();
   video.play();
 
+  descriptionBox.textContent = description;
+
   document.getElementById('videoPopup').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
 }
+
 
 function closeVideo() {
   const video = document.getElementById('videoElement');
