@@ -77,9 +77,9 @@
   size: 50%;
 }
 
-#spotify-logo-link { left: 45%; bottom: 30%;  margin-top: 12%; }
+#spotify-logo-link { left: 45%; bottom: 60%; }
 #soundcloud-logo-link { left: 45%; bottom: 8%; margin-top: 8%; }
-#youtube-logo-link { left: 45%; bottom: 60%; }
+#youtube-logo-link { left: 45%; bottom: 30%;  margin-top: 12%; }
 
 #soundcloud-logo,
 #youtube-logo,
