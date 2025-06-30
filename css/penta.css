@@ -136,11 +136,27 @@
   transform: scale(1.15);
 }
 
-.pentagram-item {
-  transition: transform 0.3s ease;
+.pentagram-item.clicked {
+  transition: transform 0.4s ease;
+  z-index: 2;
 }
 
-.pentagram-item.clicked {
-  transform: scale(1.15);
-  z-index: 2;
+.pentagram-item.move-up {
+  transform: translateY(-20px) scale(1.15);
+}
+
+.pentagram-item.move-down {
+  transform: translateY(20px) scale(1.15);
+}
+
+.pentagram-item.move-left {
+  transform: translateX(-20px) scale(1.15);
+}
+
+.pentagram-item.move-right {
+  transform: translateX(20px) scale(1.15);
+}
+
+.pentagram-item.move-in {
+  transform: scale(1.25);
 }

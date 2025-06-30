@@ -63,23 +63,23 @@
 
    <section class="pentagram-wrapper my-5">
   <div class="pentagram-container">
-    <div class="pentagram-item">
+    <div class="pentagram-item" data-move="move-up">
       <a href="project.html"><img src="img/GVHSS.jpg"  class="pentagram-items" alt="VHS" /></a>
       <h6>VHS</h6>
     </div>
-    <div class="pentagram-item">
+    <div class="pentagram-item" data-move="move-right">
       <a href="project2.html"><img src="img/PTKC.png"  class="pentagram-items" alt="Kleine Crack" /></a>
       <h6>Kleine Crack</h6>
     </div>
-    <div class="pentagram-item">
+    <div class="pentagram-item" data-move="move-up">
       <a href="project3.html"><img src="img/ECMP.png"  class="pentagram-items" alt="Parsa" /></a>
       <h6>Parsa</h6>
     </div>
-    <div class="pentagram-item">
+    <div class="pentagram-item" data-move="move-up">
       <a href="project4.html"><img src="img/IDMR.png"  class="pentagram-items" alt="ROI" /></a>
       <h6>ROI</h6>
     </div>
-    <div class="pentagram-item">
+    <div class="pentagram-item" data-move="move-left">
       <a href="project5.html"><img src="img/NMK.png" class="pentagram-items" alt="Kleine Kova" /></a>
       <h6>Kleine Kova</h6>
     </div>
@@ -183,17 +183,23 @@
 <script>
   const pentagramItems = document.querySelectorAll(".pentagram-item");
 
-  pentagramItems.forEach(item => {
-    item.addEventListener("click", event => {
-      event.preventDefault();
+pentagramItems.forEach(item => {
+  item.addEventListener("click", event => {
+    event.preventDefault();
 
-      // Remove 'clicked' from all
-      pentagramItems.forEach(p => p.classList.remove("clicked"));
-
-      // Add 'clicked' to the one that was clicked
-      item.classList.add("clicked");
+    // Remove movement and 'clicked' class from all items
+    pentagramItems.forEach(p => {
+      p.classList.remove("clicked", "move-up", "move-down", "move-left", "move-right", "move-in");
     });
+
+    // Add clicked and specific move class
+    const moveClass = item.dataset.move; // e.g. "move-left"
+    item.classList.add("clicked");
+    if (moveClass) {
+      item.classList.add(moveClass);
+    }
   });
+});
 </script>
 
 </body>
