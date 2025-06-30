@@ -88,6 +88,13 @@
 <a id="spotify-logo-link" class="d-none" target="_blank">
   <img src="img/spotify.svg" alt="Spotify" id="spotify-logo">
 </a>
+<a id="soundcloud-logo-link" class="d-none" target="_blank">
+  <img src="img/soundcloudlogo.png" alt="SoundCloud" id="soundcloud-logo">
+</a>
+
+<a id="youtube-logo-link" class="d-none" target="_blank">
+  <img src="img/youtubelogo.png" alt="YouTube" id="youtube-logo">
+</a>
 
 
     </main>
@@ -122,22 +129,47 @@
 </script>
 <script>
   const spotifyLinks = [
-    "https://open.spotify.com/track/1", // Replace with your real links
+    "https://open.spotify.com/track/1",
     "https://open.spotify.com/track/2",
     "https://open.spotify.com/track/3",
     "https://open.spotify.com/track/4",
     "https://open.spotify.com/track/5"
   ];
 
+  const soundcloudLinks = [
+    "https://soundcloud.com/artist/track1",
+    "https://soundcloud.com/artist/track2",
+    "https://soundcloud.com/artist/track3",
+    "https://soundcloud.com/artist/track4",
+    "https://soundcloud.com/artist/track5"
+  ];
+
+  const youtubeLinks = [
+    "https://youtube.com/watch?v=XXXX1",
+    "https://youtube.com/watch?v=XXXX2",
+    "https://youtube.com/watch?v=XXXX3",
+    "https://youtube.com/watch?v=XXXX4",
+    "https://youtube.com/watch?v=XXXX5"
+  ];
+
   const items = document.querySelectorAll(".pentagram-item img");
-  const logoLink = document.getElementById("spotify-logo-link");
-  const logoImg = document.getElementById("spotify-logo");
+  const logoSpotify = document.getElementById("spotify-logo-link");
+  const logoSoundCloud = document.getElementById("soundcloud-logo-link");
+  const logoYouTube = document.getElementById("youtube-logo-link");
 
   items.forEach((img, index) => {
     img.addEventListener("click", event => {
       event.preventDefault();
-      logoLink.href = spotifyLinks[index];
-      logoLink.classList.remove("d-none");
+
+      // Assign links
+      logoSpotify.href = spotifyLinks[index];
+      logoSoundCloud.href = soundcloudLinks[index];
+      logoYouTube.href = youtubeLinks[index];
+
+      // Show all three logos
+      logoSpotify.classList.remove("d-none");
+      logoSoundCloud.classList.remove("d-none");
+      logoYouTube.classList.remove("d-none");
     });
   });
 </script>

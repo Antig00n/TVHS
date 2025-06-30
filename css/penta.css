@@ -97,20 +97,31 @@
 }
 
 
+
+
+#soundcloud-logo-link,
+#youtube-logo-link,
 #spotify-logo-link {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
   z-index: 15;
 }
 
+#spotify-logo-link { left: 45%; }
+#soundcloud-logo-link { left: 50%; }
+#youtube-logo-link { left: 55%; }
+
+#soundcloud-logo,
+#youtube-logo,
 #spotify-logo {
-  width: 60px;
+  width: 40px;
   height: auto;
   transition: transform 0.3s ease;
 }
 
+#soundcloud-logo:hover,
+#youtube-logo:hover,
 #spotify-logo:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
