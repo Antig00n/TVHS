@@ -238,3 +238,35 @@ margin-top: 0px;
 }
 
 
+
+.episode-slider {
+  max-width: 100%;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#episodeSlider {
+  scroll-behavior: smooth;
+  white-space: nowrap;
+}
+
+.episode-slider .movie-card {
+  display: inline-block;
+  width: 140px;
+}
+
+.episode-slider img {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.arrow-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
