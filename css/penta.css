@@ -108,9 +108,9 @@
   z-index: 15;
 }
 
-#spotify-logo-link { left: 40%; bottom: 28%; }
-#soundcloud-logo-link { left: 40%; bottom: 40%; }
-#youtube-logo-link { left: 40%; bottom: 70%; }
+#spotify-logo-link { left: 43%; bottom: 28%; }
+#soundcloud-logo-link { left: 43%; bottom: 40%; }
+#youtube-logo-link { left: 43%; bottom: 70%; }
 
 #soundcloud-logo,
 #youtube-logo,
@@ -126,7 +126,7 @@
   transform: scale(1.15);
 }
 
-#logo-container {
+.logo-container {
   position: absolute;
   top: 50%;
   left: 50%;
