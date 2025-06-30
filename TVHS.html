@@ -149,17 +149,28 @@
 
   <div id="overlay" onclick="closeVideo()"></div>
 
-<div id="videoPopup">
-  <video id="videoElement" controls>
-    <source id="videoSource" src="" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
+<div id="videoPopup" class="video-popup-container p-3">
+  <!-- Centered Video -->
+  <div class="d-flex justify-content-center mb-3">
+    <video id="videoElement" controls class="video-player">
+      <source id="videoSource" src="" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
 
-  <div id="videoDescription" class="mt-3 text-white px-2"></div> <!-- 👈 New Description -->
+  <!-- Buttons and Description Row -->
+  <div class="d-flex flex-column flex-md-row align-items-start gap-3">
+    <!-- Buttons Left -->
+    <div class="button-column d-flex flex-column gap-2">
+      <button onclick="toggleFullscreen()" class="btn btn-sm btn-light">Vollenbak</button>
+      <button onclick="closeVideo()" class="btn btn-sm btn-danger">Sloate</button>
+    </div>
 
-  <button onclick="toggleFullscreen()">Vollenbak</button>
-  <button onclick="closeVideo()">Sloate</button>
+    <!-- Description Right -->
+    <div id="videoDescription" class="text-white description-box"></div>
+  </div>
 </div>
+
 
 
   <script>

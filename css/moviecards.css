@@ -405,6 +405,28 @@ margin-top: 0px;
     
 }
 
+.video-popup-container {
+  position: fixed;
+  top: 10%;
+  left: 5%;
+  width: 90%;
+  max-width: 900px;
+  background-color: rgba(0, 0, 0, 0.95);
+  border-radius: 10px;
+  z-index: 1001;
+}
+
+.video-player {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.description-box {
+  max-width: 500px;
+  font-size: 1rem;
+  line-height: 1.4;
+}
 
 
 
