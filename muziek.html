@@ -132,14 +132,6 @@
   });
 </script>
 <script>
-  const titles = [
-    "VHS",
-    "Kleine Crack",
-    "Parsa",
-    "ROI",
-    "Kleine Kova"
-  ];
-
   const spotifyLinks = [
     "https://open.spotify.com/track/1",
     "https://open.spotify.com/track/2",
@@ -165,9 +157,6 @@
   ];
 
   const items = document.querySelectorAll(".pentagram-item img");
-  const titleEl = document.getElementById("pentagram-title");
-
-  const logoContainer = document.getElementById("logo-container");
   const logoSpotify = document.getElementById("spotify-logo-link");
   const logoSoundCloud = document.getElementById("soundcloud-logo-link");
   const logoYouTube = document.getElementById("youtube-logo-link");
@@ -176,16 +165,15 @@
     img.addEventListener("click", event => {
       event.preventDefault();
 
-      // Set platform URLs
+      // Assign links
       logoSpotify.href = spotifyLinks[index];
       logoSoundCloud.href = soundcloudLinks[index];
       logoYouTube.href = youtubeLinks[index];
 
-      // Set and show title
-      titleEl.textContent = titles[index];
-
-      // Show logo container
-      logoContainer.classList.remove("d-none");
+      // Show all three logos
+      logoSpotify.classList.remove("d-none");
+      logoSoundCloud.classList.remove("d-none");
+      logoYouTube.classList.remove("d-none");
     });
   });
 </script>
