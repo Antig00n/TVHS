@@ -80,6 +80,8 @@ margin-top: -25px;
       display: inline-block;
       transform: rotate(-10deg);
       animation: floatUpDown 2s ease-in-out infinite;
+
+
     }
     @keyframes floatUpDown {
       0%, 100% {
@@ -191,6 +193,11 @@ margin-top: -25px;
     border-bottom: 2px solid #00000000;
 
 }
+
+.slantedlink {
+      margin-bottom: 0.5rem; /* Tighter spacing on mobile */
+    }
+
    #dates {
 margin-top: 0px;
 
