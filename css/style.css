@@ -15,17 +15,6 @@ body {
     }
 
 
-
-    .footers {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: transparent;
-  text-align: center;
-  padding: 10px 0;
-}
-
 @font-face {
   font-family: 'BIT';
   src: url('/fonts/PixelOperator.ttf') format('truetype');
@@ -114,7 +103,11 @@ margin-top: -25px;
     .footer-white{
       filter: brightness(0) invert(1);
     }
-  
+    .footers {
+      margin-top: -4%;
+      padding: 1rem 0;
+      text-align: center;
+    }
  .footers2 {
       margin-top: -0%;
       padding: 1rem 0;
