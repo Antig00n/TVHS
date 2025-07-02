@@ -34,14 +34,12 @@ body {
 }
 
 .btn-custom {
-    background-color: black;
-    color: white;
-    border: 2px solid white;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    color: red;
+    transition: color 0.3s ease, color 0.3s ease;
   }
 
   .btn-custom:hover {
-    background-color: white;
+
     color: black;
   }
 
