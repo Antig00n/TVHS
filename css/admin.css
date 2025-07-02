@@ -94,6 +94,6 @@ body, html {
   
   #admin-panel {
     padding: 0 10px; /* some side padding on mobile */
-    margin-top: -15%;
+    margin-top: -10%;
   }
 }
