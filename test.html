@@ -66,8 +66,16 @@
 </div>
 
 <main>
-    <div id="loadingOverlay">
-  <img src="img/loading-placeholder.gif" alt="Loading...">
+    <div id="loading-overlay" style="
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px; position: absolute; margin-top: 1%; margin-left: 1%;"  />
 </div>
 
   <div class="slider-wrapper">
@@ -255,6 +263,16 @@ function toggleFullscreen() {
       behavior: "smooth"
     });
   }
+</script>
+
+<script>
+  // Wait 5 seconds then hide loading overlay
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      const overlay = document.getElementById("loading-overlay");
+      if (overlay) overlay.style.display = "none";
+    }, 5000); // 5000ms = 5 seconds
+  });
 </script>
 
 </body>
