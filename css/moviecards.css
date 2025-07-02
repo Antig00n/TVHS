@@ -13,7 +13,7 @@ html, body {
     }
 
     main {
-      max-width: 1500px;
+      max-width: 90%;
       margin: auto;
       padding: 2rem 1rem;
     }
