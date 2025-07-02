@@ -166,6 +166,28 @@ function toggleFullscreen() {
       const data = await res.json();
 
       data.forEach(video => {
+  const filename = video.filename;
+  const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "");
+  const title = titleRaw.replace(/_/g, " ").trim();
+
+  const card = document.createElement("div");
+  card.className = "movie-card";
+
+  card.innerHTML = `
+    <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${video.description || ''}">
+      <div class="position-relative">
+        <img src="img/vhsthumbs/${titleRaw}.webp" alt="${title}"
+             onerror="this.onerror=null;this.src='img/vhsthumbs/${titleRaw}.png';
+                      this.onerror=function(){this.src='img/vhsthumbs/${titleRaw}.jpg'};">
+        <div class="badge-custom">${video.caption || "Recently Added"}</div>
+      </div>
+      <div class="movie-title">${title}</div>
+    </button>
+  `;
+
+  container.appendChild(card);
+});
+data.forEach(video => {
         const { filename, title, rawTitle, description, caption } = video;
 
         const card = document.createElement("div");
@@ -236,7 +258,6 @@ function toggleFullscreen() {
   // Load the VHS clips when the page loads
   window.addEventListener("DOMContentLoaded", loadVHSClips);
 </script>
-
 
 
 
