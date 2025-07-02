@@ -22,7 +22,7 @@ export async function handler(event) {
         body: JSON.stringify({ error: 'Missing required fields' }),
       };
     }
-
+    
     const client = new Client({
       connectionString: process.env.NEON_CONNECTION_STRING, // or NETLIFY_DATABASE_URL
       ssl: { rejectUnauthorized: false },
