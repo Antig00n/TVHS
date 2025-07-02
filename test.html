@@ -84,7 +84,15 @@
     <button class="arrow-btn arrow-left" onclick="scrollSlider(-1)">
       ‹
     </button>
-<div class="movies slider-container" id="movieSlider"></div>
+<div class="movies slider-container" id="movieSlider" style="
+ display: flex;
+  flex-direction: column;  
+  overflow-y: auto;        
+  overflow-x: hidden;      
+  height: 600px;          
+  scroll-behavior: smooth;
+  gap: 1rem;               
+  padding: 0.5rem;"></div>
 
 
     <button class="arrow-btn arrow-right" onclick="scrollSlider(1)">
