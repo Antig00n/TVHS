@@ -67,6 +67,7 @@
     <h2>Admin Login</h2>
     <label for="password">Enter Password:</label>
     <input type="password" id="password" autocomplete="off" placeholder="Password" />
+    <button type="button" id="togglePassword">Show</button>
     <button id="login-btn">Login</button>
     <div id="error-msg" class="error"></div>
   </div>
@@ -147,6 +148,21 @@ form.addEventListener('submit', async (e) => {
       alert('Here you would send your show data to your backend function.');
       e.target.reset();
     });
+
+
+      const passwordInput = document.getElementById('password');
+  const toggleBtn = document.getElementById('togglePassword');
+
+  toggleBtn.addEventListener('click', () => {
+    const type = passwordInput.getAttribute('type');
+    if (type === 'password') {
+      passwordInput.setAttribute('type', 'text');
+      toggleBtn.textContent = 'Hide';
+    } else {
+      passwordInput.setAttribute('type', 'password');
+      toggleBtn.textContent = 'Show';
+    }
+  });
   </script>
 </body>
 </html>
