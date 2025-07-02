@@ -12,42 +12,60 @@ export async function handler(event) {
       showdate,
       showplace,
       showperson,
-      showsite,
-      showprice,
+      showsite = null,
+      showprice = null,
     } = data;
 
-    if (!showdate || !showplace || !showperson || !showsite || !showprice) {
+    if (!showdate || !showplace || !showperson) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Missing required fields' }),
       };
     }
-    
+
     const client = new Client({
-      connectionString: process.env.NEON_CONNECTION_STRING, // or NETLIFY_DATABASE_URL
+      connectionString: process.env.NEON_CONNECTION_STRING,
       ssl: { rejectUnauthorized: false },
     });
 
     await client.connect();
 
-    const query = `
+    // Check count of shows
+    const countRes = await client.query('SELECT COUNT(*) FROM shows');
+    const count = parseInt(countRes.rows[0].count, 10);
+
+    // If 10 or more, delete oldest show
+    if (count >= 10) {
+      // Delete show with oldest showdate, tie-break with lowest id
+      await client.query(`
+        DELETE FROM shows
+        WHERE id = (
+          SELECT id FROM shows
+          ORDER BY showdate ASC, id ASC
+          LIMIT 1
+        )
+      `);
+    }
+
+    // Insert new show
+    const insertQuery = `
       INSERT INTO shows (showdate, showplace, showperson, showsite, showprice)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING id
     `;
 
-    const values = [showdate, showplace, showperson, showsite, showprice];
+    const insertValues = [showdate, showplace, showperson, showsite, showprice];
 
-    const res = await client.query(query, values);
+    const insertRes = await client.query(insertQuery, insertValues);
 
     await client.end();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Show inserted', id: res.rows[0].id }),
+      body: JSON.stringify({ message: 'Show inserted', id: insertRes.rows[0].id }),
     };
   } catch (error) {
-    console.error('Database insertion error:', error);
+    console.error('Error inserting show:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed to insert show', details: error.message }),
