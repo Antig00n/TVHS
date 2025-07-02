@@ -94,29 +94,49 @@ form.addEventListener('submit', async (e) => {
 </script>
 
   <script>
-     const PASSWORD = 'V6H6S6222'; // change this to your desired password
+   let PASSWORD = null; // will be set after fetching
 
-    const loginDiv = document.getElementById('login');
-    const adminPanel = document.getElementById('admin-panel');
-    const loginBtn = document.getElementById('login-btn');
-    const errorMsg = document.getElementById('error-msg');
+async function fetchPassword() {
+  try {
+    const res = await fetch('/.netlify/functions/get-password');
+    const data = await res.json();
+    if (data.password) {
+      PASSWORD = data.password;
+    } else {
+      console.error('Failed to get password');
+    }
+  } catch (e) {
+    console.error('Error fetching password:', e);
+  }
+}
 
-    loginBtn.addEventListener('click', () => {
-      const input = document.getElementById('password').value;
-      if (input === PASSWORD) {
-        loginDiv.style.display = 'none';
-        adminPanel.style.display = 'block';
-        errorMsg.textContent = '';
-      } else {
-        errorMsg.textContent = 'Incorrect password!';
-      }
-    });
+fetchPassword();
 
-    document.getElementById('show-form').addEventListener('submit', e => {
-      e.preventDefault();
-      alert('Here you would send your show data to your backend function.');
-      e.target.reset();
-    });
+const loginDiv = document.getElementById('login');
+const adminPanel = document.getElementById('admin-panel');
+const loginBtn = document.getElementById('login-btn');
+const errorMsg = document.getElementById('error-msg');
+
+loginBtn.addEventListener('click', () => {
+  const input = document.getElementById('password').value;
+  if (PASSWORD === null) {
+    errorMsg.textContent = 'Password not loaded yet, please wait.';
+    return;
+  }
+  if (input === PASSWORD) {
+    loginDiv.style.display = 'none';
+    adminPanel.style.display = 'block';
+    errorMsg.textContent = '';
+  } else {
+    errorMsg.textContent = 'Incorrect password!';
+  }
+});
+
+document.getElementById('show-form').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Here you would send your show data to your backend function.');
+  e.target.reset();
+});
 
 
  
