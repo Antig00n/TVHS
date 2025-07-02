@@ -77,21 +77,29 @@
 ">
   <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px; position: absolute; margin-top: 1%; margin-left: 1%;"  />
 </div>
+<div style="max-width: 900px; margin: auto; padding: 1rem;">
 
-  <div class="slider-wrapper">
-    <div class="slider-title" style="color: rgb(168, 0, 0);" >ALLE VHS CLIPS</div>
-
-    <button class="arrow-btn arrow-left" onclick="scrollSlider(-1)">
-      ‹
-    </button>
-<div class="movies slider-container" id="movieSlider" >
-  </div>
-
-
-    <button class="arrow-btn arrow-right" onclick="scrollSlider(1)">
-      ›
+  <!-- Search & Sort Controls -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;"/>
+    <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
+      Sort: Newest
     </button>
   </div>
+
+  <!-- Vertical scroll wrapper with horizontal movie slider inside -->
+  <div class="vertical-scroll-wrapper" style="height: 300px; overflow-y: auto; overflow-x: hidden;">
+    <div class="slider-container" id="movieSlider" style="display: flex; gap: 1rem; flex-wrap: nowrap; white-space: nowrap;">
+      <!-- movie cards injected here -->
+    </div>
+  </div>
+
+  <!-- Scroll buttons -->
+  <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
+    <button onclick="scrollSlider(-1)">▲ Scroll Up</button>
+    <button onclick="scrollSlider(1)">▼ Scroll Down</button>
+  </div>
+</div>
 </main>
 
   <footer class="footers2">
