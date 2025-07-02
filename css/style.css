@@ -131,8 +131,8 @@ margin-top: -25px;
       text-align: center;
     }
     .btn-red-active {
-  color: red;
-  border-color: #dc3545;
+  color: rgb(168, 0, 0);;
+  border-color: red;
 }
   
 
