@@ -1,6 +1,7 @@
 html, body {
     width: 100%;
     height: 100%;
+    margin: 0;
 }
 
 
@@ -13,6 +14,10 @@ body {
       flex-direction: column;
       font-family: 'BIT', sans-serif;
     }
+
+    main {
+  flex: 1; /* grows to fill available space */
+}
 
 
 @font-face {
@@ -108,11 +113,14 @@ margin-top: -25px;
       padding: 1rem 0;
       text-align: center;
     }
- .footers2 {
-      margin-top: -0%;
-      padding: 1rem 0;
-      text-align: center;
-    }
+
+    .footers2 {
+  /* normal static positioning */
+  background-color: transparent;
+  padding: 10px 0;
+  text-align: center;
+}
+
     .btn-red-active {
   color: red;
   border-color: #dc3545;
