@@ -62,6 +62,19 @@
 
 
 <div id="upcoming-shows-container">
+
+  <div id="loading-overlay" style="
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px;" />
+</div>
+
   <h2 style="text-align: center; margin-bottom: 1rem;">Upcoming Shows</h2>
   <div id="upcoming-shows"></div>
 </div>
@@ -85,50 +98,59 @@
   ></script>
 
 <script>
-  async function loadShows() {
-    const container = document.getElementById('upcoming-shows');
-    try {
-      const res = await fetch('/.netlify/functions/get-shows');
-      const shows = await res.json();
+async function loadShows() {
+  const container = document.getElementById('upcoming-shows');
+  const loadingOverlay = document.getElementById('loading-overlay');
 
-      if (!Array.isArray(shows)) {
-        container.textContent = 'Failed to load shows.';
-        return;
-      }
+  // Show loading overlay
+  loadingOverlay.style.display = 'flex';
 
-      if (shows.length === 0) {
-        container.textContent = 'No upcoming shows.';
-        return;
-      }
+  try {
+    const res = await fetch('/.netlify/functions/get-shows');
+    const shows = await res.json();
 
-      const list = document.createElement('ul');
-
-      shows.forEach(show => {
-        const li = document.createElement('li');
-
-        let text = `${show.showperson} | ${new Date(show.showdate).toLocaleDateString()} | ${show.showplace}`;
-
-        if (show.showprice) {
-          text += ` | €${show.showprice}`;
-        }
-        if (show.showsite) {
-          text += ` | ${show.showsite}`;
-        }
-
-        li.textContent = text;
-        list.appendChild(li);
-      });
-
-      container.innerHTML = '';
-      container.appendChild(list);
-
-    } catch (e) {
-      container.textContent = 'Error loading shows.';
-      console.error(e);
+    if (!Array.isArray(shows)) {
+      container.textContent = 'Failed to load shows.';
+      return;
     }
-  }
 
-  loadShows();
+    if (shows.length === 0) {
+      container.textContent = 'No upcoming shows.';
+      return;
+    }
+
+    const list = document.createElement('ul');
+
+    shows.forEach(show => {
+      const li = document.createElement('li');
+
+      let text = `${show.showperson} | ${new Date(show.showdate).toLocaleDateString()} | ${show.showplace}`;
+
+      if (show.showprice) {
+        text += ` | €${show.showprice}`;
+      }
+      if (show.showsite) {
+        text += ` | ${show.showsite}`;
+      }
+
+      li.textContent = text;
+      list.appendChild(li);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(list);
+
+  } catch (e) {
+    container.textContent = 'Error loading shows.';
+    console.error(e);
+  } finally {
+    // Hide loading overlay when done
+    loadingOverlay.style.display = 'none';
+  }
+}
+
+loadShows();
+
 </script>
 </body>
 </html>
