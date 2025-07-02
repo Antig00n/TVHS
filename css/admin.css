@@ -18,6 +18,10 @@ body, html {
   #admin-panel {
     display: none;
   }
+
+
+
+  
   input[type="password"], button,
   input[type="text"], input[type="date"], input[type="number"], input[type="url"] {
     width: 100%;
@@ -57,3 +61,38 @@ body, html {
     color: #ff6b6b;
     margin-top: 0.5rem;
   }
+
+
+
+  /* Base styles - keep your desktop look */
+#admin-panel form input,
+#admin-panel form button {
+  font-size: 16px;
+  padding: 8px 12px;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Responsive for small screens */
+@media (max-width: 600px) {
+  #admin-panel h2, 
+  #admin-panel h4 {
+    font-size: 1.2rem; /* smaller headings */
+  }
+
+  #admin-panel form input,
+  #admin-panel form button {
+    font-size: 14px;    /* smaller text */
+    padding: 6px 10px;  /* smaller padding */
+    max-width: 100%;    /* take full width */
+    margin-bottom: 12px;
+  }
+  
+  #admin-panel {
+    padding: 0 10px; /* some side padding on mobile */
+  }
+}
