@@ -85,14 +85,12 @@
       ‹
     </button>
 <div class="movies slider-container" id="movieSlider" style="
- display: flex;
-  flex-direction: column;  
-  overflow-y: auto;        
-  overflow-x: hidden;      
-  height: 600px;          
-  scroll-behavior: smooth;
-  gap: 1rem;               
-  padding: 0.5rem;"></div>
+   display: flex;
+  flex-direction: row;   /* horizontal layout */
+  gap: 1rem;
+  white-space: nowrap;   /* prevent wrapping */
+  overflow-x: visible;  /* no horizontal scrollbar on inner container */">
+  </div>
 
 
     <button class="arrow-btn arrow-right" onclick="scrollSlider(1)">
