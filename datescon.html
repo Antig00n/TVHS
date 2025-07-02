@@ -114,14 +114,25 @@ async function loadShows() {
       return;
     }
 
-    if (shows.length === 0) {
+    // Get today's date without time for accurate comparison
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Filter shows to only include those on or after today
+    const upcomingShows = shows.filter(show => {
+      const showDate = new Date(show.showdate);
+      showDate.setHours(0, 0, 0, 0);
+      return showDate >= today;
+    });
+
+    if (upcomingShows.length === 0) {
       container.textContent = 'No upcoming shows.';
       return;
     }
 
     const list = document.createElement('ul');
 
-    shows.forEach(show => {
+    upcomingShows.forEach(show => {
       const li = document.createElement('li');
 
       let text = `${show.showperson} | ${new Date(show.showdate).toLocaleDateString()} | ${show.showplace}`;
