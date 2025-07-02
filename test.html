@@ -168,20 +168,19 @@ function toggleFullscreen() {
   </script>
 
 <script>
- async function loadVHSClips() {
+async function loadVHSClips() {
   const container = document.getElementById("movieSlider");
   const loading = document.getElementById("loadingOverlay");
 
-  // Show loading overlay
   loading.style.display = "flex";
-  container.innerHTML = ""; // clear existing
+  container.innerHTML = "";
 
   try {
     const res = await fetch("/.netlify/functions/get-vhs-videos");
     if (!res.ok) throw new Error("Failed to fetch videos");
     const data = await res.json();
+    console.log("Fetched video data:", data);
 
-    // We’ll track image load promises to hide loading only after all images load
     const imgLoadPromises = [];
 
     data.forEach(video => {
@@ -206,29 +205,37 @@ function toggleFullscreen() {
 
       container.appendChild(card);
 
-      // Wait for image load or error to resolve
       const img = card.querySelector("img");
+
       imgLoadPromises.push(new Promise(resolve => {
         if (img.complete) {
+          console.log(`Image already loaded: ${img.src}`);
           resolve();
         } else {
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
+          img.onload = () => {
+            console.log(`Image loaded: ${img.src}`);
+            resolve();
+          };
+          img.onerror = () => {
+            console.warn(`Image failed to load: ${img.src}`);
+            resolve();
+          };
         }
       }));
     });
 
-    // Wait for all images to load/error
     await Promise.all(imgLoadPromises);
+
+    console.log("All images loaded or errored.");
 
   } catch (err) {
     console.error("Failed to load VHS movies:", err);
     container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
   } finally {
-    // Hide loading overlay no matter what
     loading.style.display = "none";
   }
 }
+
 
 </script>
 
