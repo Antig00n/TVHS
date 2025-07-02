@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale =1" />
   <title>TVHS</title>
+<script src="loadvideos.js" defer></script>
 
 <link rel="stylesheet" href="css/reset.css">
 
@@ -167,90 +168,6 @@ function toggleFullscreen() {
 }
 
   </script>
-
-<script>
-  async function loadVHSClips() {
-    const container = document.getElementById("movieSlider");
-    container.innerHTML = ""; // clear existing
-
-    try {
-      const res = await fetch("/.netlify/functions/get-vhs-videos");
-      if (!res.ok) throw new Error("Failed to fetch videos");
-      const data = await res.json();
-
-      data.forEach(video => {
-  const filename = video.filename;
-  const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "");
-  const title = titleRaw.replace(/_/g, " ").trim();
-
-  const card = document.createElement("div");
-  card.className = "movie-card";
-
-  card.innerHTML = `
-    <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${video.description || ''}">
-      <div class="position-relative">
-        <img src="img/vhsthumbs/${titleRaw}.webp" alt="${title}"
-             onerror="this.onerror=null;this.src='img/vhsthumbs/${titleRaw}.png';
-                      this.onerror=function(){this.src='img/vhsthumbs/${titleRaw}.jpg'};">
-      </div>
-      <div class="movie-title">${title}</div>
-    </button>
-  `;
-
-  container.appendChild(card);
-});
-
-    } catch (err) {
-      console.error("Failed to load VHS movies:", err);
-      container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
-    }
-  }
-
-  function showVideo(button) {
-    const src = button.getAttribute('data-src');
-    const description = button.getAttribute('data-description') || "";
-    const video = document.getElementById('videoElement');
-    const source = document.getElementById('videoSource');
-    const descriptionBox = document.getElementById('videoDescription');
-
-    source.src = src;
-    video.load();
-    video.play();
-
-    descriptionBox.textContent = description;
-
-    document.getElementById('videoPopup').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
-  }
-
-  function closeVideo() {
-    const video = document.getElementById('videoElement');
-    video.pause();
-    video.currentTime = 0;
-
-    document.getElementById('videoPopup').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-  }
-
-  function toggleFullscreen() {
-    const video = document.getElementById('videoElement');
-    if (video.requestFullscreen) video.requestFullscreen();
-    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-    else if (video.msRequestFullscreen) video.msRequestFullscreen();
-  }
-
-  function scrollSlider(direction) {
-    const container = document.getElementById("movieSlider");
-    const scrollAmount = 260;
-    container.scrollBy({
-      left: direction * scrollAmount,
-      behavior: "smooth"
-    });
-  }
-
-  // Load the VHS clips when the page loads
-  window.addEventListener("DOMContentLoaded", loadVHSClips);
-</script>
 
 
 
