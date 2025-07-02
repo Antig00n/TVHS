@@ -22,7 +22,9 @@ exports.handler = async (event) => {
       VALUES ($1, $2, $3, $4, $5)
     `;
 
-    
+
+
+
     await client.query(query, [showdate, showplace, showperson, showsite, showprice]);
     await client.end();
 
