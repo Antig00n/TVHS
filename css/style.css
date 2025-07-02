@@ -33,15 +33,15 @@ body {
   width: 5%;
 }
 
-.btn-custom {
-    color: rgb(168, 0, 0);
-    transition: color 0.3s ease, color 0.3s ease;
-  }
+  .btn-custom {
+      color: rgb(168, 0, 0);
+      transition: color 0.3s ease, color 0.3s ease;
+    }
 
-  .btn-custom:hover {
+    .btn-custom:hover {
 
-    color: black;
-  }
+      color: black;
+    }
 
 .navbar {
   border-bottom: none;
@@ -91,6 +91,9 @@ margin-top: -25px;
     }
 
    
+
+
+
 
     .spotlight-trigger {
       background: #444;
@@ -216,6 +219,11 @@ margin-top: 0px;
     border-bottom: 2px solid #00000000;
 
 }
+
+.slantedlink {
+      margin-bottom: 0.5rem; /* Tighter spacing on mobile */
+    }
+    
    #dates {
 margin-top: 0px;
 
