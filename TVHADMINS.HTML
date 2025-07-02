@@ -63,10 +63,10 @@
 </nav>
 </div>
 <main>
-  <div id="login">
+    <div id="login">
     <h2>Admin Login</h2>
     <label for="password">Enter Password:</label>
-    <input type="password" id="password" autocomplete="off" />
+    <input type="password" id="password" autocomplete="off" placeholder="Password" />
     <button id="login-btn">Login</button>
     <div id="error-msg" class="error"></div>
   </div>
@@ -124,7 +124,7 @@ form.addEventListener('submit', async (e) => {
 </script>
 
   <script>
-    const PASSWORD = 'V6H6S6222'; // change this to your desired password
+     const PASSWORD = 'mypassword123'; // change this to your desired password
 
     const loginDiv = document.getElementById('login');
     const adminPanel = document.getElementById('admin-panel');
@@ -142,7 +142,6 @@ form.addEventListener('submit', async (e) => {
       }
     });
 
-    // Optional: handle form submission
     document.getElementById('show-form').addEventListener('submit', e => {
       e.preventDefault();
       alert('Here you would send your show data to your backend function.');

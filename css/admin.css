@@ -1,27 +1,59 @@
-body
- {
-
-      padding: 2rem;
-      max-width: 400px;
-      margin: auto;
-      background: #f0f0f0;
-    }
-    #login, #admin-panel {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #admin-panel {
-      display: none;
-    }
-    input[type="password"], button {
-      width: 100%;
-      padding: 0.7rem;
-      margin-top: 0.5rem;
-      font-size: 1rem;
-    }
-    .error {
-      color: red;
-      margin-top: 0.5rem;
-    }
+body, html {
+    margin: 0; 
+    padding: 2rem;
+    height: 100vh;
+    width: 100vw;
+    font-family: Arial, sans-serif;
+    background: #222; /* dark background, change if you want */
+    color: white;
+    box-sizing: border-box;
+  }
+  #login, #admin-panel {
+    width: 100%;
+    height: 100%;
+    border: 1px solid white;
+    padding: 1.5rem;
+    background: transparent;
+  }
+  #admin-panel {
+    display: none;
+  }
+  input[type="password"], button,
+  input[type="text"], input[type="date"], input[type="number"], input[type="url"] {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+  }
+  input::placeholder {
+    color: #bbb;
+  }
+  input:focus, button:focus {
+    outline: none;
+    border-color: #fff;
+    box-shadow: 0 0 5px white;
+  }
+  button {
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    margin-top: 1rem;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  button:hover {
+    background: white;
+    color: #222;
+  }
+  label {
+    display: block;
+    margin-top: 1rem;
+  }
+  .error {
+    color: #ff6b6b;
+    margin-top: 0.5rem;
+  }
