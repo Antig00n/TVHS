@@ -1,0 +1,27 @@
+body
+ {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 400px;
+      margin: auto;
+      background: #f0f0f0;
+    }
+    #login, #admin-panel {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #admin-panel {
+      display: none;
+    }
+    input[type="password"], button {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+    .error {
+      color: red;
+      margin-top: 0.5rem;
+    }

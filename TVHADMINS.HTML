@@ -7,9 +7,9 @@
   <title>TVHS</title>
 
 <link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/admin.css">
 
 
- 
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"/>
@@ -63,22 +63,31 @@
 </nav>
 </div>
 <main>
-  
-   <h4>NOTHING IS SPACE.</h4>
- <form id="showForm">
+  <div id="login">
+    <h2>Admin Login</h2>
+    <label for="password">Enter Password:</label>
+    <input type="password" id="password" autocomplete="off" />
+    <button id="login-btn">Login</button>
+    <div id="error-msg" class="error"></div>
+  </div>
+
+  <div id="admin-panel">
+    <h2>Insert Show</h2>
+    <!-- Replace this with your actual show insertion form -->
+    <form id="showForm">
   <h4>Date</h4>
     <input type="date" name="showdate" required />
       <h4>Place</h4>
     <input type="text" name="showplace" required />
       <h4>Person</h4>
     <input type="text" name="showperson" required />
-      <h4>Site</h4>
+      <h4>Venue</h4>
     <input type="text" name="showsite" />
       <h4>Price</h4>
     <input type="text" name="showprice" />
     <button type="submit">Submit</button>
   </form>
-
+  </div>
 </main>
 
   <footer class="footers2">
@@ -114,9 +123,32 @@ form.addEventListener('submit', async (e) => {
 
 </script>
 
+  <script>
+    const PASSWORD = 'V6H6S6222'; // change this to your desired password
 
+    const loginDiv = document.getElementById('login');
+    const adminPanel = document.getElementById('admin-panel');
+    const loginBtn = document.getElementById('login-btn');
+    const errorMsg = document.getElementById('error-msg');
+
+    loginBtn.addEventListener('click', () => {
+      const input = document.getElementById('password').value;
+      if (input === PASSWORD) {
+        loginDiv.style.display = 'none';
+        adminPanel.style.display = 'block';
+        errorMsg.textContent = '';
+      } else {
+        errorMsg.textContent = 'Incorrect password!';
+      }
+    });
+
+    // Optional: handle form submission
+    document.getElementById('show-form').addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Here you would send your show data to your backend function.');
+      e.target.reset();
+    });
+  </script>
 </body>
 </html>
-
-
 
