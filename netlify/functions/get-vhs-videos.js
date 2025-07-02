@@ -1,41 +1,33 @@
-async function loadVHSClips() {
-  const container = document.getElementById("movieSlider");
-  container.innerHTML = ""; // clear existing
+import fs from 'fs/promises';
+import path from 'path';
 
+export async function handler(event, context) {
   try {
-    const res = await fetch("/.netlify/functions/get-vhs-videos");
-    if (!res.ok) throw new Error("Failed to fetch videos");
-    let data = await res.json();
+    const videosDir = path.resolve('./tvhsmovies');
+    const files = await fs.readdir(videosDir);
 
-    // Sort by date descending (newest first). Assumes video.date is ISO string or timestamp
-    data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const videos = files
+      .filter(file => file.startsWith('vhsmovie') && file.endsWith('.mp4'))
+      .map(file => {
+        const namePart = file.slice('vhsmovie'.length, -'.mp4'.length);
+        const title = namePart.replace(/_/g, ' ');
+        return {
+          filename: file,
+          title,
+          src: `/tvhsmovies/${file}`,
+          thumbnail: `/tvhsmovies/${file.replace('.mp4', '.png')}` // or .webp
+        };
+      });
 
-    data.forEach((video, index) => {
-      const { filename, title, rawTitle, description, caption } = video;
-
-      // Show "Recently Added" only for the two newest videos (index 0 and 1)
-      const showBadge = index < 2;
-      const badgeText = showBadge ? (caption || "Recently Added") : "";
-
-      const card = document.createElement("div");
-      card.className = "movie-card";
-
-      card.innerHTML = `
-        <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${description || ''}">
-          <div class="position-relative">
-            <img src="img/vhsthumbs/${rawTitle}.webp" alt="${title}"
-                 onerror="this.onerror=null;this.src='img/vhsthumbs/${rawTitle}.png';
-                 this.onerror=function(){this.src='img/vhsthumbs/${rawTitle}.jpg'};">
-            ${badgeText ? `<div class="badge-custom">${badgeText}</div>` : ''}
-          </div>
-          <div class="movie-title">${title}</div>
-        </button>
-      `;
-
-      container.appendChild(card);
-    });
-  } catch (err) {
-    console.error("Failed to load VHS movies:", err);
-    container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
+    return {
+      statusCode: 200,
+      body: JSON.stringify(videos),
+    };
+  } catch (error) {
+    console.error('Error reading videos:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to read video files.' }),
+    };
   }
 }
