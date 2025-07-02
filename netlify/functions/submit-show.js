@@ -7,7 +7,6 @@ exports.handler = async (event) => {
       body: 'Method Not Allowed',
     };
   }
-
   const { showdate, showplace, showperson, showsite, showprice } = JSON.parse(event.body);
 
   const client = new Client({
