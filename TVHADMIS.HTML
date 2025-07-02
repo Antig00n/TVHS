@@ -100,7 +100,54 @@
 
   
 
+<script>
 
+const { Client } = require("pg");
+const querystring = require("querystring");
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
+
+  const data = querystring.parse(event.body);
+
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  try {
+    await client.connect();
+
+    await client.query(
+      `INSERT INTO shows (showdate, showplace, showperson, showsite, showprice)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        data.showdate,
+        data.showplace,
+        data.showperson,
+        data.showsite,
+        parseFloat(data.showprice),
+      ]
+    );
+
+    await client.end();
+
+    return {
+      statusCode: 302,
+      headers: { Location: "/" }, // Redirect back to form
+      body: "Success!",
+    };
+  } catch (err) {
+    console.error("DB error:", err);
+    return {
+      statusCode: 500,
+      body: "Internal Server Error",
+    };
+  }
+};
+
+</script>
 
 
 </body>
