@@ -64,29 +64,14 @@
 </div>
 <main>
   
-<form method="POST" action="/.netlify/functions/submit-show">
-  <label>
-    Date:
+ <form id="showForm">
     <input type="date" name="showdate" required />
-  </label>
-  <label>
-    Place:
     <input type="text" name="showplace" required />
-  </label>
-  <label>
-    Person:
     <input type="text" name="showperson" required />
-  </label>
-  <label>
-    Site:
-    <input type="url" name="showsite" required />
-  </label>
-  <label>
-    Price:
-    <input type="number" name="showprice" step="0.01" required />
-  </label>
-  <button type="submit">Submit Show</button>
-</form>
+    <input type="text" name="showsite" required />
+    <input type="number" step="0.01" name="showprice" required />
+    <button type="submit">Submit</button>
+  </form>
 
 </main>
 
@@ -101,26 +86,26 @@
   
 
 <script>
-  const form = document.getElementById('showForm');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
+ const form = document.getElementById('showForm');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await fetch('/.netlify/functions/submit-show', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
 
-      const result = await response.json();
-      alert(result.message || result.error);
-      form.reset();
-    } catch (err) {
-      alert('Failed to submit form.');
-      console.error(err);
-    }
+  const response = await fetch('/.netlify/functions/submit-show', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',  // Tell server it's JSON
+    },
+    body: JSON.stringify(data),            // Convert data to JSON string
   });
+
+  const result = await response.json();
+  alert(result.message || result.error);
+  form.reset();
+});
+
 </script>
 
 
