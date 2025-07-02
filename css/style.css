@@ -195,7 +195,7 @@ margin-top: -25px;
 }
 
 .slantedlink {
-      margin-bottom: 0.5rem; /* Tighter spacing on mobile */
+      display: none;
     }
 
    #dates {
