@@ -107,7 +107,10 @@ const querystring = require("querystring");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+    return {
+      statusCode: 405,
+      body: "Method Not Allowed",
+    };
   }
 
   const data = querystring.parse(event.body);
@@ -134,15 +137,55 @@ exports.handler = async (event) => {
     await client.end();
 
     return {
-      statusCode: 302,
-      headers: { Location: "/" }, // Redirect back to form
-      body: "Success!",
+      statusCode: 200,
+      headers: { "Content-Type": "text/html" },
+      body: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Show Submitted</title>
+            <style>
+              body {
+                font-family: system-ui, sans-serif;
+                background: #f0f0f0;
+                padding: 2rem;
+                text-align: center;
+              }
+              .box {
+                background: white;
+                display: inline-block;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+              }
+              a {
+                display: inline-block;
+                margin-top: 1rem;
+                color: #007acc;
+                text-decoration: none;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="box">
+              <h2>✅ Show submitted successfully!</h2>
+              <p>Thanks, ${data.showperson}, your performance on ${data.showdate} at ${data.showplace} has been saved.</p>
+              <a href="/">Back to homepage</a>
+            </div>
+          </body>
+        </html>
+      `,
     };
   } catch (err) {
     console.error("DB error:", err);
     return {
       statusCode: 500,
-      body: "Internal Server Error",
+      headers: { "Content-Type": "text/html" },
+      body: `
+        <h2>🚨 Whoops!</h2>
+        <p>Something went wrong while saving your data.</p>
+        <pre>${err.message}</pre>
+      `,
     };
   }
 };
