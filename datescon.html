@@ -12,6 +12,7 @@
     rel="stylesheet"/>
 
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/shows.css">
 </head>
 <body>
   <!-- NAVBAR -->
@@ -60,7 +61,10 @@
 <main>
 
 
-<div id="upcoming-shows"></div>
+<div id="upcoming-shows-container">
+  <h2 style="text-align: center; margin-bottom: 1rem;">Upcoming Shows</h2>
+  <div id="upcoming-shows"></div>
+</div>
 
 
 
@@ -79,6 +83,7 @@
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
   ></script>
+
 <script>
   async function loadShows() {
     const container = document.getElementById('upcoming-shows');
@@ -96,15 +101,13 @@
         return;
       }
 
-      // Build HTML list
       const list = document.createElement('ul');
+
       for (const show of shows) {
         const li = document.createElement('li');
 
-        // Required fields
         let text = `${show.showperson} | ${new Date(show.showdate).toLocaleDateString()} | ${show.showplace}`;
 
-        // Optional fields
         if (show.showprice !== null && show.showprice !== undefined) {
           text += ` | Price: ${show.showprice}`;
         }
@@ -115,15 +118,16 @@
         li.textContent = text;
         list.appendChild(li);
       }
-      container.innerHTML = ''; // clear old content
+
+      container.innerHTML = '';
       container.appendChild(list);
+
     } catch (e) {
       container.textContent = 'Error loading shows.';
       console.error(e);
     }
   }
 
-  // Load shows on page load
   loadShows();
 </script>
 </body>
