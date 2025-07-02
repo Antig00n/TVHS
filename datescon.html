@@ -109,10 +109,10 @@
         let text = `${show.showperson} | ${new Date(show.showdate).toLocaleDateString()} | ${show.showplace}`;
 
         if (show.showprice) {
-          text += ` | Price: €${show.showprice}`;
+          text += ` | €${show.showprice}`;
         }
         if (show.showsite) {
-          text += ` | Site: ${show.showsite}`;
+          text += ` | ${show.showsite}`;
         }
 
         li.textContent = text;
