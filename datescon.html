@@ -103,12 +103,12 @@
 
       const list = document.createElement('ul');
 
-      for (const show of shows) {
+      shows.forEach(show => {
         const li = document.createElement('li');
 
         let text = `${show.showperson} | ${new Date(show.showdate).toLocaleDateString()} | ${show.showplace}`;
 
-        if (show.showprice !== null && show.showprice !== undefined) {
+        if (show.showprice) {
           text += ` | Price: ${show.showprice}`;
         }
         if (show.showsite) {
@@ -117,7 +117,7 @@
 
         li.textContent = text;
         list.appendChild(li);
-      }
+      });
 
       container.innerHTML = '';
       container.appendChild(list);
