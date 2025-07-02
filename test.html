@@ -66,6 +66,10 @@
 </div>
 
 <main>
+    <div id="loadingOverlay">
+  <img src="img/loading-placeholder.gif" alt="Loading...">
+</div>
+
   <div class="slider-wrapper">
     <div class="slider-title" style="color: rgb(168, 0, 0);" >ALLE VHS CLIPS</div>
 
@@ -156,88 +160,68 @@ function toggleFullscreen() {
   </script>
 
 <script>
-  async function loadVHSClips() {
-    const container = document.getElementById("movieSlider");
-    container.innerHTML = ""; // clear existing
+ async function loadVHSClips() {
+  const container = document.getElementById("movieSlider");
+  const loading = document.getElementById("loadingOverlay");
 
-    try {
-      const res = await fetch("/.netlify/functions/get-vhs-videos");
-      if (!res.ok) throw new Error("Failed to fetch videos");
-      const data = await res.json();
+  // Show loading overlay
+  loading.style.display = "flex";
+  container.innerHTML = ""; // clear existing
 
-      data.forEach(video => {
-  const filename = video.filename;
-  const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "");
-  const title = titleRaw.replace(/_/g, " ").trim();
+  try {
+    const res = await fetch("/.netlify/functions/get-vhs-videos");
+    if (!res.ok) throw new Error("Failed to fetch videos");
+    const data = await res.json();
 
-  const card = document.createElement("div");
-  card.className = "movie-card";
+    // We’ll track image load promises to hide loading only after all images load
+    const imgLoadPromises = [];
 
-  card.innerHTML = `
-    <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${video.description || ''}">
-      <div class="position-relative">
-        <img src="img/vhsthumbs/${titleRaw}.webp" alt="${title}"
-             onerror="this.onerror=null;this.src='img/vhsthumbs/${titleRaw}.png';
-                      this.onerror=function(){this.src='img/vhsthumbs/${titleRaw}.jpg'};">
-        <div class="badge-custom">${video.caption || "Recently Added"}</div>
-      </div>
-      <div class="movie-title">${title}</div>
-    </button>
-  `;
+    data.forEach(video => {
+      const filename = video.filename;
+      const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "");
+      const title = titleRaw.replace(/_/g, " ").trim();
 
-  container.appendChild(card);
-});
+      const card = document.createElement("div");
+      card.className = "movie-card";
 
-    } catch (err) {
-      console.error("Failed to load VHS movies:", err);
-      container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
-    }
-  }
+      card.innerHTML = `
+        <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${video.description || ''}">
+          <div class="position-relative">
+            <img src="img/vhsthumbs/${titleRaw}.webp" alt="${title}"
+                 onerror="this.onerror=null;this.src='img/vhsthumbs/${titleRaw}.png';
+                          this.onerror=function(){this.src='img/vhsthumbs/${titleRaw}.jpg'};">
+            <div class="badge-custom">${video.caption || "Recently Added"}</div>
+          </div>
+          <div class="movie-title">${title}</div>
+        </button>
+      `;
 
-  function showVideo(button) {
-    const src = button.getAttribute('data-src');
-    const description = button.getAttribute('data-description') || "";
-    const video = document.getElementById('videoElement');
-    const source = document.getElementById('videoSource');
-    const descriptionBox = document.getElementById('videoDescription');
+      container.appendChild(card);
 
-    source.src = src;
-    video.load();
-    video.play();
-
-    descriptionBox.textContent = description;
-
-    document.getElementById('videoPopup').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
-  }
-
-  function closeVideo() {
-    const video = document.getElementById('videoElement');
-    video.pause();
-    video.currentTime = 0;
-
-    document.getElementById('videoPopup').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-  }
-
-  function toggleFullscreen() {
-    const video = document.getElementById('videoElement');
-    if (video.requestFullscreen) video.requestFullscreen();
-    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-    else if (video.msRequestFullscreen) video.msRequestFullscreen();
-  }
-
-  function scrollSlider(direction) {
-    const container = document.getElementById("movieSlider");
-    const scrollAmount = 260;
-    container.scrollBy({
-      left: direction * scrollAmount,
-      behavior: "smooth"
+      // Wait for image load or error to resolve
+      const img = card.querySelector("img");
+      imgLoadPromises.push(new Promise(resolve => {
+        if (img.complete) {
+          resolve();
+        } else {
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        }
+      }));
     });
-  }
 
-  // Load the VHS clips when the page loads
-  window.addEventListener("DOMContentLoaded", loadVHSClips);
+    // Wait for all images to load/error
+    await Promise.all(imgLoadPromises);
+
+  } catch (err) {
+    console.error("Failed to load VHS movies:", err);
+    container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
+  } finally {
+    // Hide loading overlay no matter what
+    loading.style.display = "none";
+  }
+}
+
 </script>
 
 
