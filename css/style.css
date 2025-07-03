@@ -19,7 +19,12 @@ body {
   text-decoration: none;
 }
 
+main {
+max-width: 97%;
+width: 97%;
 
+
+}
 
 @font-face {
   font-family: 'BIT';
