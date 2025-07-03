@@ -20,8 +20,8 @@ body {
 }
 
 main {
-max-width: 97%;
-width: 97%;
+max-width: 97% !important ;
+width: 97% !important ;
 
 
 }
