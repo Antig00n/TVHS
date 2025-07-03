@@ -34,13 +34,4 @@ margin-bottom: 20px;
   }
 
 
-  .guytje-column {
-  flex: 0 0 auto;
-  width: 15% !important;
-}
-
-@media (max-width: 991.98px) {
-  .guytje-column {
-    width: 100% !important;
-  }
-}
+  
