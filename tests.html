@@ -3,215 +3,272 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TVHS Video Library with Slider</title>
+  <title>TVHS Video Library</title>
+
+  <link rel="icon" type="image/png" href="favicon.ico" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Your custom CSS files -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/moviecards.css" />
+
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: sans-serif;
-      padding: 20px;
-      margin: 0;
-      overflow-x: hidden;
-    }
-    h1 {
-      margin-bottom: 10px;
-    }
-    .notice {
-      font-size: 0.9rem;
-      color: #aaa;
-      margin-bottom: 20px;
-    }
+    /* Additional inline styles to complement your CSS */
 
     /* Slider container */
-    #slider {
-      display: flex;
+    #movieSlider {
       overflow-x: auto;
-      gap: 10px;
-      padding-bottom: 10px;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-    #slider::-webkit-scrollbar {
-      height: 8px;
-    }
-    #slider::-webkit-scrollbar-thumb {
-      background: #444;
-      border-radius: 4px;
-    }
-
-    /* Thumbnail cards */
-    .thumb-card {
-      flex: 0 0 auto;
-      width: 160px;
-      cursor: pointer;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 8px rgba(255 255 255 / 0.1);
-      background: #222;
-      transition: transform 0.2s ease;
-      user-select: none;
-    }
-    .thumb-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255 255 255 / 0.3);
-    }
-    .thumb-card img {
-      display: block;
-      width: 100%;
-      height: 90px;
-      object-fit: cover;
-      background: #000;
-    }
-    .thumb-title {
-      padding: 8px 6px;
-      font-size: 0.9rem;
       white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      scroll-behavior: smooth;
+      padding: 0 1rem;
+      touch-action: pan-x;
     }
 
-    /* Popup overlay */
+    /* Movie card styling */
+    .movie-card {
+      display: inline-block;
+      width: 220px;
+      margin-right: 1.2rem;
+      cursor: pointer;
+      border-radius: 10px;
+      background-color: #111;
+      box-shadow: 0 0 8px rgba(255 255 255 / 0.1);
+      transition: transform 0.3s ease;
+      user-select: none;
+      outline: none;
+      vertical-align: top;
+    }
+    .movie-card:hover,
+    .movie-card:focus {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #e50914;
+    }
+    .movie-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 10px 10px 0 0;
+      background-color: #000;
+      display: block;
+    }
+    .movie-title {
+      padding: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: center;
+      color: #f1f1f1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Video popup styling */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+      display: none;
+    }
+
     #videoPopup {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 20px;
-    }
-    #videoPopup.active {
-      display: flex;
-    }
-
-    #videoPopup iframe {
-      width: 80vw;
+      top: 10%;
+      left: 5%;
+      width: 90%;
       max-width: 900px;
-      height: 45vw;
-      max-height: 506px;
-      border: none;
-      border-radius: 12px;
-      background: #000;
+      background-color: rgba(0, 0, 0, 0.95);
+      border-radius: 10px;
+      z-index: 1000;
+      display: none;
+      padding: 15px;
+      box-shadow: 0 0 15px rgba(255, 0, 20, 0.8);
     }
 
-    /* Controls */
-    #popupControls {
-      position: absolute;
-      top: 20px;
-      right: 30px;
+    #videoPopup video.video-player {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      background: #000;
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    /* Buttons container */
+    .button-column {
       display: flex;
-      gap: 10px;
-      z-index: 10000;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
-    button.control-btn {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: #fff;
-      padding: 8px 12px;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.2s ease;
-      user-select: none;
+
+    /* Close button bigger and styled */
+    #closeBtn {
+      font-size: 1.3rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
     }
-    button.control-btn:hover {
-      background: rgba(255,255,255,0.3);
+
+    /* Responsive cards */
+    @media (max-width: 992px) {
+      .movie-card {
+        width: calc(33.33vw - 1.2rem);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .movie-card {
+        width: calc(50vw - 1.2rem);
+      }
+      .movie-title {
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🎬 TVHS Video Library</h1>
-  <p class="notice">Tap on a thumbnail to watch. Google Drive videos require click to activate audio.</p>
+  <div class="navvy">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
+        <!-- Guytje -->
+        <div class="guytje order-0 mb-2 mb-lg-0">
+          <a href="muziek.html">
+            <img src="img/guytje2.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
+          </a>
+        </div>
 
-  <div id="slider" aria-label="Video thumbnails slider"></div>
+        <!-- Left nav (FILMS / VHS) -->
+        <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-1 p-0">
+          <li class="nav-item d-flex">
+            <a class="nav-link px-2 py-1 btn-sm btn-red-active" href="TVHS.html">FILMS</a>
+          </li>
+          <li class="nav-item d-flex">
+            <a class="nav-link px-2 py-1" href="muziek.html">VHS</a>
+          </li>
+        </ul>
 
-  <div id="videoPopup" role="dialog" aria-modal="true" aria-label="Video player popup">
-    <div id="popupControls">
-      <button id="fullscreenBtn" class="control-btn" aria-label="Fullscreen">⛶</button>
-      <button id="closeBtn" class="control-btn" aria-label="Close">✕</button>
-    </div>
-    <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <!-- Logo -->
+        <a class="navbar-brand order-1 order-lg-2 my-2 my-lg-0 px-2" href="index.html">
+          <img class="logo" src="img/TVHSLL.png" alt="Logo" />
+        </a>
+
+        <!-- Right nav (MERCH / CONTACT) -->
+        <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-3 p-0">
+          <li class="nav-item d-flex">
+            <a class="nav-link px-2 py-1" href="merch.html">MERCH</a>
+          </li>
+          <li class="nav-item d-flex">
+            <a class="nav-link px-2 py-1" id="dates" href="datescon.html">CONTACT</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
   </div>
+
+  <main>
+    <div style="max-width: 100%; margin: auto; padding: 1rem;">
+      <!-- Slider -->
+      <div class="slider-container" id="movieSlider" aria-label="Video thumbnails slider"></div>
+    </div>
+  </main>
+
+  <footer class="footers2">
+    <div class="footer-logos">
+      <img src="img/yuhd.png" alt="VHS logo" />
+      <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
+    </div>
+  </footer>
+
+  <div id="overlay"></div>
+
+  <div id="videoPopup" class="video-popup-container p-3" role="dialog" aria-modal="true" aria-label="Video player popup" tabindex="-1">
+    <video id="videoElement" controls class="video-player" tabindex="0" playsinline>
+      <source id="videoSource" src="" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="button-column">
+      <button id="closeBtn" class="btn btn-sm btn-danger" aria-label="Close video">Sloate</button>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     async function loadVideos() {
       try {
+        // Fetch video data (adjust endpoint as needed)
         const res = await fetch('/.netlify/functions/get-google-drive-videos');
-        if (!res.ok) throw new Error("Failed to fetch videos");
+        if (!res.ok) throw new Error('Failed to fetch videos');
 
         const videos = await res.json();
-        const slider = document.getElementById('slider');
+        const slider = document.getElementById('movieSlider');
         const popup = document.getElementById('videoPopup');
-        const iframe = popup.querySelector('iframe');
+        const videoElement = document.getElementById('videoElement');
+        const videoSource = document.getElementById('videoSource');
+        const overlay = document.getElementById('overlay');
         const closeBtn = document.getElementById('closeBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+        function openPopup(src) {
+          videoSource.src = src;
+          videoElement.load();
+          popup.style.display = 'block';
+          overlay.style.display = 'block';
+          videoElement.focus();
+          document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        function closePopup() {
+          videoElement.pause();
+          videoSource.src = '';
+          videoElement.load();
+          popup.style.display = 'none';
+          overlay.style.display = 'none';
+          document.body.style.overflow = '';
+        }
+
+        closeBtn.addEventListener('click', closePopup);
+        overlay.addEventListener('click', closePopup);
+
+        window.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && popup.style.display === 'block') {
+            closePopup();
+          }
+        });
 
         videos.forEach(video => {
           const card = document.createElement('div');
-          card.className = 'thumb-card';
-          card.tabIndex = 0; // keyboard focusable
-
-          // Thumbnail from Google Drive thumbnail link
-          // Format: https://drive.google.com/thumbnail?id=FILE_ID
-          // Fallback: if thumbnails not available, can use a placeholder or static image.
-          const thumbUrl = `https://drive.google.com/thumbnail?id=${video.id}`;
+          card.className = 'movie-card';
+          card.tabIndex = 0;
 
           const img = document.createElement('img');
-          img.src = thumbUrl;
+          img.src = `https://drive.google.com/thumbnail?id=${video.id}`;
           img.alt = video.title;
 
           const title = document.createElement('div');
-          title.className = 'thumb-title';
+          title.className = 'movie-title';
           title.textContent = video.title;
 
           card.appendChild(img);
           card.appendChild(title);
 
-          // Click or keyboard enter opens popup and loads iframe
-          function openPopup() {
-            iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
-            popup.classList.add('active');
-            document.body.style.overflow = 'hidden'; // prevent background scroll
-            iframe.focus();
-          }
-
-          card.addEventListener('click', openPopup);
+          card.addEventListener('click', () => {
+            // Assuming mp4 URL or preview link, adapt if needed
+            openPopup(`https://drive.google.com/uc?export=download&id=${video.id}`);
+          });
           card.addEventListener('keydown', e => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              openPopup();
+              openPopup(`https://drive.google.com/uc?export=download&id=${video.id}`);
             }
           });
 
           slider.appendChild(card);
         });
-
-        // Close popup
-        closeBtn.addEventListener('click', () => {
-          iframe.src = '';
-          popup.classList.remove('active');
-          document.body.style.overflow = '';
-        });
-
-        // Fullscreen popup
-        fullscreenBtn.addEventListener('click', () => {
-          if (document.fullscreenElement) {
-            document.exitFullscreen();
-          } else {
-            popup.requestFullscreen().catch(() => {});
-          }
-        });
-
-        // Close popup on Escape key
-        window.addEventListener('keydown', e => {
-          if (e.key === 'Escape' && popup.classList.contains('active')) {
-            iframe.src = '';
-            popup.classList.remove('active');
-            document.body.style.overflow = '';
-          }
-        });
-
       } catch (err) {
         console.error('Error loading videos:', err);
       }
