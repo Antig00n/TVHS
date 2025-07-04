@@ -11,15 +11,11 @@
     rel="stylesheet"
   />
 
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/moviecards.css">
+
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: sans-serif;
-      padding: 20px;
-      margin: 0;
-      overflow-x: hidden;
-    }
+
     .notice {
       font-size: 0.9rem;
       color: #aaa;
@@ -77,31 +73,7 @@
       color: #eee;
     }
 
-    /* Popup overlay */
-    #videoPopup {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1050; /* Bootstrap modal z-index */
-      padding: 1rem;
-    }
-    #videoPopup.active {
-      display: flex;
-    }
-
-    #videoPopup iframe {
-      width: 100%;
-      max-width: 900px;
-      height: calc(100vw * 9 / 16); /* 16:9 aspect ratio */
-      max-height: 506px;
-      border: none;
-      border-radius: 0.75rem;
-      background: #000;
-    }
-
+    
     /* Controls */
     #popupControls {
       position: fixed;
