@@ -70,7 +70,17 @@ rel="stylesheet"/>
 ">
   <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px; position: absolute; margin-top: 1%; margin-left: 1%;"  />
 </div>
+
 <div style="max-width: 100%; margin: auto; padding: 1rem;">
+
+<!-- Random Autoplaying Movie Player -->
+<div class="random-player-container text-center mb-4">
+  <video id="randomMoviePlayer" width="100%" height="auto" controls autoplay muted playsinline>
+    <source src="" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
 
   <!-- Search & Sort Controls -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -255,6 +265,33 @@ function toggleFullscreen() {
 
   window.addEventListener("DOMContentLoaded", loadVHSClips);
 </script>
+
+<script>
+  const randomPlayer = document.getElementById("randomMoviePlayer");
+
+  function playRandomMovie() {
+    if (!allVideos.length) return;
+
+    const randomIndex = Math.floor(Math.random() * allVideos.length);
+    const video = allVideos[randomIndex];
+    const filename = video.filename;
+
+    randomPlayer.querySelector("source").src = `tvhsmovies/${filename}`;
+    randomPlayer.load();
+    randomPlayer.play();
+  }
+
+  // Play another video when the current one ends
+  randomPlayer.addEventListener("ended", playRandomMovie);
+
+  // Override loadVHSClips to also start autoplay once videos are loaded
+  const originalLoadClips = loadVHSClips;
+  loadVHSClips = async function () {
+    await originalLoadClips();
+    playRandomMovie();
+  };
+</script>
+
 
 <script>
   function scrollSlider(direction) {
