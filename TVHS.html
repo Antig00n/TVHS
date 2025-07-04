@@ -119,6 +119,9 @@
     <!-- Scrollable Slider -->
     <div class="vertical-scroll-wrapper" style="height: 300px; overflow-y: auto; overflow-x: hidden; margin-bottom: -8%;">
       <div class="slider-container" id="movieSlider" style="overflow-y: hidden;"></div>
+<input type="range" id="scrollRange" min="0" max="100" value="0" aria-label="Scroll slider for movie thumbnails">
+
+
     </div>
 
  <!-- Search & Sort Controls -->
@@ -267,6 +270,25 @@ function renderMovies() {
     card.appendChild(button);
     movieSlider.appendChild(card);
   });
+
+  // Connect the input[type=range] to scroll the movie slider
+  scrollRange.addEventListener('input', () => {
+    const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
+    const scrollValue = (scrollRange.value / 100) * maxScrollLeft;
+    movieSlider.scrollLeft = scrollValue;
+  });
+
+  // Sync slider value when user scrolls the movieSlider manually
+  movieSlider.addEventListener('scroll', () => {
+    const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
+    if (maxScrollLeft > 0) {
+      scrollRange.value = (movieSlider.scrollLeft / maxScrollLeft) * 100;
+    } else {
+      scrollRange.value = 0;
+    }
+  });
+
+
 }
 
 function showYouTubeVideo(videoId, description = "") {
