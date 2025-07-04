@@ -67,7 +67,7 @@ width: 97% !important ;
 /* keep your logo overlapping that line */
 .navbar-brand {
   position: relative;
-  bottom: -24px;       /* tweak this to nudge into place */
+  bottom: -28px;       /* tweak this to nudge into place */
   padding: 0 0.5rem;
   line-height: 1;
 }
