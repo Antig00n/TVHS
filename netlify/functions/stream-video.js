@@ -1,56 +1,51 @@
+// netlify/functions/stream-video.js
 const { google } = require('googleapis');
 
-exports.handler = async function(event) {
-  const fileId = event.queryStringParameters.id;
-  if (!fileId) {
-    return { statusCode: 400, body: 'Missing file ID' };
+exports.handler = async (event) => {
+  const id = event.queryStringParameters?.id;
+  if (!id) {
+    return {
+      statusCode: 400,
+      body: 'Missing id parameter',
+    };
   }
 
   try {
-    // Decode your base64-encoded service account JSON
-    const creds = JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf8'));
-
-    const auth = new google.auth.JWT(
-      creds.client_email,
-      null,
-      creds.private_key,
-      ['https://www.googleapis.com/auth/drive.readonly']
+    // Parse service account JSON from base64 env var
+    const credentials = JSON.parse(
+      Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, 'base64').toString()
     );
+
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+    });
 
     const drive = google.drive({ version: 'v3', auth });
 
-    // Get metadata (to check mimeType)
-    const meta = await drive.files.get({
-      fileId,
-      fields: 'name, mimeType'
-    });
-
-    const mimeType = meta.data.mimeType || 'video/mp4';
-
-    // Get media stream
-    const mediaRes = await drive.files.get(
-      { fileId, alt: 'media' },
-      { responseType: 'stream' }
+    // Fetch file as arraybuffer
+    const response = await drive.files.get(
+      { fileId: id, alt: 'media' },
+      { responseType: 'arraybuffer' }
     );
 
-    const passthrough = require('stream').PassThrough();
-    mediaRes.data.pipe(passthrough);
+    const videoBuffer = Buffer.from(response.data);
 
     return {
       statusCode: 200,
       headers: {
-        'Content-Type': mimeType,
-        'Cache-Control': 'no-cache',
+        'Content-Type': 'video/mp4',
+        'Content-Length': videoBuffer.length.toString(),
         'Accept-Ranges': 'bytes',
       },
-      body: passthrough,
-      isBase64Encoded: false,
+      isBase64Encoded: true,
+      body: videoBuffer.toString('base64'),
     };
-  } catch (err) {
-    console.error('Stream error:', err.message);
+  } catch (error) {
+    console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.message }),
+      body: `Error fetching video: ${error.message}`,
     };
   }
 };
