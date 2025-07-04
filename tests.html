@@ -134,13 +134,26 @@
   </div>
 
 <script>
-  // Example data; replace with fetch from your Netlify function or API
-  const videos = [
-    { id: '1mBcYMUwVViW6fniUptXZUogF9DSEXG7t', title: 'Sample Video 1' },
-    { id: '1S17BDFqTGeS_Jyfu57RUDzTV0Z1KZ5nN', title: 'Sample Video 2' },
-    { id: '1yq2dGUnnkmflABhSLxt0jWymtJ2buW_s', title: 'Sample Video 3' },
-    // Add more...
-  ];
+  async function loadVideos() {
+  try {
+    // Replace this URL with your Netlify function URL:
+    const res = await fetch('/.netlify/functions/get-google-drive-videos');
+    if (!res.ok) throw new Error('Failed to fetch videos');
+    const data = await res.json();
+
+    const slider = document.getElementById('slider');
+    slider.innerHTML = '';
+
+    data.forEach(video => {
+      const card = createMovieCard(video);
+      slider.appendChild(card);
+    });
+  } catch (err) {
+    console.error(err);
+    document.getElementById('slider').textContent = 'Failed to load videos.';
+  }
+}
+
 
   // Function to get thumbnail URL for video (check if custom thumbnail exists in img/thumbnails/)
   function getThumbnailUrl(video) {
