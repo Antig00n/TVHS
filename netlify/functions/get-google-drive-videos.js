@@ -1,48 +1,53 @@
+import fs from 'fs/promises';
+import path from 'path';
 import { google } from 'googleapis';
 
-// Your service account JSON key — best to store as environment variable (NETLIFY_GOOGLE_SERVICE_ACCOUNT)
-// and parse it here:
-const serviceAccount = JSON.parse(process.env.NETLIFY_GOOGLE_SERVICE_ACCOUNT);
+const FOLDER_ID = '1q5BCBvg6jep5SuBS6Tt8_8_2nwjCA_G6'; // Your Google Drive folder ID
 
-const auth = new google.auth.GoogleAuth({
-  credentials: serviceAccount,
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-});
-
-const drive = google.drive({ version: 'v3', auth });
+async function getGoogleServiceAccount() {
+  const jsonPath = path.resolve('./netlify/functions/google-service-account.json');
+  const jsonData = await fs.readFile(jsonPath, 'utf-8');
+  return JSON.parse(jsonData);
+}
 
 export async function handler(event, context) {
   try {
-    const folderId = '1q5BCBvg6jep5SuBS6Tt8_8_2nwjCA_G6'; // Your Google Drive folder ID
+    const key = await getGoogleServiceAccount();
 
-    // List files in the folder
+    const auth = new google.auth.GoogleAuth({
+      credentials: key,
+      scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+    });
+
+    const drive = google.drive({ version: 'v3', auth });
+
+    // List files in the specified folder with .mp4 extension
     const res = await drive.files.list({
-      q: `'${folderId}' in parents and mimeType='video/mp4' and trashed = false`,
-      fields: 'files(id, name, webViewLink, webContentLink)',
-      orderBy: 'name',
+      q: `'${FOLDER_ID}' in parents and mimeType='video/mp4' and trashed=false`,
+      fields: 'files(id, name, webContentLink, thumbnailLink)',
+      pageSize: 100,
     });
 
     const files = res.data.files || [];
 
+    // Format videos similar to your old scheme
     const videos = files.map(file => {
-      // Remove 'vhsmovie' prefix and '.mp4' suffix if present
+      // Remove "vhsmovie" prefix and ".mp4" suffix from name to get title
       let title = file.name;
-      if (title.startsWith('vhsmovie')) {
+      if (title.toLowerCase().startsWith('vhsmovie')) {
         title = title.slice('vhsmovie'.length);
       }
-      if (title.endsWith('.mp4')) {
+      if (title.toLowerCase().endsWith('.mp4')) {
         title = title.slice(0, -4);
       }
-      title = title.replace(/_/g, ' ');
+      title = title.replace(/_/g, ' ').trim();
 
       return {
         id: file.id,
+        filename: file.name,
         title,
-        // Use webContentLink to stream the file directly (may need proper permissions)
-        src: file.webContentLink,
-        // Thumbnail - you may want to create this separately or leave blank for now
-        thumbnail: '', 
-        viewLink: file.webViewLink,
+        src: file.webContentLink, // direct download link from Drive
+        thumbnail: file.thumbnailLink || '', // may be empty if no thumbnail
       };
     });
 
@@ -54,7 +59,7 @@ export async function handler(event, context) {
     console.error('Error fetching Google Drive videos:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to fetch videos from Google Drive.' }),
+      body: JSON.stringify({ error: 'Failed to fetch videos', details: error.message }),
     };
   }
 }
