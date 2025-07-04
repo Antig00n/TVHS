@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 export async function handler(event, context) {
   try {
     // Parse service account JSON from env var
-    const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+    const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
 
     // Create JWT auth client
     const auth = new google.auth.JWT({
