@@ -55,7 +55,7 @@
 
 <main>
   <div id="loading-overlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
-    <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px; position: absolute; margin-top: 1%; margin-left: 1%;" />
+    <div style="color: white; font-size: 1.5rem;">Loading...</div>
   </div>
 
   <div style="max-width: 100%; margin: auto; padding: 1rem;">
@@ -108,7 +108,7 @@
 <script>
 const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
 const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
-let playlist = [], currentIndex = 0, youtubePlayer, isMuted = true;
+let playlist = [], currentIndex = 0, youtubePlayer, isMuted = true, isNewestFirst = true;
 
 const tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
