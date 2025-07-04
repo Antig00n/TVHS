@@ -162,13 +162,14 @@
 <main>
 
  <div id="randomMovieWrapper" style="margin-bottom: 2rem;">
- <video
+<video
   id="randomVideoPlayer"
-  muted
   autoplay
+  muted
   playsinline
-  style="width: 100%; max-width: 900px; height: auto; display: block; margin: 0 auto;"
+  style="width: 100%; max-width: 900px; display: block;"
 ></video>
+
 </div>
 
 
@@ -318,15 +319,15 @@
 
   loadVideos();
 </script>
-
 <script>
 let allVideos = [];
-
 const player = document.getElementById("randomVideoPlayer");
 const popup = document.getElementById("videoPopup");
+const popupIframe = popup.querySelector("iframe");
 
 async function setupRandomDriveVideoPlayer() {
   try {
+    // Fetch the list of available Google Drive videos
     const res = await fetch("/.netlify/functions/get-google-drive-videos");
     if (!res.ok) throw new Error("Could not fetch videos");
 
@@ -335,10 +336,10 @@ async function setupRandomDriveVideoPlayer() {
 
     playRandomVideo();
 
-    // Pause/resume based on popup visibility
+    // Watch for popup open/close and pause/resume player
     const observer = new MutationObserver(() => {
-      const active = popup.classList.contains("active");
-      if (active) {
+      const isPopupOpen = popup.classList.contains("active");
+      if (isPopupOpen) {
         player.pause();
       } else {
         playRandomVideo();
@@ -347,29 +348,36 @@ async function setupRandomDriveVideoPlayer() {
 
     observer.observe(popup, { attributes: true, attributeFilter: ["class"] });
 
-    // When video ends, play next
-    player.addEventListener("ended", playRandomVideo);
+    // On end, play another video
+    player.addEventListener("ended", () => {
+      playRandomVideo();
+    });
   } catch (err) {
-    console.error("Error setting up video player:", err);
+    console.error("Error setting up random player:", err);
   }
 }
 
 function playRandomVideo() {
-  if (!allVideos.length) return;
+  if (!allVideos.length || popup.classList.contains("active")) return;
 
   const randomIndex = Math.floor(Math.random() * allVideos.length);
   const video = allVideos[randomIndex];
 
-  // Use your proxy endpoint
-  const streamUrl = `/.netlify/functions/stream-video?id=${video.id}`;
-  player.src = streamUrl;
+  // Use the proxy endpoint to stream from Drive
+  const videoUrl = `/.netlify/functions/stream-video?id=${video.id}`;
+
+  // Load and play the video
+  player.src = videoUrl;
   player.load();
-  player.play().catch(e => console.warn("Autoplay blocked:", e));
+
+  player.play().catch((err) => {
+    console.warn("Autoplay blocked or failed:", err);
+  });
 }
 
 setupRandomDriveVideoPlayer();
-
 </script>
+
 
 
 
