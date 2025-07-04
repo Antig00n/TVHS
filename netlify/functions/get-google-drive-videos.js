@@ -2,13 +2,12 @@ import { google } from 'googleapis';
 
 export async function handler(event, context) {
   try {
-    const serviceAccountEncoded = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-    if (!serviceAccountEncoded) throw new Error('Missing service account key');
+    const encodedKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+    if (!encodedKey) throw new Error('Missing service account key');
 
-    const serviceAccountJSON = Buffer.from(serviceAccountEncoded, 'base64').toString('utf-8');
-    const credentials = JSON.parse(serviceAccountJSON);
+    const keyJson = Buffer.from(encodedKey, 'base64').toString('utf-8');
+    const credentials = JSON.parse(keyJson);
 
-    // This is the key part — using GoogleAuth with credentials and scope
     const auth = new google.auth.GoogleAuth({
       credentials,
       scopes: ['https://www.googleapis.com/auth/drive.readonly'],
@@ -16,7 +15,7 @@ export async function handler(event, context) {
 
     const drive = google.drive({ version: 'v3', auth });
 
-    const folderId = '1q5BCBvg6jep5SuBS6Tt8_8_2nwjCA_G6';
+    const folderId = 'YOUR_FOLDER_ID_HERE';
 
     const res = await drive.files.list({
       q: `'${folderId}' in parents and mimeType='video/mp4' and trashed=false`,
@@ -36,7 +35,7 @@ export async function handler(event, context) {
           filename: file.name,
           title,
           src: `https://drive.google.com/uc?export=download&id=${file.id}`,
-          thumbnail: '',
+          thumbnail: '', // optional if you have thumbnails
         };
       });
 
@@ -45,7 +44,7 @@ export async function handler(event, context) {
       body: JSON.stringify(videos),
     };
   } catch (error) {
-    console.error('Error fetching Google Drive videos:', error);
+    console.error('Error fetching videos:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),
