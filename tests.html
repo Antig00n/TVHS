@@ -11,8 +11,8 @@
     rel="stylesheet"
   />
   
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/moviecards.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/moviecards.css">
 
   <style>
     body {
@@ -25,7 +25,6 @@
     }
     .notice {
       font-size: 0.9rem;
-  
       margin-bottom: 20px;
     }
 
@@ -47,40 +46,41 @@
     }
 
     /* Thumbnail cards */
-   .thumb-card {
-  flex: 0 0 200px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.thumb-card img {
-  width: 100%;
-  height: auto;
-
-}
-.thumb-title {
-  margin-top: 0.5rem;
-  text-align: center;
-  font-weight: 600;
-}
+    .thumb-card {
+      flex: 0 0 200px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .thumb-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;          /* Remove rounded corners */
+      background: none !important; /* Remove any background */
+      box-shadow: none !important; /* Remove any shadow if present */
+    }
+    .thumb-title {
+      margin-top: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+    }
 
     .thumb-card:hover,
     .thumb-card:focus {
       transform: scale(1.05);
-
     }
 
-
-    /* Popup overlay */
+    /* Popup overlay with dark background */
     #videoPopup {
       position: fixed;
-right: 0; bottom: 0;
+      inset: 0; /* top:0; right:0; bottom:0; left:0 */
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 1050; /* Bootstrap modal z-index */
       padding: 1rem;
+      background: rgba(0, 0, 0, 0.6); /* dark overlay */
     }
     #videoPopup.active {
       display: flex;
@@ -92,32 +92,35 @@ right: 0; bottom: 0;
       height: calc(100vw * 9 / 16); /* 16:9 aspect ratio */
       max-height: 506px;
       border: none;
-      border-radius: 0.75rem;
+      border-radius: 0; /* no rounding */
+      background: transparent;
+      z-index: 1060; /* on top of overlay */
+      position: relative; /* ensure on top */
     }
 
     /* Controls */
     #popupControls {
       position: fixed;
-      top: 1rem;
-      right: 1rem;
+      top: 0.5rem;    /* closer to top */
+      right: 0.5rem;  /* closer to right */
       display: flex;
       gap: 0.5rem;
-      z-index: 1060;
+      z-index: 1070;
     }
     button.control-btn {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.2);
       border: none;
       color: #fff;
-      padding: 0.4rem 0.75rem;
-      font-size: 1.2rem;
+      padding: 0.5rem 1rem;    /* bigger padding */
+      font-size: 2rem;        /* bigger font size */
       cursor: pointer;
-      border-radius: 0.4rem;
-      transition: background 0.2s ease;
+      border-radius: 0.5rem;
+      transition: background 0.3s ease;
       user-select: none;
       line-height: 1;
     }
     button.control-btn:hover {
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.4);
     }
   </style>
 </head>
@@ -137,7 +140,7 @@ right: 0; bottom: 0;
       <!-- Left nav (FILMS / VHS) -->
       <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-1 p-0">
         <li class="nav-item d-flex">
-          <a class="nav-link px-2 py-1   btn-sm btn-red-active" href="TVHS.html">FILMS</a>
+          <a class="nav-link px-2 py-1 btn-sm btn-red-active" href="TVHS.html">FILMS</a>
         </li>
         <li class="nav-item d-flex">
           <a class="nav-link px-2 py-1" href="muziek.html">VHS</a>
@@ -152,7 +155,7 @@ right: 0; bottom: 0;
       <!-- Right nav (MERCH / CONTACT) -->
       <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-3 p-0">
         <li class="nav-item d-flex">
-          <a class="nav-link px-2 py-1" href="merch.html" >MERCH</a>
+          <a class="nav-link px-2 py-1" href="merch.html">MERCH</a>
         </li>
         <li class="nav-item d-flex">
           <a class="nav-link px-2 py-1" id="dates" href="datescon.html">CONTACT</a>
@@ -163,21 +166,20 @@ right: 0; bottom: 0;
   </nav>
 </div>
 
-
 <main>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-  <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;" />
-  <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
-    Sort: Newest
-  </button>
-</div>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;" />
+    <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
+      Sort: Newest
+    </button>
+  </div>
 
-<!-- slider container -->
-<div class="slider-container" id="movieSlider"
-     style="display: flex; overflow-x: auto; gap: 1rem; padding-bottom: 1rem; scrollbar-width: thin; scrollbar-color: #888 #eee;">
-  <!-- cards go here -->
-</div>
+  <!-- slider container -->
+  <div class="slider-container" id="movieSlider"
+       style="display: flex; overflow-x: auto; gap: 1rem; padding-bottom: 1rem; scrollbar-width: thin; scrollbar-color: #888 #eee;">
+    <!-- cards go here -->
+  </div>
 
   <div id="videoPopup" role="dialog" aria-modal="true" aria-label="Video player popup" tabindex="-1">
     <div id="popupControls">
@@ -188,138 +190,128 @@ right: 0; bottom: 0;
 
 </main>
 
-  <footer class="footers2">
-    <div class="footer-logos">
-      <img src="img/yuhd.png" alt="VHS logo" />
-      <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
-    </div>
-  </footer>
+<footer class="footers2">
+  <div class="footer-logos">
+    <img src="img/yuhd.png" alt="VHS logo" />
+    <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
+  </div>
+</footer>
 
-  <!-- Bootstrap Bundle JS (with Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap Bundle JS (with Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
- async function loadVideos() {
-  try {
-    const res = await fetch('/.netlify/functions/get-google-drive-videos');
-    if (!res.ok) throw new Error("Failed to fetch videos");
+  async function loadVideos() {
+    try {
+      const res = await fetch('/.netlify/functions/get-google-drive-videos');
+      if (!res.ok) throw new Error("Failed to fetch videos");
 
-    let videos = await res.json();
+      let videos = await res.json();
 
-    const slider = document.getElementById('movieSlider');
-    const popup = document.getElementById('videoPopup');
-    const iframe = popup.querySelector('iframe');
-    const closeBtn = document.getElementById('closeBtn');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const searchInput = document.getElementById('searchInput');
-    const toggleSortBtn = document.getElementById('toggleSortBtn');
+      const slider = document.getElementById('movieSlider');
+      const popup = document.getElementById('videoPopup');
+      const iframe = popup.querySelector('iframe');
+      const closeBtn = document.getElementById('closeBtn');
+      const searchInput = document.getElementById('searchInput');
+      const toggleSortBtn = document.getElementById('toggleSortBtn');
 
-    let sortNewestFirst = true;
+      let sortNewestFirst = true;
 
-    function renderVideos() {
-      const query = searchInput.value.toLowerCase();
+      function renderVideos() {
+        const query = searchInput.value.toLowerCase();
 
-      const filtered = videos.filter(video => video.title.toLowerCase().includes(query));
+        const filtered = videos.filter(video => video.title.toLowerCase().includes(query));
 
-      filtered.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return sortNewestFirst ? dateB - dateA : dateA - dateB;
-      });
-
-      slider.innerHTML = '';
-
-      filtered.forEach(video => {
-        const card = document.createElement('div');
-        card.className = 'thumb-card';
-        card.tabIndex = 0;
-
-        // Inline styles for card
-        card.style.flex = '0 0 200px';
-        card.style.cursor = 'pointer';
-        card.style.display = 'flex';
-        card.style.flexDirection = 'column';
-        card.style.alignItems = 'center';
-
-        const thumbUrl = `https://drive.google.com/thumbnail?id=${video.id}`;
-
-        const img = document.createElement('img');
-        img.src = thumbUrl;
-        img.alt = video.title;
-        img.style.width = '100%';
-        img.style.height = 'auto';
-        img.style.borderRadius = '8px';
-
-        const title = document.createElement('div');
-        title.className = 'thumb-title';
-        title.textContent = video.title;
-
-        // Inline styles for title
-        title.style.marginTop = '0.5rem';
-        title.style.textAlign = 'center';
-        title.style.fontWeight = '600';
-
-        card.appendChild(img);
-        card.appendChild(title);
-
-        function openPopup() {
-          iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
-          popup.classList.add('active');
-          document.body.style.overflow = 'hidden';
-          iframe.focus();
-        }
-
-        card.addEventListener('click', openPopup);
-        card.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openPopup();
-          }
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return sortNewestFirst ? dateB - dateA : dateA - dateB;
         });
 
-        slider.appendChild(card);
-      });
-    }
+        slider.innerHTML = '';
 
-    searchInput.addEventListener('input', renderVideos);
+        filtered.forEach(video => {
+          const card = document.createElement('div');
+          card.className = 'thumb-card';
+          card.tabIndex = 0;
 
-    toggleSortBtn.addEventListener('click', () => {
-      sortNewestFirst = !sortNewestFirst;
-      toggleSortBtn.textContent = sortNewestFirst ? 'Sort: Newest' : 'Sort: Oldest';
-      renderVideos();
-    });
+          // Inline styles for card
+          card.style.flex = '0 0 200px';
+          card.style.cursor = 'pointer';
+          card.style.display = 'flex';
+          card.style.flexDirection = 'column';
+          card.style.alignItems = 'center';
 
-    renderVideos();
+          const thumbUrl = `https://drive.google.com/thumbnail?id=${video.id}`;
 
-    closeBtn.addEventListener('click', () => {
-      iframe.src = '';
-      popup.classList.remove('active');
-      document.body.style.overflow = '';
-    });
+          const img = document.createElement('img');
+          img.src = thumbUrl;
+          img.alt = video.title;
+          img.style.width = '100%';
+          img.style.height = 'auto';
+          img.style.borderRadius = '0'; // no rounding
 
-    fullscreenBtn.addEventListener('click', () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        popup.requestFullscreen().catch(() => {});
+          const title = document.createElement('div');
+          title.className = 'thumb-title';
+          title.textContent = video.title;
+
+          // Inline styles for title
+          title.style.marginTop = '0.5rem';
+          title.style.textAlign = 'center';
+          title.style.fontWeight = '600';
+
+          card.appendChild(img);
+          card.appendChild(title);
+
+          function openPopup() {
+            iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
+            popup.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            iframe.focus();
+          }
+
+          card.addEventListener('click', openPopup);
+          card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openPopup();
+            }
+          });
+
+          slider.appendChild(card);
+        });
       }
-    });
 
-    window.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && popup.classList.contains('active')) {
+      searchInput.addEventListener('input', renderVideos);
+
+      toggleSortBtn.addEventListener('click', () => {
+        sortNewestFirst = !sortNewestFirst;
+        toggleSortBtn.textContent = sortNewestFirst ? 'Sort: Newest' : 'Sort: Oldest';
+        renderVideos();
+      });
+
+      renderVideos();
+
+      closeBtn.addEventListener('click', () => {
         iframe.src = '';
         popup.classList.remove('active');
         document.body.style.overflow = '';
-      }
-    });
+      });
 
-  } catch (err) {
-    console.error('Error loading videos:', err);
+      window.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && popup.classList.contains('active')) {
+          iframe.src = '';
+          popup.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+
+    } catch (err) {
+      console.error('Error loading videos:', err);
+    }
   }
-}
 
-loadVideos();
-
+  loadVideos();
 </script>
 </body>
 </html>
