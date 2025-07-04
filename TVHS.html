@@ -3,7 +3,7 @@
 <head>
   <link rel="icon" type="image/png" href="favicon.ico">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale =1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TVHS</title>
 
   <link rel="stylesheet" href="css/reset.css"> 
@@ -54,22 +54,15 @@
 </div>
 
 <main>
-  <div id="loading-overlay" style="
-    position: fixed;
-    top:0; left:0; right:0; bottom:0;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  ">
+  <div id="loading-overlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
     <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px; position: absolute; margin-top: 1%; margin-left: 1%;" />
   </div>
 
   <div style="max-width: 100%; margin: auto; padding: 1rem;">
     <!-- YouTube Player Replacement -->
-    <div class="random-player-container text-center mb-4">
+    <div class="random-player-container text-center mb-4 d-flex flex-column align-items-center">
       <div id="youtubePlayer" style="width: 480px; height: 270px; margin-bottom: -1rem; margin-top: -3%;"></div>
+      <button id="muteBtn" class="btn btn-sm btn-light mt-2">Unmute</button>
     </div>
 
     <!-- Search & Sort Controls -->
@@ -82,9 +75,7 @@
 
     <!-- Scrollable Slider -->
     <div class="vertical-scroll-wrapper" style="height: 300px; overflow-y: auto; overflow-x: hidden; margin-bottom: -8%;">
-      <div class="slider-container" id="movieSlider" style="overflow-y: hidden;">
-        <!-- Cards injected by JS -->
-      </div>
+      <div class="slider-container" id="movieSlider" style="overflow-y: hidden;"></div>
     </div>
   </div>
 </main>
@@ -97,7 +88,6 @@
 </footer>
 
 <div id="overlay" onclick="closeVideo()"></div>
-
 <div id="videoPopup" class="video-popup-container p-3">
   <div class="d-flex justify-content-center mb-3">
     <video id="videoElement" controls class="video-player">
@@ -105,7 +95,6 @@
       Your browser does not support the video tag.
     </video>
   </div>
-
   <div class="d-flex flex-column flex-md-row align-items-start gap-3">
     <div class="button-column d-flex flex-column gap-2">
       <button onclick="toggleFullscreen()" class="btn btn-sm btn-light">Vollenbak</button>
@@ -115,107 +104,127 @@
   </div>
 </div>
 
-<!-- Movie Card & Search Logic -->
+<!-- Scripts -->
 <script>
-let allVideos = [];
-let isNewestFirst = true;
-const container = document.getElementById("movieSlider");
-const searchInput = document.getElementById("searchInput");
-const toggleSortBtn = document.getElementById("toggleSortBtn");
+const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
+const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
+let playlist = [], currentIndex = 0, youtubePlayer, isMuted = true;
 
-async function loadVHSClips() {
-  try {
-    const res = await fetch("/.netlify/functions/get-vhs-videos");
-    if (!res.ok) throw new Error("Failed to fetch videos");
-    allVideos = await res.json();
-    renderMovies();
-  } catch (err) {
-    console.error("Failed to load VHS movies:", err);
-    container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
+async function fetchPlaylist() {
+  const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
+  const res = await fetch(url);
+  const data = await res.json();
+  playlist = data.items.filter(item => item.id.kind === 'youtube#video').map(item => item.id.videoId);
+  allVideos = data.items.filter(item => item.id.kind === 'youtube#video').map(item => ({
+    videoId: item.id.videoId,
+    title: item.snippet.title,
+    description: item.snippet.description,
+    thumbnail: item.snippet.thumbnails?.medium?.url || '',
+    publishedAt: item.snippet.publishedAt
+  }));
+  renderMovies();
+}
+
+function loadVideo(index) {
+  if (!playlist.length) return;
+  const videoId = playlist[index];
+  if (youtubePlayer) {
+    youtubePlayer.loadVideoById(videoId);
+  } else {
+    youtubePlayer = new YT.Player('youtubePlayer', {
+      height: '270', width: '480', videoId,
+      playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, origin: window.location.origin, enablejsapi: 1 },
+      events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange }
+    });
   }
 }
 
-function renderMovies() {
-  container.innerHTML = "";
-  const query = searchInput.value.toLowerCase();
-  let filtered = allVideos.filter(v => {
-    const titleRaw = v.filename.replace("vhsmovie", "").replace(".mp4", "").replace(/_/g, " ").toLowerCase();
-    return titleRaw.includes(query);
-  });
+function onPlayerReady(event) {
+  youtubePlayer.setVolume(50);
+  youtubePlayer.mute();
+  event.target.playVideo();
+}
 
-  filtered.sort((a, b) => {
-    const dateA = a.showdate ? new Date(a.showdate) : new Date(a.filename);
-    const dateB = b.showdate ? new Date(b.showdate) : new Date(b.filename);
-    return isNewestFirst ? dateB - dateA : dateA - dateB;
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    currentIndex = (currentIndex + 1) % playlist.length;
+    loadVideo(currentIndex);
+  }
+}
+
+function onYouTubeIframeAPIReady() {
+  fetchPlaylist();
+  loadVideo(currentIndex);
+}
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("muteBtn").addEventListener("click", () => {
+    if (!youtubePlayer) return;
+    if (isMuted) {
+      youtubePlayer.unMute();
+      muteBtn.textContent = "Mute";
+    } else {
+      youtubePlayer.mute();
+      muteBtn.textContent = "Unmute";
+    }
+    isMuted = !isMuted;
   });
+});
+
+function renderMovies() {
+  const container = document.getElementById("movieSlider");
+  const query = searchInput.value.toLowerCase();
+  container.innerHTML = "";
+  let filtered = allVideos.filter(v => v.title.toLowerCase().includes(query));
+  filtered.sort((a, b) => new Date(isNewestFirst ? b.publishedAt : a.publishedAt) - new Date(isNewestFirst ? a.publishedAt : b.publishedAt));
 
   filtered.forEach(video => {
-    const filename = video.filename;
-    const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "");
-    const title = titleRaw.replace(/_/g, " ").trim();
-
     const card = document.createElement("div");
     card.className = "movie-card";
     card.innerHTML = `
-      <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${video.description || ''}">
+      <button onclick="showYouTubeVideo('${video.videoId}', \`${video.description.replace(/`/g, "'")} \`)">
         <div class="position-relative">
-          <img src="img/vhsthumbs/${titleRaw}.webp" alt="${title}"
-               onerror="this.onerror=null;this.src='img/vhsthumbs/${titleRaw}.png';
-                        this.onerror=function(){this.src='img/vhsthumbs/${titleRaw}.jpg'};">
+          <img src="${video.thumbnail}" alt="${video.title}">
         </div>
-        <div class="movie-title">${title}</div>
-      </button>
-    `;
+        <div class="movie-title">${video.title}</div>
+      </button>`;
     container.appendChild(card);
   });
-
-  if (filtered.length === 0) {
-    container.innerHTML = "<p style='color: white;'>No videos found.</p>";
-  }
 }
 
-toggleSortBtn.addEventListener("click", () => {
-  isNewestFirst = !isNewestFirst;
-  toggleSortBtn.textContent = isNewestFirst ? "Sort: Newest" : "Sort: Oldest";
-  renderMovies();
-});
-
-searchInput.addEventListener("input", () => renderMovies());
-
-window.addEventListener("DOMContentLoaded", () => {
-  loadVHSClips();
-  setTimeout(() => {
-    const overlay = document.getElementById("loading-overlay");
-    if (overlay) overlay.style.display = "none";
-  }, 2000);
-});
-</script>
-
-<!-- Show/Close Popup -->
-<script>
-function showVideo(button) {
-  const src = button.getAttribute('data-src');
-  const description = button.getAttribute('data-description') || "";
-  const video = document.getElementById('videoElement');
-  const source = document.getElementById('videoSource');
-  const descriptionBox = document.getElementById('videoDescription');
-
-  source.src = src;
-  video.load();
-  video.play();
-  descriptionBox.textContent = description;
-
-  document.getElementById('videoPopup').style.display = 'block';
-  document.getElementById('overlay').style.display = 'block';
+function showYouTubeVideo(videoId, description = "") {
+  const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+  const iframe = document.createElement("iframe");
+  iframe.width = "100%";
+  iframe.height = "270";
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
+  iframe.frameBorder = "0";
+  iframe.allow = "autoplay; encrypted-media";
+  iframe.allowFullscreen = true;
+  iframe.id = "youtubePopupPlayer";
+  container.innerHTML = "";
+  container.appendChild(iframe);
+  document.getElementById("videoDescription").textContent = description;
+  document.getElementById("videoPopup").style.display = 'block';
+  document.getElementById("overlay").style.display = 'block';
 }
 
 function closeVideo() {
-  const video = document.getElementById('videoElement');
-  video.pause();
-  video.currentTime = 0;
-
-  document.getElementById('videoPopup').style.display = 'none';
-  document.getElementById('overlay').style.display = 'none';
+  const popup = document.getElementById("videoPopup");
+  const overlay = document.getElementById("overlay");
+  const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+  container.innerHTML = `
+    <video id="videoElement" controls class="video-player">
+      <source id="videoSource" src="" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>`;
+  popup.style.display = 'none';
+  overlay.style.display = 'none';
 }
 
 function toggleFullscreen() {
@@ -224,67 +233,14 @@ function toggleFullscreen() {
   else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
   else if (video.msRequestFullscreen) video.msRequestFullscreen();
 }
-</script>
 
-<!-- YouTube Embed Script -->
-<script>
-  const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
-  const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
-  let playlist = [];
-  let currentIndex = 0;
-  let youtubePlayer;
+document.getElementById("toggleSortBtn").addEventListener("click", () => {
+  isNewestFirst = !isNewestFirst;
+  document.getElementById("toggleSortBtn").textContent = isNewestFirst ? "Sort: Newest" : "Sort: Oldest";
+  renderMovies();
+});
 
-  const tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
-
-  async function fetchPlaylist() {
-    const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=25`;
-    const res = await fetch(url);
-    const data = await res.json();
-    playlist = data.items
-      .filter(item => item.id.kind === 'youtube#video')
-      .map(item => item.id.videoId);
-  }
-
-  function loadVideo(index) {
-    if (!playlist.length) return;
-    const videoId = playlist[index];
-    if (youtubePlayer) {
-      youtubePlayer.loadVideoById(videoId);
-    } else {
-      youtubePlayer = new YT.Player('youtubePlayer', {
-        height: '270',
-        width: '480',
-        videoId: videoId,
-        playerVars: {
-          autoplay: 1,
-          controls: 1,
-          modestbranding: 1,
-          rel: 0,
-          origin: window.location.origin,
-          enablejsapi: 1
-        },
-        events: {
-          onStateChange: onPlayerStateChange
-        }
-      });
-    }
-  }
-
-  function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
-      currentIndex = (currentIndex + 1) % playlist.length;
-      loadVideo(currentIndex);
-    }
-  }
-
-  async function onYouTubeIframeAPIReady() {
-    await fetchPlaylist();
-    loadVideo(currentIndex);
-  }
-
-  window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+document.getElementById("searchInput").addEventListener("input", () => renderMovies());
 </script>
 
 </body>
