@@ -2,60 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Drive Video Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VHS Movies</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #111;
-      color: #eee;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
     }
-    .video-container {
-      margin-bottom: 2rem;
-    }
-    iframe {
+    #player {
       width: 100%;
-      max-width: 640px;
-      height: 360px;
-      border: none;
+      max-height: 400px;
+      margin-bottom: 20px;
+      background: black;
     }
-    h2 {
-      margin-bottom: 0.5rem;
+    video {
+      width: 100%;
+      height: auto;
+      background: black;
+    }
+    .video-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .video-card {
+      cursor: pointer;
+      border: 1px solid #ccc;
+      padding: 8px;
+      width: calc(33% - 10px);
+      box-sizing: border-box;
+      border-radius: 6px;
+      transition: box-shadow 0.3s;
+    }
+    .video-card:hover {
+      box-shadow: 0 0 8px #007bff;
+    }
+    .video-title {
+      margin-top: 6px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>Google Drive Videos</h1>
-  <div id="videos"></div>
+
+  <h1>VHS Movies</h1>
+
+  <div id="player">
+    <video id="videoPlayer" controls></video>
+  </div>
+
+  <div class="video-list" id="videoList"></div>
 
   <script>
     async function loadVideos() {
-      const container = document.getElementById('videos');
-
       try {
         const res = await fetch('/.netlify/functions/get-google-drive-videos');
+        if (!res.ok) throw new Error('Failed to fetch videos');
         const videos = await res.json();
 
-        if (!Array.isArray(videos) || videos.length === 0) {
-          container.innerHTML = '<p>No videos found.</p>';
-          return;
+        const videoList = document.getElementById('videoList');
+        const player = document.getElementById('videoPlayer');
+
+        // If there are videos, play the first by default
+        if (videos.length > 0) {
+          player.src = videos[0].src;
+          player.play().catch(() => {});
         }
 
-        videos.forEach(video => {
-          const div = document.createElement('div');
-          div.className = 'video-container';
+        // Clear existing list
+        videoList.innerHTML = '';
 
-          div.innerHTML = `
-            <h2>${video.title}</h2>
-            <iframe src="${video.src}" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        videos.forEach(video => {
+          const card = document.createElement('div');
+          card.className = 'video-card';
+          card.tabIndex = 0;
+
+          card.innerHTML = `
+            <div class="video-title">${video.title}</div>
           `;
 
-          container.appendChild(div);
+          // Play selected video on click
+          card.addEventListener('click', () => {
+            player.src = video.src;
+            player.play();
+          });
+
+          // Also support keyboard enter key to play
+          card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              player.src = video.src;
+              player.play();
+            }
+          });
+
+          videoList.appendChild(card);
         });
       } catch (err) {
-        console.error('Failed to load videos:', err);
-        container.innerHTML = '<p style="color: red;">Error loading videos.</p>';
+        console.error('Error loading videos:', err);
       }
     }
 
