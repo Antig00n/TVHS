@@ -1,66 +1,45 @@
-import fetch from 'node-fetch';
+import { google } from 'googleapis';
 
-const {
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  GOOGLE_REDIRECT_URI,
-} = process.env;
-
-const FOLDER_ID = '1q5BCBvg6jep5SuBS6Tt8_8_2nwjCA_G6'; // 🔁 Replace with your actual folder ID
-
-let cachedAccessToken = null;
-
-export async function handler() {
+export async function handler(event, context) {
   try {
-    // Step 1: Get access token using client credentials (OAuth 2.0 Device or Installed App Flow)
-    if (!cachedAccessToken) {
-      const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: GOOGLE_CLIENT_ID,
-          client_secret: GOOGLE_CLIENT_SECRET,
-          grant_type: 'client_credentials', // you could also use refresh_token if using full OAuth
-        }),
-      });
+    const serviceAccountEncoded = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+    if (!serviceAccountEncoded) throw new Error('Missing service account key');
 
-      const tokenData = await tokenRes.json();
+    // Decode and parse service account JSON
+    const serviceAccountJSON = Buffer.from(serviceAccountEncoded, 'base64').toString('utf-8');
+    const credentials = JSON.parse(serviceAccountJSON);
 
-      if (!tokenData.access_token) {
-        throw new Error(`Failed to get access token: ${JSON.stringify(tokenData)}`);
-      }
+    // Authenticate
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+    });
 
-      cachedAccessToken = tokenData.access_token;
-    }
+    const drive = google.drive({ version: 'v3', auth });
 
-    // Step 2: Query files in the Drive folder
-    const query = encodeURIComponent(`'${FOLDER_ID}' in parents and mimeType = 'video/mp4'`);
-    const fields = encodeURIComponent('files(id, name)');
-    const listRes = await fetch(
-      `https://www.googleapis.com/drive/v3/files?q=${query}&fields=${fields}&key=${GOOGLE_CLIENT_ID}`,
-      {
-        headers: {
-          Authorization: `Bearer ${cachedAccessToken}`,
-        },
-      }
-    );
+    const folderId = '1q5BCBvg6jep5SuBS6Tt8_8_2nwjCA_G6';
 
-    const listData = await listRes.json();
-    if (!listData.files) throw new Error('No files returned.');
+    // List files in the folder (only mp4 videos, not trashed)
+    const res = await drive.files.list({
+      q: `'${folderId}' in parents and mimeType='video/mp4' and trashed=false`,
+      fields: 'files(id, name)',
+      pageSize: 100,
+    });
 
-    // Step 3: Map the files to your frontend format
-    const videos = listData.files
+    const files = res.data.files || [];
+
+    // Map files to your video object format
+    const videos = files
       .filter(file => file.name.startsWith('vhsmovie') && file.name.endsWith('.mp4'))
       .map(file => {
         const namePart = file.name.slice('vhsmovie'.length, -'.mp4'.length);
-        const title = namePart.replace(/_/g, ' ').trim();
-        const fileId = file.id;
-
+        const title = namePart.replace(/_/g, ' ');
         return {
+          id: file.id,
           filename: file.name,
           title,
-          src: `https://drive.google.com/uc?export=preview&id=${fileId}`, // embeddable preview link
-          thumbnail: `https://drive.google.com/thumbnail?id=${fileId}`,
+          src: `https://drive.google.com/uc?export=download&id=${file.id}`,
+          thumbnail: '', // Optional: Add thumbnail URL if available
         };
       });
 
@@ -68,11 +47,11 @@ export async function handler() {
       statusCode: 200,
       body: JSON.stringify(videos),
     };
-  } catch (err) {
-    console.error('Error fetching Google Drive videos:', err);
+  } catch (error) {
+    console.error('Error fetching Google Drive videos:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.message }),
+      body: JSON.stringify({ error: error.message }),
     };
   }
 }
