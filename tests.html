@@ -3,227 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TVHS Video Library with Slider</title>
+  <title>TVHS Video Library</title>
 
   <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
   <style>
     body {
       background: #111;
       color: #fff;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding: 20px;
       margin: 0;
-      overflow-x: hidden;
     }
-    .notice {
-      font-size: 0.9rem;
-      color: #aaa;
-      margin-bottom: 20px;
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
     }
 
     /* Slider container */
-    #slider {
-      display: flex;
+    .slider-container {
       overflow-x: auto;
-      gap: 1rem;
-      padding-bottom: 10px;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-    #slider::-webkit-scrollbar {
-      height: 8px;
-    }
-    #slider::-webkit-scrollbar-thumb {
-      background: #444;
-      border-radius: 4px;
-    }
-
-    /* Thumbnail cards */
-    .thumb-card {
-      flex: 0 0 auto;
-      width: 160px;
-      cursor: pointer;
-      border-radius: 0.5rem;
-      overflow: hidden;
-      box-shadow: 0 0 8px rgba(255 255 255 / 0.1);
-      background: #222;
-      transition: transform 0.2s ease;
-      user-select: none;
-      outline: none;
-    }
-    .thumb-card:hover,
-    .thumb-card:focus {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255 255 255 / 0.3);
-    }
-    .thumb-card img {
-      display: block;
-      width: 100%;
-      height: 90px;
-      object-fit: cover;
-      background: #000;
-    }
-    .thumb-title {
-      padding: 0.5rem 0.5rem;
-      font-size: 0.9rem;
       white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      color: #eee;
+      padding: 1rem 0;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+    }
+    .slider-container::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
     }
 
-    /* Popup overlay */
-    #videoPopup {
+    /* Movie card */
+    .movie-card {
+      display: inline-block;
+      width: 180px;
+      margin-right: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255 255 255 / 0.1);
+      transition: transform 0.2s ease;
+      background: #222;
+    }
+    .movie-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #e50914;
+      z-index: 10;
+    }
+
+    .movie-thumb {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      background: #333;
+    }
+    .movie-title {
+      padding: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      color: #f1f1f1;
+      white-space: normal;
+      height: 3em;
+      overflow: hidden;
+    }
+
+    /* Overlay */
+    #overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.9);
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1050;
       display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1050; /* Bootstrap modal z-index */
-      padding: 1rem;
     }
-    #videoPopup.active {
-      display: flex;
+
+    /* Popup container */
+    #videoPopup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 900px;
+      background: #000;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 0 30px rgba(229, 9, 20, 0.8);
+      z-index: 1060;
+      display: none;
     }
 
     #videoPopup iframe {
       width: 100%;
-      max-width: 900px;
-      height: calc(100vw * 9 / 16); /* 16:9 aspect ratio */
-      max-height: 506px;
+      height: 450px;
       border: none;
-      border-radius: 0.75rem;
-      background: #000;
+      border-radius: 8px;
     }
 
-    /* Controls */
-    #popupControls {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      gap: 0.5rem;
-      z-index: 1060;
+    #closeBtn {
+      display: block;
+      margin: 1rem auto 0 auto;
+      width: 120px;
+      font-size: 1.25rem;
     }
-    button.control-btn {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: #fff;
-      padding: 0.4rem 0.75rem;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border-radius: 0.4rem;
-      transition: background 0.2s ease;
-      user-select: none;
-      line-height: 1;
-    }
-    button.control-btn:hover {
-      background: rgba(255,255,255,0.3);
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .movie-card {
+        width: 130px;
+      }
+      #videoPopup iframe {
+        height: 250px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="mb-2">🎬 TVHS Video Library</h1>
-    <p class="notice">Tap on a thumbnail to watch. Google Drive videos require click to activate audio.</p>
 
-    <div id="slider" aria-label="Video thumbnails slider"></div>
+  <h1>🎬 TVHS Video Library</h1>
+
+  <div class="slider-container" id="slider">
+    <!-- Video thumbnails injected here -->
   </div>
 
-  <div id="videoPopup" role="dialog" aria-modal="true" aria-label="Video player popup" tabindex="-1">
-    <div id="popupControls">
-      <button id="fullscreenBtn" class="control-btn" aria-label="Fullscreen">⛶</button>
-      <button id="closeBtn" class="control-btn" aria-label="Close">✕</button>
-    </div>
-    <iframe src="" allow="autoplay; fullscreen" allowfullscreen tabindex="0"></iframe>
+  <!-- Overlay & Popup -->
+  <div id="overlay" onclick="closeVideo()"></div>
+  <div id="videoPopup">
+    <iframe id="videoIframe" allow="autoplay" allowfullscreen></iframe>
+    <button id="closeBtn" class="btn btn-danger" onclick="closeVideo()">Close</button>
   </div>
 
-  <!-- Bootstrap Bundle JS (with Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Example data; replace with fetch from your Netlify function or API
+  const videos = [
+    { id: '1mBcYMUwVViW6fniUptXZUogF9DSEXG7t', title: 'Sample Video 1' },
+    { id: '1S17BDFqTGeS_Jyfu57RUDzTV0Z1KZ5nN', title: 'Sample Video 2' },
+    { id: '1yq2dGUnnkmflABhSLxt0jWymtJ2buW_s', title: 'Sample Video 3' },
+    // Add more...
+  ];
 
-  <script>
-    async function loadVideos() {
-      try {
-        const res = await fetch('/.netlify/functions/get-google-drive-videos');
-        if (!res.ok) throw new Error("Failed to fetch videos");
+  // Function to get thumbnail URL for video (check if custom thumbnail exists in img/thumbnails/)
+  function getThumbnailUrl(video) {
+    // Construct a custom thumbnail path based on video title (sanitize for filename)
+    const sanitized = video.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const customPath = `img/thumbnails/${sanitized}.jpg`;
+    // We can't check if file exists easily here without server, so try loading custom thumbnail and fallback on error
+    // For demo, just return customPath and rely on onerror fallback
+    return customPath;
+  }
 
-        const videos = await res.json();
-        const slider = document.getElementById('slider');
-        const popup = document.getElementById('videoPopup');
-        const iframe = popup.querySelector('iframe');
-        const closeBtn = document.getElementById('closeBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
+  function createMovieCard(video) {
+    const card = document.createElement('div');
+    card.className = 'movie-card';
 
-        videos.forEach(video => {
-          const card = document.createElement('div');
-          card.className = 'thumb-card';
-          card.tabIndex = 0; // keyboard focusable
+    const img = document.createElement('img');
+    img.className = 'movie-thumb';
+    img.alt = video.title;
 
-          const thumbUrl = `https://drive.google.com/thumbnail?id=${video.id}`;
+    // Set custom thumbnail first, fallback to Google Drive thumbnail on error
+    img.src = getThumbnailUrl(video);
+    img.onerror = () => {
+      // Google Drive thumbnail URL pattern:
+      img.onerror = null; // prevent infinite loop
+      img.src = `https://drive.google.com/thumbnail?id=${video.id}`;
+    };
 
-          const img = document.createElement('img');
-          img.src = thumbUrl;
-          img.alt = video.title;
+    const title = document.createElement('div');
+    title.className = 'movie-title';
+    title.textContent = video.title;
 
-          const title = document.createElement('div');
-          title.className = 'thumb-title';
-          title.textContent = video.title;
+    card.appendChild(img);
+    card.appendChild(title);
 
-          card.appendChild(img);
-          card.appendChild(title);
+    // Open popup on click
+    card.addEventListener('click', () => openVideo(video.id));
 
-          function openPopup() {
-            iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
-            popup.classList.add('active');
-            document.body.style.overflow = 'hidden'; // prevent background scroll
-            iframe.focus();
-          }
+    return card;
+  }
 
-          card.addEventListener('click', openPopup);
-          card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              openPopup();
-            }
-          });
+  function openVideo(videoId) {
+    const iframe = document.getElementById('videoIframe');
+    iframe.src = `https://drive.google.com/file/d/${videoId}/preview`;
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('videoPopup').style.display = 'block';
+  }
 
-          slider.appendChild(card);
-        });
+  function closeVideo() {
+    const iframe = document.getElementById('videoIframe');
+    iframe.src = '';
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('videoPopup').style.display = 'none';
+  }
 
-        closeBtn.addEventListener('click', () => {
-          iframe.src = '';
-          popup.classList.remove('active');
-          document.body.style.overflow = '';
-        });
+  // Initialize slider
+  const slider = document.getElementById('slider');
+  videos.forEach(video => {
+    const card = createMovieCard(video);
+    slider.appendChild(card);
+  });
+</script>
 
-        fullscreenBtn.addEventListener('click', () => {
-          if (document.fullscreenElement) {
-            document.exitFullscreen();
-          } else {
-            popup.requestFullscreen().catch(() => {});
-          }
-        });
-
-        window.addEventListener('keydown', e => {
-          if (e.key === 'Escape' && popup.classList.contains('active')) {
-            iframe.src = '';
-            popup.classList.remove('active');
-            document.body.style.overflow = '';
-          }
-        });
-
-      } catch (err) {
-        console.error('Error loading videos:', err);
-      }
-    }
-
-    loadVideos();
-  </script>
 </body>
 </html>
