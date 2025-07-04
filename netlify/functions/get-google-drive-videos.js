@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 export async function handler(event, context) {
   try {
     // Parse service account JSON from env var
-    const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+    const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64);
 
     // Create JWT auth client
     const auth = new google.auth.JWT({
@@ -42,7 +42,7 @@ export async function handler(event, context) {
         };
       });
 
-      
+
     return {
       statusCode: 200,
       body: JSON.stringify(videos),
