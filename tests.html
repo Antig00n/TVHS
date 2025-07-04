@@ -1,89 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>VHS Drive Movies</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TVHS Drive Videos</title>
   <style>
     body {
       background: #111;
-      color: white;
+      color: #fff;
       font-family: sans-serif;
       padding: 20px;
     }
 
-    h1 {
-      text-align: center;
-    }
-
-    #videoContainer {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      align-items: center;
-      margin-top: 40px;
-    }
-
-    .video-card {
-      width: 100%;
-      max-width: 720px;
-      background: #222;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #000;
+    .video-section {
+      margin-bottom: 40px;
     }
 
     iframe {
       width: 100%;
-      height: 400px;
+      max-width: 800px;
+      height: 450px;
       border: none;
       border-radius: 12px;
     }
 
-    h3 {
-      margin-bottom: 10px;
-      text-align: center;
+    .title {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+
+    .notice {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>🎞️ VHS Drive Movies</h1>
-  <div id="videoContainer">Loading videos...</div>
+  <h1>🎬 TVHS Video Library</h1>
+  <p class="notice">Tap on a video to hear sound. Google Drive does not allow autoplay with audio.</p>
+
+  <div id="videoContainer"></div>
 
   <script>
     async function loadVideos() {
-      const container = document.getElementById("videoContainer");
-      container.innerHTML = "Loading...";
-
       try {
-        const res = await fetch("/.netlify/functions/get-google-drive-videos");
+        const res = await fetch('/.netlify/functions/get-google-drive-videos');
         if (!res.ok) throw new Error("Failed to fetch videos");
 
         const videos = await res.json();
-        console.log("Loaded videos:", videos);
-
-        container.innerHTML = ""; // Clear loading text
+        const container = document.getElementById('videoContainer');
 
         videos.forEach(video => {
-          const card = document.createElement("div");
-          card.className = "video-card";
+          const wrapper = document.createElement('div');
+          wrapper.className = 'video-section';
 
-          const title = document.createElement("h3");
+          const title = document.createElement('div');
+          title.className = 'title';
           title.textContent = video.title;
 
-          const iframe = document.createElement("iframe");
+          const iframe = document.createElement('iframe');
           iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
-          iframe.allow = "autoplay";
-          iframe.allowFullscreen = true;
+          iframe.allow = 'autoplay';
 
-          card.appendChild(title);
-          card.appendChild(iframe);
-          container.appendChild(card);
+          wrapper.appendChild(title);
+          wrapper.appendChild(iframe);
+          container.appendChild(wrapper);
         });
-
       } catch (err) {
-        console.error("Error loading videos:", err);
-        container.innerHTML = "Failed to load videos.";
+        console.error('Error loading videos:', err);
       }
     }
 
