@@ -26,6 +26,33 @@
       margin-top: 0.5rem;
       color: #fff;
     }
+    .video-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .video-popup iframe {
+      width: 80vw;
+      height: 45vw;
+      max-width: 900px;
+      max-height: 506px;
+      border: none;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 28px;
+      color: white;
+      cursor: pointer;
+    }
     body {
       background-color: #111;
       color: white;
@@ -36,6 +63,11 @@
 <body>
   <h2 style="text-align: center;">TVHS YouTube Videos</h2>
   <div id="slider" class="slider-container"></div>
+
+  <div id="videoPopup" class="video-popup">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <iframe id="popupFrame" src="" allowfullscreen></iframe>
+  </div>
 
   <script>
     const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
@@ -60,17 +92,29 @@
             const card = document.createElement("div");
             card.className = "video-card";
             card.innerHTML = `
-              <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
-                <img src="${thumbnail}" alt="${title}" />
-                <div class="video-title">${title}</div>
-              </a>
+              <img src="${thumbnail}" alt="${title}" />
+              <div class="video-title">${title}</div>
             `;
-
+            card.onclick = () => openPopup(videoId);
             slider.appendChild(card);
           });
       } catch (error) {
         console.error("Error loading YouTube videos:", error);
       }
+    }
+
+    function openPopup(videoId) {
+      const popup = document.getElementById('videoPopup');
+      const frame = document.getElementById('popupFrame');
+      frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      popup.style.display = 'flex';
+    }
+
+    function closePopup() {
+      const popup = document.getElementById('videoPopup');
+      const frame = document.getElementById('popupFrame');
+      frame.src = '';
+      popup.style.display = 'none';
     }
 
     fetchYouTubeVideos();
