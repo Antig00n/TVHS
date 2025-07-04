@@ -18,19 +18,20 @@
   <!-- NAVBAR -->
    <div class="navvy">
 <nav class="navbar navbar-expand-lg ">
-  <div class="container-fluid d-flex flex-column flex-lg-row align-items-center justify-content-center gap-3">
+  <div class="container-fluid d-flex flex-column flex-lg-row  justify-content-center gap-3" style="margin-top: -2%;">
 
     <!-- Guytje -->
     <div class="guytje order-0 mb-2 mb-lg-0 order-lg-0" >
-      <img src="img/guytje2.png" class="img-fluid" alt="Cartoon placeholder" />
+
+     <a href="muziek.html" ><img src="img/guytje2.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;"/></a> 
     </div>
 
     <!-- Left nav (SHOWS) -->
-    <ul class="navbar-nav d-flex flex-column flex-lg-row align-items-center order-2 order-lg-1 p-0 m-0">
-      <li class="nav-item d-flex align-items-center">
+    <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row  order-2 order-lg-1 p-0 ">
+      <li class="nav-item d-flex ">
         <a class="nav-link px-2 py-1" href="TVHS.html">FILMS</a>
       </li>
-       <li class="nav-item d-flex align-items-center">
+       <li class="nav-item d-flex ">
         <a class="nav-link px-2 py-1" href="muziek.html">VHS</a>
       </li>
     </ul>
@@ -42,15 +43,15 @@
     </a>
 
     <!-- Right nav (MUSIC and DATES) -->
-    <ul class="navbar-nav d-flex flex-column flex-lg-row align-items-center order-3 p-0 m-0">
+    <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-3 p-0"  >
      
 
-            <li class="nav-item d-flex align-items-center">
+            <li class="nav-item d-flex ">
         <a class="nav-link px-2 py-1" href="merch.html">MERCH</a>
       </li>
 
       
-      <li class="nav-item d-flex align-items-center">
+      <li class="nav-item d-flex ">
         <a class="nav-link px-2 py-1 " id="dates" href="datescon.html">CONTACT</a>
       </li>
       
@@ -64,20 +65,33 @@
 
   <!-- MAIN CONTENT -->
   <main class="container py-5">
-    <div class="row align-items-center text-center">
+
+    <div id="loading-overlay" style="
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px; position: absolute; margin-top: 1%; margin-left: 1%;"  />
+</div>
+    <div class="row align-items-start text-center">
 
       <!-- NOW ONLY $6.66 (smaller & off to side) -->
-      <div class="col-md-2 col-sm-12 mb-4 mb-md-0 side-item">
-        <h2 class="slanted">NOW ONLY $6.66</h2>
-      </div>
+         <div id="upcoming-shows-container" class="col-lg-3 order-2 order-lg-1 mb-4">
+    <h2 style="text-align: center; margin-bottom: 1rem; color: rgb(168, 0, 0);">OPKOMENDE LIVE SHOWS</h2>
+    <div id="upcoming-shows"></div>
+  </div>
 
       <!-- WEEKLY SPOTLIGHT (wider center) -->
-      <div class="col-md-8 mb-4 mb-md-0">
-        <h2 style="color: rgb(168, 0, 0);" >RECENTE CLIPS</h2>
+       <div class="col-lg-6 order-1 order-lg-2 mb-4">
+    <h2 style="color: rgb(168, 0, 0);">RECENTE CLIPS</h2>
     
 <div id="weeklySpotlightCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="30000">
  
-  <div class="carousel-inner">
+  <div class="carousel-inner" >
     <div class="carousel-item active">
      <div class="video-wrapper">
   <iframe id="video1" src="" frameborder="0" allowfullscreen></iframe>
@@ -106,12 +120,15 @@
       </div>
 
       <!-- CARTOON CHARACTER (smaller & off to side) -->
-      <div class="col-md-2 col-sm-12 side-item">
-        <img
+     <div class="col-lg-3 order-3 mb-4">
+                <h2 class="slanted">NOW ONLY $6.66</h2>
+          <br>
+      <a href="TVHS.html" > <img
           src="img/guytje.png"
           class="img-fluid"
           alt="Cartoon placeholder"
-        />
+          style="width: 60%; margin-top: 40%; "
+        /></a> 
       </div>
 
     </div>
@@ -131,6 +148,74 @@
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
   ></script>
+
+<script>
+async function loadShows() {
+  const container = document.getElementById('upcoming-shows');
+  const loadingOverlay = document.getElementById('loading-overlay');
+
+  // Show loading overlay
+  loadingOverlay.style.display = 'flex';
+
+  try {
+    const res = await fetch('/.netlify/functions/get-shows');
+    const shows = await res.json();
+
+    if (!Array.isArray(shows)) {
+      container.textContent = 'Failed to load shows.';
+      return;
+    }
+
+    // Get today's date without time for accurate comparison
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Filter shows to only include those on or after today
+    const upcomingShows = shows.filter(show => {
+      const showDate = new Date(show.showdate);
+      showDate.setHours(0, 0, 0, 0);
+      return showDate >= today;
+    });
+
+    if (upcomingShows.length === 0) {
+      container.textContent = 'No upcoming shows.';
+      return;
+    }
+
+    const list = document.createElement('ul');
+
+    upcomingShows.forEach(show => {
+      const li = document.createElement('li');
+
+      let text = `${show.showperson} | ${new Date(show.showdate).toLocaleDateString()} | ${show.showplace}`;
+
+      if (show.showprice) {
+        text += ` | €${show.showprice}`;
+      }
+      if (show.showsite) {
+        text += ` | ${show.showsite}`;
+      }
+
+      li.textContent = text;
+      list.appendChild(li);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(list);
+
+  } catch (e) {
+    container.textContent = 'Error loading shows.';
+    console.error(e);
+  } finally {
+    // Hide loading overlay when done
+    loadingOverlay.style.display = 'none';
+  }
+}
+
+loadShows();
+
+</script>
+
  <script>
   const carousel = document.getElementById('weeklySpotlightCarousel');
   const videos = carousel.querySelectorAll('video');
@@ -176,6 +261,8 @@
 
 
 </script>
+
+
 
 
 
