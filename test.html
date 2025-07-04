@@ -147,12 +147,15 @@ rel="stylesheet"/>
 
 
   <script>
-  function showVideo(button) {
+function showVideo(button) {
   const src = button.getAttribute('data-src');
-  const description = button.getAttribute('data-description') || ""; // 👈 fallback if missing
+  const description = button.getAttribute('data-description') || "";
   const video = document.getElementById('videoElement');
   const source = document.getElementById('videoSource');
   const descriptionBox = document.getElementById('videoDescription');
+
+  // ✅ Stop autoplaying video
+  document.getElementById("randomVideoPlayer")?.pause();
 
   source.src = src;
   video.load();
@@ -163,6 +166,7 @@ rel="stylesheet"/>
   document.getElementById('videoPopup').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
 }
+
 
 
 function closeVideo() {
