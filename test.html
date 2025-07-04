@@ -75,11 +75,12 @@ rel="stylesheet"/>
 
 <!-- Random Autoplaying Movie Player -->
 <div class="random-player-container text-center mb-4">
-  <video id="randomMoviePlayer" width="100%" height="auto" controls autoplay muted playsinline>
+  <video id="randomMoviePlayer" width="640" height="360" controls autoplay muted playsinline style="max-width: 100%; border-radius: 10px;">
     <source src="" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
+
 
 
   <!-- Search & Sort Controls -->
@@ -276,19 +277,25 @@ function toggleFullscreen() {
     const video = allVideos[randomIndex];
     const filename = video.filename;
 
-    randomPlayer.querySelector("source").src = `tvhsmovies/${filename}`;
+    if (!filename) return;
+
+    const videoPath = `tvhsmovies/${filename}`;
+    const source = randomPlayer.querySelector("source");
+    source.src = videoPath;
     randomPlayer.load();
-    randomPlayer.play();
+    randomPlayer.play().catch(err => {
+      console.error("Autoplay failed:", err);
+    });
   }
 
-  // Play another video when the current one ends
+  // Play another random video when the current one ends
   randomPlayer.addEventListener("ended", playRandomMovie);
 
-  // Override loadVHSClips to also start autoplay once videos are loaded
+  // Hook into the existing loadVHSClips to wait until videos are loaded
   const originalLoadClips = loadVHSClips;
   loadVHSClips = async function () {
     await originalLoadClips();
-    playRandomMovie();
+    playRandomMovie(); // <-- start after loading finishes
   };
 </script>
 
