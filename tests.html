@@ -61,6 +61,16 @@
   </style>
 </head>
 <body>
+
+<h2 style="color: rgb(168, 0, 0);">RECENTE CLIPS</h2>
+    
+<div id="weeklySpotlightCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="30000">
+ 
+  <div class="carousel-inner" >
+    <div class="carousel-item active">
+     <div class="video-wrapper">
+  <iframe id="video1" src="" frameborder="0" allowfullscreen></iframe>
+
   <h2 style="text-align: center;">TVHS YouTube Videos</h2>
   <div id="slider" class="slider-container"></div>
 
@@ -119,5 +129,45 @@
 
     fetchYouTubeVideos();
   </script>
+
+ <script>
+
+  async function loadLatestVideos() {
+    try {
+      const playlistRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
+      );
+      const playlistData = await playlistRes.json();
+      console.log('Playlist response:', playlistData);
+
+      if (!playlistData.items || playlistData.items.length === 0) {
+        throw new Error("No playlist data found — check your channel ID and API key.");
+      }
+
+      const uploadsPlaylistId = playlistData.items[0].contentDetails.relatedPlaylists.uploads;
+
+      const videosRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${apiKey}`
+      );
+      const videosData = await videosRes.json();
+      console.log('Videos:', videosData);
+
+      videosData.items.forEach((item, index) => {
+        const videoId = item.snippet.resourceId.videoId;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?origin=${location.origin}`;
+        const iframe = document.getElementById(`video${index + 1}`);
+        if (iframe) iframe.src = embedUrl;
+      });
+
+    } catch (error) {
+      console.error('Failed to load videos:', error);
+    }
+  }
+
+  loadLatestVideos();
+
+
+</script>
+
 </body>
 </html>
