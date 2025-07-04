@@ -274,7 +274,7 @@ function renderMovies() {
   // Connect the input[type=range] to scroll the movie slider
   scrollRange.addEventListener('input', () => {
     const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
-    const scrollValue = (scrollRange.value / 50) * maxScrollLeft;
+    const scrollValue = (scrollRange.value / 100) * maxScrollLeft;
     movieSlider.scrollLeft = scrollValue;
   });
 
@@ -282,7 +282,7 @@ function renderMovies() {
   movieSlider.addEventListener('scroll', () => {
     const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
     if (maxScrollLeft > 0) {
-      scrollRange.value = (movieSlider.scrollLeft / maxScrollLeft) * 50;
+      scrollRange.value = (movieSlider.scrollLeft / maxScrollLeft) * 100;
     } else {
       scrollRange.value = 0;
     }
