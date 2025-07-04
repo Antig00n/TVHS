@@ -104,11 +104,17 @@
   </div>
 </div>
 
-<!-- Scripts -->
 <script>
 const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
 const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
-let playlist = [], currentIndex = 0, youtubePlayer, isMuted = true, isNewestFirst = true;
+
+let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = true, isNewestFirst = true;
+
+const searchInput = document.getElementById("searchInput");
+const toggleSortBtn = document.getElementById("toggleSortBtn");
+const muteBtn = document.getElementById("muteBtn");
+const movieSlider = document.getElementById("movieSlider");
+const loadingOverlay = document.getElementById("loading-overlay");
 
 const tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
@@ -127,6 +133,7 @@ async function fetchPlaylist() {
     publishedAt: item.snippet.publishedAt
   }));
   renderMovies();
+  loadingOverlay.style.display = 'none'; // Hide loading after videos rendered
 }
 
 function loadVideo(index) {
@@ -157,43 +164,56 @@ function onPlayerStateChange(event) {
 }
 
 function onYouTubeIframeAPIReady() {
-  fetchPlaylist();
-  loadVideo(currentIndex);
+  fetchPlaylist().then(() => {
+    loadVideo(currentIndex);
+  });
 }
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("muteBtn").addEventListener("click", () => {
-    if (!youtubePlayer) return;
-    if (isMuted) {
-      youtubePlayer.unMute();
-      muteBtn.textContent = "Mute";
-    } else {
-      youtubePlayer.mute();
-      muteBtn.textContent = "Unmute";
-    }
-    isMuted = !isMuted;
-  });
+muteBtn.addEventListener("click", () => {
+  if (!youtubePlayer) return;
+  if (isMuted) {
+    youtubePlayer.unMute();
+    muteBtn.textContent = "Mute";
+  } else {
+    youtubePlayer.mute();
+    muteBtn.textContent = "Unmute";
+  }
+  isMuted = !isMuted;
 });
 
 function renderMovies() {
-  const container = document.getElementById("movieSlider");
   const query = searchInput.value.toLowerCase();
-  container.innerHTML = "";
+  movieSlider.innerHTML = "";
   let filtered = allVideos.filter(v => v.title.toLowerCase().includes(query));
   filtered.sort((a, b) => new Date(isNewestFirst ? b.publishedAt : a.publishedAt) - new Date(isNewestFirst ? a.publishedAt : b.publishedAt));
 
   filtered.forEach(video => {
     const card = document.createElement("div");
     card.className = "movie-card";
-    card.innerHTML = `
-      <button onclick="showYouTubeVideo('${video.videoId}', \`${video.description.replace(/`/g, "'")} \`)">
-        <div class="position-relative">
-          <img src="${video.thumbnail}" alt="${video.title}">
-        </div>
-        <div class="movie-title">${video.title}</div>
-      </button>`;
-    container.appendChild(card);
+
+    // Safer event listener instead of inline onclick
+    const button = document.createElement("button");
+    button.type = "button";
+
+    const imgWrapper = document.createElement("div");
+    imgWrapper.className = "position-relative";
+
+    const img = document.createElement("img");
+    img.src = video.thumbnail;
+    img.alt = video.title;
+    imgWrapper.appendChild(img);
+
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "movie-title";
+    titleDiv.textContent = video.title;
+
+    button.appendChild(imgWrapper);
+    button.appendChild(titleDiv);
+    button.addEventListener('click', () => showYouTubeVideo(video.videoId, video.description));
+
+    card.appendChild(button);
+    movieSlider.appendChild(card);
   });
 }
 
@@ -234,13 +254,13 @@ function toggleFullscreen() {
   else if (video.msRequestFullscreen) video.msRequestFullscreen();
 }
 
-document.getElementById("toggleSortBtn").addEventListener("click", () => {
+toggleSortBtn.addEventListener("click", () => {
   isNewestFirst = !isNewestFirst;
-  document.getElementById("toggleSortBtn").textContent = isNewestFirst ? "Sort: Newest" : "Sort: Oldest";
+  toggleSortBtn.textContent = isNewestFirst ? "Sort: Newest" : "Sort: Oldest";
   renderMovies();
 });
 
-document.getElementById("searchInput").addEventListener("input", () => renderMovies());
+searchInput.addEventListener("input", () => renderMovies());
 </script>
 
 </body>
