@@ -12,29 +12,52 @@
   <link rel="stylesheet" href="css/moviecards.css">
 
   <style>
-    /* Position mute button top-right over video */
+    /* Updated random-player-container for bigger, responsive video */
     .random-player-container {
       position: relative;
-      width: 480px;
+      width: 640px;
+      max-width: 90vw;  /* shrink on small screens */
       margin: 0 auto 1rem;
+      margin-top: 0.5rem; /* less space from nav */
     }
+
+    #youtubePlayer {
+      width: 100% !important;  /* full container width */
+      height: calc(100% / (16 / 9)) !important; /* keep 16:9 aspect */
+    }
+
+    /* Bigger mute button that scales on small screens */
     #muteBtn {
       position: absolute;
       top: 8px;
       right: 8px;
       z-index: 10;
-      background-color: #dc3545; /* Bootstrap red */
+      background-color: #dc3545;
       color: white;
       font-weight: bold;
       border: none;
-      padding: 0.5rem 1rem;
-      font-size: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.4rem;
       border-radius: 0.3rem;
       cursor: pointer;
       user-select: none;
+      transition: background-color 0.2s ease;
     }
+
     #muteBtn:hover {
       background-color: #bb2d3b;
+    }
+
+    /* Responsive font and padding for the button */
+    @media (max-width: 480px) {
+      .random-player-container {
+        width: 100%;
+        margin-top: 0.2rem;
+      }
+      #muteBtn {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -88,7 +111,7 @@
   <div style="max-width: 100%; margin: auto; padding: 1rem;">
     <!-- YouTube Player Replacement -->
     <div class="random-player-container text-center mb-4 d-flex flex-column align-items-center">
-      <div id="youtubePlayer" style="width: 480px; height: 270px; margin-bottom: -1rem; margin-top: -3%;"></div>
+      <div id="youtubePlayer"></div>
       <button id="muteBtn">Mute</button>
     </div>
 
@@ -170,7 +193,7 @@ function loadVideo(index) {
     youtubePlayer.loadVideoById(videoId);
   } else {
     youtubePlayer = new YT.Player('youtubePlayer', {
-      height: '270', width: '480', videoId,
+      height: '360', width: '640', videoId,
       playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, origin: window.location.origin, enablejsapi: 1 },
       events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange }
     });
@@ -179,9 +202,7 @@ function loadVideo(index) {
 
 function onPlayerReady(event) {
   youtubePlayer.setVolume(50);
-  youtubePlayer.unMute();  // Start unmuted
-  isMuted = false;
-  muteBtn.textContent = "Mute";
+  youtubePlayer.unMute();
   event.target.playVideo();
 }
 
@@ -221,6 +242,7 @@ function renderMovies() {
     const card = document.createElement("div");
     card.className = "movie-card";
 
+    // Safer event listener instead of inline onclick
     const button = document.createElement("button");
     button.type = "button";
 
@@ -251,44 +273,39 @@ function showYouTubeVideo(videoId, description = "") {
   iframe.width = "100%";
   iframe.height = "270";
   iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
-  iframe.frameBorder = "0";
   iframe.allow = "autoplay; encrypted-media";
   iframe.allowFullscreen = true;
-  iframe.id = "youtubePopupPlayer";
   container.innerHTML = "";
   container.appendChild(iframe);
+
   document.getElementById("videoDescription").textContent = description;
-  document.getElementById("videoPopup").style.display = 'block';
-  document.getElementById("overlay").style.display = 'block';
+  document.getElementById("overlay").style.display = "block";
+  document.getElementById("videoPopup").style.display = "block";
 }
 
 function closeVideo() {
-  const popup = document.getElementById("videoPopup");
-  const overlay = document.getElementById("overlay");
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("videoPopup").style.display = "none";
   const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
-  container.innerHTML = `
-    <video id="videoElement" controls class="video-player">
-      <source id="videoSource" src="" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>`;
-  popup.style.display = 'none';
-  overlay.style.display = 'none';
+  container.innerHTML = "";
 }
 
-function toggleFullscreen() {
-  const video = document.getElementById('videoElement');
-  if (video.requestFullscreen) video.requestFullscreen();
-  else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-  else if (video.msRequestFullscreen) video.msRequestFullscreen();
-}
+searchInput.addEventListener("input", renderMovies);
 
 toggleSortBtn.addEventListener("click", () => {
   isNewestFirst = !isNewestFirst;
-  toggleSortBtn.textContent = isNewestFirst ? "Sort: Newest" : "Sort: Oldest";
+  toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
   renderMovies();
 });
 
-searchInput.addEventListener("input", () => renderMovies());
+function toggleFullscreen() {
+  const videoElement = document.getElementById("videoElement");
+  if (!document.fullscreenElement) {
+    videoElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
 </script>
 
 </body>
