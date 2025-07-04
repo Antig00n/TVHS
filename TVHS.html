@@ -1,414 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TVHS - YouTube Player & Custom Slider</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YouTube Channel Player + Movie Slider</title>
+<style>
+  body {
+    background-color: #121212;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 30px;
+  }
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  #youtubePlayerContainer {
+    max-width: 640px;
+    margin: 0 auto 20px auto;
+    position: relative;
+  }
 
-  <style>
-    /* Your input[type=range] styling */
-    input[type=range] {
-      -webkit-appearance: none;
-      margin: 10px 0;
-      width: 100%;
-    }
-    input[type=range]:focus {
-      outline: none;
-    }
-    input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 12.8px;
-      cursor: pointer;
-      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-      background: #ac51b5;
-      border-radius: 25px;
-      border: 0px solid #000101;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-      border: 0px solid #000000;
-      height: 20px;
-      width: 39px;
-      border-radius: 7px;
-      background: #65001c;
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -3.6px;
-    }
-    input[type=range]:focus::-webkit-slider-runnable-track {
-      background: #ac51b5;
-    }
-    input[type=range]::-moz-range-track {
-      width: 100%;
-      height: 12.8px;
-      cursor: pointer;
-      animate: 0.2s;
-      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-      background: #ac51b5;
-      border-radius: 25px;
-      border: 0px solid #000101;
-    }
-    input[type=range]::-moz-range-thumb {
-      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-      border: 0px solid #000000;
-      height: 20px;
-      width: 39px;
-      border-radius: 7px;
-      background: #65001c;
-      cursor: pointer;
-    }
-    input[type=range]::-ms-track {
-      width: 100%;
-      height: 12.8px;
-      cursor: pointer;
-      animate: 0.2s;
-      background: transparent;
-      border-color: transparent;
-      border-width: 39px 0;
-      color: transparent;
-    }
-    input[type=range]::-ms-fill-lower {
-      background: #ac51b5;
-      border: 0px solid #000101;
-      border-radius: 50px;
-      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-    }
-    input[type=range]::-ms-fill-upper {
-      background: #ac51b5;
-      border: 0px solid #000101;
-      border-radius: 50px;
-      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-    }
-    input[type=range]::-ms-thumb {
-      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-      border: 0px solid #000000;
-      height: 20px;
-      width: 39px;
-      border-radius: 7px;
-      background: #65001c;
-      cursor: pointer;
-    }
-    input[type=range]:focus::-ms-fill-lower {
-      background: #ac51b5;
-    }
-    input[type=range]:focus::-ms-fill-upper {
-      background: #ac51b5;
-    }
+  #youtubePlayer {
+    width: 100%;
+    height: 360px;
+    background: black;
+  }
 
-    body {
-      padding: 30px;
-      background: #121212;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
+  #muteBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    padding: 6px 12px;
+    background-color: #65001c;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+  }
 
-    .random-player-container {
-      position: relative;
-      width: 640px;
-      max-width: 90vw;
-      margin: 0 auto 1rem;
-      margin-top: -3%;
-      text-align: center;
-    }
-    #youtubePlayer {
-      width: 100% !important;
-    }
-    #muteBtn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      z-index: 10;
-      background-color: #dc3545;
-      color: white;
-      font-weight: bold;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 1.4rem;
-      border-radius: 0.3rem;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-    #muteBtn:hover {
-      background-color: #bb2d3b;
-    }
-    @media (max-width: 480px) {
-      .random-player-container {
-        width: 100%;
-        margin-top: 0.2rem;
-      }
-      #muteBtn {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-      }
-    }
+  #movieSlider {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
 
-    /* Movie slider styles */
-    #movieSlider {
-      display: flex;
-      overflow-x: auto;
-      overflow-y: hidden;
-      gap: 10px;
-      padding-bottom: 10px;
-      scroll-behavior: smooth;
-      max-width: 100%;
-      border-bottom: 2px solid #ac51b5;
-      margin-bottom: 10px;
-      user-select: none;
-    }
-    .movie-card {
-      min-width: 180px;
-      background: #222;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 0 8px #65001c;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease;
-    }
-    .movie-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px #ac51b5;
-    }
-    .movie-card img {
-      width: 100%;
-      display: block;
-      border-bottom: 1px solid #65001c;
-    }
-    .movie-title {
-      padding: 0.5rem;
-      font-size: 1rem;
-      color: #eee;
-      text-align: center;
-      user-select: none;
-    }
+  .movieCard {
+    background: #222;
+    border-radius: 8px;
+    min-width: 180px;
+    flex-shrink: 0;
+    cursor: pointer;
+    box-shadow: 0 0 8px #65001c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+  }
 
-    /* Popup video styling */
-    #overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 1000;
-    }
-    #videoPopup {
-      display: none;
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      border-radius: 10px;
-      max-width: 90vw;
-      width: 700px;
-      padding: 1rem;
-      z-index: 1010;
-      color: white;
-    }
-    #videoPopup iframe {
-      width: 100%;
-      height: 360px;
-      border-radius: 10px;
-      border: none;
-    }
-    .button-column button {
-      margin-bottom: 0.5rem;
-    }
-    #videoDescription {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #ccc;
-      max-height: 100px;
-      overflow-y: auto;
-    }
-  </style>
+  .movieCard img {
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  .movieTitle {
+    margin-top: 6px;
+    font-size: 14px;
+    text-align: center;
+    color: #ac51b5;
+  }
+
+  /* Popup styling */
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(18, 18, 18, 0.9);
+    display: none;
+    z-index: 1000;
+  }
+
+  #videoPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    display: none;
+    z-index: 1001;
+    color: white;
+  }
+
+  #videoPopup iframe {
+    width: 560px;
+    max-width: 100%;
+    height: 315px;
+    border: none;
+    border-radius: 6px;
+  }
+
+  .button-column button {
+    background: #65001c;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .description-box {
+    max-height: 100px;
+    overflow-y: auto;
+    margin-left: 15px;
+    flex-grow: 1;
+  }
+
+  /* YOUR CUSTOM SLIDER STYLE ONLY */
+  input[type=range] {
+    -webkit-appearance: none;
+    margin: 10px 0;
+    width: 100%;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 12.8px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    background: #ac51b5;
+    border-radius: 25px;
+    border: 0px solid #000101;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    border: 0px solid #000000;
+    height: 20px;
+    width: 39px;
+    border-radius: 7px;
+    background: #65001c;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -3.6px;
+  }
+  input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ac51b5;
+  }
+  input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 12.8px;
+    cursor: pointer;
+    animate: 0.2s;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    background: #ac51b5;
+    border-radius: 25px;
+    border: 0px solid #000101;
+  }
+  input[type=range]::-moz-range-thumb {
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    border: 0px solid #000000;
+    height: 20px;
+    width: 39px;
+    border-radius: 7px;
+    background: #65001c;
+    cursor: pointer;
+  }
+  input[type=range]::-ms-track {
+    width: 100%;
+    height: 12.8px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: transparent;
+    border-color: transparent;
+    border-width: 39px 0;
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    background: #ac51b5;
+    border: 0px solid #000101;
+    border-radius: 50px;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  }
+  input[type=range]::-ms-fill-upper {
+    background: #ac51b5;
+    border: 0px solid #000101;
+    border-radius: 50px;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  }
+  input[type=range]::-ms-thumb {
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    border: 0px solid #000000;
+    height: 20px;
+    width: 39px;
+    border-radius: 7px;
+    background: #65001c;
+    cursor: pointer;
+  }
+  input[type=range]:focus::-ms-fill-lower {
+    background: #ac51b5;
+  }
+  input[type=range]:focus::-ms-fill-upper {
+    background: #ac51b5;
+  }
+</style>
 </head>
 <body>
 
-<div class="random-player-container">
+<div id="youtubePlayerContainer">
   <div id="youtubePlayer"></div>
   <button id="muteBtn">Mute</button>
 </div>
 
-<!-- Horizontal movie slider -->
-<div id="movieSlider"></div>
+<div id="movieSlider" aria-label="Video thumbnails slider" role="list"></div>
 
-<!-- Custom horizontal range slider to control movie slider scroll -->
-<input type="range" id="scrollRange" min="0" max="100" value="0" aria-label="Scroll videos slider" />
+<input type="range" id="scrollRange" min="0" max="100" value="0" aria-label="Scroll slider for movie thumbnails">
 
-<!-- Popup video overlay and container -->
-<div id="overlay" onclick="closeVideo()"></div>
-<div id="videoPopup" class="video-popup-container p-3">
-  <div class="d-flex justify-content-center mb-3">
-    <!-- iframe inserted dynamically -->
-  </div>
-  <div class="d-flex flex-column flex-md-row align-items-start gap-3">
-    <div class="button-column d-flex flex-column gap-2">
-      <button onclick="toggleFullscreen()" class="btn btn-sm btn-light">Vollenbak</button>
-      <button onclick="closeVideo()" class="btn btn-sm btn-danger">Sloate</button>
-    </div>
-    <div id="videoDescription" class="text-white description-box"></div>
-  </div>
-</div>
+<div id="overlay"></div>
+<div id="videoPopup"></div>
 
 <script>
-  // YouTube API key & channel
-  const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
-  const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
-
-  let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false;
-
-  const muteBtn = document.getElementById("muteBtn");
-  const movieSlider = document.getElementById("movieSlider");
-  const scrollRange = document.getElementById("scrollRange");
-
-  // Load YouTube iframe API
-  const tag = document.createElement('script');
+  // YouTube Iframe API loading
+  let tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
+  document.head.appendChild(tag);
 
-  // Fetch videos from channel
-  async function fetchPlaylist() {
-    const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
-    const res = await fetch(url);
-    const data = await res.json();
-    playlist = data.items.filter(item => item.id.kind === 'youtube#video').map(item => item.id.videoId);
-    allVideos = data.items.filter(item => item.id.kind === 'youtube#video').map(item => ({
-      videoId: item.id.videoId,
-      title: item.snippet.title,
-      description: item.snippet.description,
-      thumbnail: item.snippet.thumbnails?.medium?.url || '',
-      publishedAt: item.snippet.publishedAt
-    }));
-    renderMovies();
-    updateScrollRangeMax();
-  }
+  let youtubePlayer;
+  let playlist = [];
+  let currentIndex = 0;
+  let isMuted = false;
 
-  // Render movie cards inside slider
-  function renderMovies() {
-    movieSlider.innerHTML = "";
-    allVideos.forEach(video => {
-      const card = document.createElement("div");
-      card.className = "movie-card";
+  const muteBtn = document.getElementById('muteBtn');
+  const movieSlider = document.getElementById('movieSlider');
+  const overlay = document.getElementById('overlay');
+  const videoPopup = document.getElementById('videoPopup');
+  const scrollRange = document.getElementById('scrollRange');
 
-      const button = document.createElement("button");
-      button.type = "button";
+  // Sample playlist data - replace with your own or fetch dynamically
+  playlist = [
+    {videoId: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', description: 'Classic Rick Astley!'},
+    {videoId: '9bZkp7q19f0', title: 'Gangnam Style', description: 'PSY - Gangnam Style'},
+    {videoId: '3JZ_D3ELwOQ', title: 'Charlie Puth - We Don’t Talk Anymore', description: 'Official Video'},
+  ];
 
-      const imgWrapper = document.createElement("div");
-      imgWrapper.className = "position-relative";
-
-      const img = document.createElement("img");
-      img.src = video.thumbnail;
-      img.alt = video.title;
-      imgWrapper.appendChild(img);
-
-      const titleDiv = document.createElement("div");
-      titleDiv.className = "movie-title";
-      titleDiv.textContent = video.title;
-
-      button.appendChild(imgWrapper);
-      button.appendChild(titleDiv);
-      button.addEventListener('click', () => showYouTubeVideo(video.videoId, video.description));
-
-      card.appendChild(button);
+  function renderMovieSlider() {
+    movieSlider.innerHTML = '';
+    playlist.forEach(({videoId, title, description}, index) => {
+      const thumbUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+      const card = document.createElement('div');
+      card.className = 'movieCard';
+      card.setAttribute('role', 'listitem');
+      card.tabIndex = 0;
+      card.innerHTML = `
+        <img src="${thumbUrl}" alt="Thumbnail for ${title}" />
+        <div class="movieTitle">${title}</div>
+      `;
+      card.addEventListener('click', () => {
+        currentIndex = index;
+        showYouTubeVideo(videoId, description);
+      });
+      card.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
       movieSlider.appendChild(card);
     });
   }
 
-  // Load YouTube video in main player
+  // Load video in main player by index
   function loadVideo(index) {
-    if (!playlist.length) return;
-    const videoId = playlist[index];
-    if (youtubePlayer) {
+    currentIndex = index;
+    const videoId = playlist[index]?.videoId;
+    if (youtubePlayer && videoId) {
       youtubePlayer.loadVideoById(videoId);
     }
   }
 
   // Show video in popup with description
   function showYouTubeVideo(videoId, description = '') {
-    // Create iframe inside popup container
-    const popup = document.getElementById("videoPopup");
-    popup.innerHTML = `
-      <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&showinfo=0" 
-        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen></iframe>
-      <div class="d-flex flex-column flex-md-row align-items-start gap-3 mt-3">
-        <div class="button-column d-flex flex-column gap-2">
-          <button onclick="toggleFullscreen()" class="btn btn-sm btn-light">Vollenbak</button>
-          <button onclick="closeVideo()" class="btn btn-sm btn-danger">Sloate</button>
-        </div>
-        <div id="videoDescription" class="text-white description-box" style="max-height: 100px; overflow-y: auto;">${description}</div>
-      </div>
+    videoPopup.innerHTML = `
+      <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <p style="margin-top: 10px;">${description}</p>
     `;
-    document.getElementById("overlay").style.display = "block";
-    popup.style.display = "block";
+    overlay.style.display = 'block';
+    videoPopup.style.display = 'block';
   }
 
-  // Close popup video
-  function closeVideo() {
-    document.getElementById("videoPopup").style.display = "none";
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("videoPopup").innerHTML = '';
-  }
+  // Close popup
+  overlay.addEventListener('click', () => {
+    videoPopup.style.display = 'none';
+    overlay.style.display = 'none';
+    if (youtubePlayer) youtubePlayer.pauseVideo();
+  });
 
-  // Toggle fullscreen for popup video container
-  function toggleFullscreen() {
-    const popup = document.getElementById("videoPopup");
-    if (!document.fullscreenElement) {
-      if (popup.requestFullscreen) {
-        popup.requestFullscreen();
-      } else if (popup.webkitRequestFullscreen) { /* Safari */
-        popup.webkitRequestFullscreen();
-      } else if (popup.msRequestFullscreen) { /* IE11 */
-        popup.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    }
-  }
-
-  // YouTube Player API Ready
-  function onYouTubeIframeAPIReady() {
+  window.onYouTubeIframeAPIReady = function () {
     youtubePlayer = new YT.Player('youtubePlayer', {
       height: '360',
       width: '640',
-      videoId: playlist[0] || '',
+      videoId: playlist[0].videoId,
       playerVars: {
         autoplay: 1,
         controls: 1,
         rel: 0,
         modestbranding: 1,
-        enablejsapi: 1
       },
       events: {
-        onReady: onPlayerReady,
-        onStateChange: onPlayerStateChange
+        'onReady': (event) => {
+          event.target.playVideo();
+          updateMuteButton();
+        },
+        'onStateChange': onPlayerStateChange,
       }
     });
-  }
-
-  function onPlayerReady(event) {
-    event.target.playVideo();
-    updateMuteButton();
-  }
+  };
 
   function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.ENDED) {
-      currentIndex++;
-      if (currentIndex >= playlist.length) currentIndex = 0;
+      // Play next video in playlist
+      currentIndex = (currentIndex + 1) % playlist.length;
       loadVideo(currentIndex);
     }
   }
 
-  muteBtn.addEventListener("click", () => {
+  muteBtn.addEventListener('click', () => {
     if (!youtubePlayer) return;
     if (isMuted) {
       youtubePlayer.unMute();
@@ -421,35 +349,28 @@
   });
 
   function updateMuteButton() {
-    muteBtn.textContent = isMuted ? "Unmute" : "Mute";
+    muteBtn.textContent = isMuted ? 'Unmute' : 'Mute';
   }
 
-  // Slider scroll control via input[type=range]
-  scrollRange.addEventListener("input", () => {
+  // Initialize slider and movie cards
+  renderMovieSlider();
+
+  // Connect the input[type=range] to scroll the movie slider
+  scrollRange.addEventListener('input', () => {
     const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
     const scrollValue = (scrollRange.value / 100) * maxScrollLeft;
     movieSlider.scrollLeft = scrollValue;
   });
 
-  // Sync range input when slider scrolls manually
-  movieSlider.addEventListener("scroll", () => {
+  // Sync slider value when user scrolls the movieSlider manually
+  movieSlider.addEventListener('scroll', () => {
     const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
-    if (maxScrollLeft === 0) {
+    if (maxScrollLeft > 0) {
+      scrollRange.value = (movieSlider.scrollLeft / maxScrollLeft) * 100;
+    } else {
       scrollRange.value = 0;
-      return;
     }
-    const scrollPercent = (movieSlider.scrollLeft / maxScrollLeft) * 100;
-    scrollRange.value = scrollPercent;
   });
-
-  // Set max for scrollRange input based on slider width
-  function updateScrollRangeMax() {
-    // We use 0-100 scale so no need to adjust max here, but can update if needed
-    scrollRange.value = 0;
-  }
-
-  // Initialize everything
-  fetchPlaylist();
 </script>
 
 </body>
