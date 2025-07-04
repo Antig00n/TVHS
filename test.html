@@ -75,7 +75,15 @@ rel="stylesheet"/>
 
 <!-- Random Autoplaying Movie Player -->
 <div class="random-player-container text-center mb-4">
-  <video id="randomMoviePlayer" width="640" height="360" controls autoplay muted playsinline style="max-width: 100%; border-radius: 10px;">
+  <!-- place above slider -->
+<video
+  id="randomVideoPlayer"
+  class="video-player"
+  autoplay
+  playsinline
+  controls
+  style="width: 320px; height: 180px; margin-bottom: 1rem;"></video>
+
     <source src="" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -276,24 +284,27 @@ const randomPlayer = document.getElementById("randomMoviePlayer");
 
 function playRandomMovie() {
   if (!allVideos.length) {
-    console.warn("No videos available to play.");
+    console.warn("No videos loaded yet.");
     return;
   }
 
-  const randomIndex = Math.floor(Math.random() * allVideos.length);
-  const video = allVideos[randomIndex];
-  if (!video || !video.filename) return;
+  const player = document.getElementById("randomVideoPlayer");
 
-  const path = `tvhsmovies/${video.filename}`;
-  const source = randomPlayer.querySelector("source");
-  source.src = path;
+  function playNext() {
+    const randomIndex = Math.floor(Math.random() * allVideos.length);
+    const video = allVideos[randomIndex];
+    player.src = `tvhsmovies/${video.filename}`;
+    player.volume = 0.3; // set initial volume
+    player.play().catch((e) => {
+      console.warn("Autoplay prevented:", e);
+    });
+  }
 
-  console.log("Now playing:", path); // ✅ Debug
+  // Play first video immediately
+  playNext();
 
-  randomPlayer.load();
-  randomPlayer.play().catch(err => {
-    console.error("Autoplay failed:", err);
-  });
+  // When video ends, play another random video
+  player.onended = playNext;
 }
 
 randomPlayer.addEventListener("ended", playRandomMovie);
