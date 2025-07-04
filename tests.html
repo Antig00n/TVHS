@@ -176,12 +176,19 @@ right: 0; bottom: 0;
 
 <main>
 
-  <div class="container">
-    <h1 class="mb-2">🎬 TVHS Video Library</h1>
-    <p class="notice">Tap on a thumbnail to watch. Google Drive videos require click to activate audio.</p>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+  <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;"/>
+  <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
+    Sort: Newest
+  </button>
+</div>
 
-    <div id="slider" aria-label="Video thumbnails slider"></div>
+<!-- Vertical scroll wrapper with horizontal movie slider inside -->
+<div class="vertical-scroll-wrapper" style="height: 300px; overflow-y: auto; overflow-x: hidden; margin-bottom: -8%;">
+  <div class="slider-container" id="movieSlider" style="overflow-y: hidden;">
+    <!-- movie cards injected here -->
   </div>
+</div>
 
   <div id="videoPopup" role="dialog" aria-modal="true" aria-label="Video player popup" tabindex="-1">
     <div id="popupControls">
@@ -203,83 +210,86 @@ right: 0; bottom: 0;
   <!-- Bootstrap Bundle JS (with Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    async function loadVideos() {
-      try {
-        const res = await fetch('/.netlify/functions/get-google-drive-videos');
-        if (!res.ok) throw new Error("Failed to fetch videos");
+<script>
+  async function loadVideos() {
+    try {
+      const res = await fetch('/.netlify/functions/get-google-drive-videos');
+      if (!res.ok) throw new Error("Failed to fetch videos");
 
-        const videos = await res.json();
-        const slider = document.getElementById('slider');
-        const popup = document.getElementById('videoPopup');
-        const iframe = popup.querySelector('iframe');
-        const closeBtn = document.getElementById('closeBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const videos = await res.json();
+      const slider = document.getElementById('movieSlider'); // changed from 'slider' to 'movieSlider'
+      const popup = document.getElementById('videoPopup');
+      const iframe = popup.querySelector('iframe');
+      const closeBtn = document.getElementById('closeBtn');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-        videos.forEach(video => {
-          const card = document.createElement('div');
-          card.className = 'thumb-card';
-          card.tabIndex = 0; // keyboard focusable
+      // Clear existing cards if any
+      slider.innerHTML = '';
 
-          const thumbUrl = `https://drive.google.com/thumbnail?id=${video.id}`;
+      videos.forEach(video => {
+        const card = document.createElement('div');
+        card.className = 'thumb-card';
+        card.tabIndex = 0; // keyboard focusable
 
-          const img = document.createElement('img');
-          img.src = thumbUrl;
-          img.alt = video.title;
+        const thumbUrl = `https://drive.google.com/thumbnail?id=${video.id}`;
 
-          const title = document.createElement('div');
-          title.className = 'thumb-title';
-          title.textContent = video.title;
+        const img = document.createElement('img');
+        img.src = thumbUrl;
+        img.alt = video.title;
 
-          card.appendChild(img);
-          card.appendChild(title);
+        const title = document.createElement('div');
+        title.className = 'thumb-title';
+        title.textContent = video.title;
 
-          function openPopup() {
-            iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
-            popup.classList.add('active');
-            document.body.style.overflow = 'hidden'; // prevent background scroll
-            iframe.focus();
+        card.appendChild(img);
+        card.appendChild(title);
+
+        function openPopup() {
+          iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
+          popup.classList.add('active');
+          document.body.style.overflow = 'hidden'; // prevent background scroll
+          iframe.focus();
+        }
+
+        card.addEventListener('click', openPopup);
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openPopup();
           }
-
-          card.addEventListener('click', openPopup);
-          card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              openPopup();
-            }
-          });
-
-          slider.appendChild(card);
         });
 
-        closeBtn.addEventListener('click', () => {
+        slider.appendChild(card);
+      });
+
+      closeBtn.addEventListener('click', () => {
+        iframe.src = '';
+        popup.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+
+      fullscreenBtn.addEventListener('click', () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          popup.requestFullscreen().catch(() => {});
+        }
+      });
+
+      window.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && popup.classList.contains('active')) {
           iframe.src = '';
           popup.classList.remove('active');
           document.body.style.overflow = '';
-        });
+        }
+      });
 
-        fullscreenBtn.addEventListener('click', () => {
-          if (document.fullscreenElement) {
-            document.exitFullscreen();
-          } else {
-            popup.requestFullscreen().catch(() => {});
-          }
-        });
-
-        window.addEventListener('keydown', e => {
-          if (e.key === 'Escape' && popup.classList.contains('active')) {
-            iframe.src = '';
-            popup.classList.remove('active');
-            document.body.style.overflow = '';
-          }
-        });
-
-      } catch (err) {
-        console.error('Error loading videos:', err);
-      }
+    } catch (err) {
+      console.error('Error loading videos:', err);
     }
+  }
 
-    loadVideos();
-  </script>
+  loadVideos();
+</script>
 </body>
 </html>
