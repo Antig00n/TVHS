@@ -161,6 +161,9 @@
 
 <main>
 
+  <iframe id="randomVideoPlayer" allow="autoplay" allowfullscreen style="width: 100%; height: 506px; border: none;"></iframe>
+
+
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
     <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;" />
     <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
@@ -306,5 +309,49 @@
 
   loadVideos();
 </script>
+
+<script>
+let allVideos = [];
+
+async function setupRandomMoviePlayer() {
+  const player = document.getElementById("randomVideoPlayer");
+
+  try {
+    const res = await fetch("/.netlify/functions/get-google-drive-videos");
+    if (!res.ok) throw new Error("Failed to load videos");
+    allVideos = await res.json();
+
+    if (!allVideos.length) {
+      console.warn("No videos found.");
+      return;
+    }
+
+    function playNext() {
+      const randomIndex = Math.floor(Math.random() * allVideos.length);
+      const video = allVideos[randomIndex];
+
+      player.src = `https://drive.google.com/file/d/${video.id}/preview`;
+      player.volume = 0.3;
+
+      player.play().catch(e => {
+        console.warn("Autoplay prevented:", e);
+      });
+    }
+
+    // First play
+    playNext();
+
+    // On video end, play next
+    player.onended = playNext;
+
+  } catch (err) {
+    console.error("Error setting up random player:", err);
+  }
+}
+
+setupRandomMoviePlayer();
+</script>
+
+
 </body>
 </html>
