@@ -75,18 +75,11 @@ rel="stylesheet"/>
 
 <!-- Random Autoplaying Movie Player -->
 <div class="random-player-container text-center mb-4">
-  <!-- place above slider -->
-<video
-  id="randomVideoPlayer"
-  class="video-player"
-  autoplay
-  playsinline
-  style="width: 480px; height: 270px; margin-bottom: -1rem; margin-top: -3%; object-fit: cover;">
-
-    <source src="" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <div id="youtubePlayer" style="width: 480px; height: 270px; margin-bottom: -1rem; margin-top: -3%;">
+    <!-- YouTube iframe will be injected here -->
+  </div>
 </div>
+
 
 
 
@@ -144,6 +137,69 @@ rel="stylesheet"/>
   
 </div>
 
+<script>
+  const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
+  const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
+  let youtubePlayer;
+  let playlist = [];
+  let currentIndex = 0;
+
+  function onYouTubeIframeAPIReady() {
+    fetchVideos().then(() => {
+      if (playlist.length > 0) {
+        loadVideo(playlist[currentIndex]);
+      }
+    });
+  }
+
+  function loadVideo(videoId) {
+    if (youtubePlayer) {
+      youtubePlayer.loadVideoById(videoId);
+    } else {
+      youtubePlayer = new YT.Player('youtubePlayer', {
+        videoId: videoId,
+        width: 480,
+        height: 270,
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          modestbranding: 1,
+          rel: 0
+        },
+        events: {
+          onStateChange: onPlayerStateChange
+        }
+      });
+    }
+  }
+
+  function onPlayerStateChange(event) {
+    // When video ends (state 0), load next
+    if (event.data === YT.PlayerState.ENDED) {
+      currentIndex = (currentIndex + 1) % playlist.length;
+      loadVideo(playlist[currentIndex]);
+    }
+  }
+
+  async function fetchVideos() {
+    const apiURL = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=25`;
+
+    try {
+      const res = await fetch(apiURL);
+      const data = await res.json();
+      playlist = data.items
+        .filter(item => item.id.kind === 'youtube#video')
+        .map(item => item.id.videoId);
+    } catch (err) {
+      console.error("Failed to fetch YouTube videos:", err);
+    }
+  }
+
+  // Load YouTube API script
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+</script>
 
 
   <script>
@@ -190,134 +246,6 @@ function toggleFullscreen() {
 }
 
   </script>
-
-<script>
-  let allVideos = [];
-  let isNewestFirst = true;
-  const container = document.getElementById("movieSlider");
-  const searchInput = document.getElementById("searchInput");
-  const toggleSortBtn = document.getElementById("toggleSortBtn");
-
-  async function loadVHSClips() {
-  try {
-    const res = await fetch("/.netlify/functions/get-vhs-videos");
-    if (!res.ok) throw new Error("Failed to fetch videos");
-    allVideos = await res.json();
-    renderMovies();
-
-    // ✅ 👇 ADD THIS LINE AT THE END
-    playRandomMovie(); // now that videos are loaded, start random playback
-
-  } catch (err) {
-    console.error("Failed to load VHS movies:", err);
-    container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
-  }
-}
-
-  function renderMovies() {
-    container.innerHTML = ""; // Clear current
-
-    // Get search query, lowercase for case-insensitive match
-    const query = searchInput.value.toLowerCase();
-
-    // Filter by title match
-    let filteredVideos = allVideos.filter(video => {
-      const filename = video.filename;
-      const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "").replace(/_/g, " ").toLowerCase();
-      return titleRaw.includes(query);
-    });
-
-    // Sort by date (assuming video.showdate exists or use filename as fallback)
-    filteredVideos.sort((a, b) => {
-      // If you have a date property like a.showdate, use it here. Otherwise fallback:
-      // Example: date format YYYY-MM-DD or just sort by filename string:
-      const dateA = a.showdate ? new Date(a.showdate) : new Date(a.filename);
-      const dateB = b.showdate ? new Date(b.showdate) : new Date(b.filename);
-
-      return isNewestFirst ? dateB - dateA : dateA - dateB;
-    });
-
-    filteredVideos.forEach(video => {
-      const filename = video.filename;
-      const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "");
-      const title = titleRaw.replace(/_/g, " ").trim();
-
-      const card = document.createElement("div");
-      card.className = "movie-card";
-
-      card.innerHTML = `
-        <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${video.description || ''}">
-          <div class="position-relative">
-            <img src="img/vhsthumbs/${titleRaw}.webp" alt="${title}"
-                 onerror="this.onerror=null;this.src='img/vhsthumbs/${titleRaw}.png';
-                          this.onerror=function(){this.src='img/vhsthumbs/${titleRaw}.jpg'};">
-          </div>
-          <div class="movie-title">${title}</div>
-        </button>
-      `;
-
-      container.appendChild(card);
-    });
-
-    if (filteredVideos.length === 0) {
-      container.innerHTML = "<p style='color: white;'>No videos found.</p>";
-    }
-  }
-
-  // Scroll vertical wrapper vertically
-  function scrollSlider(direction) {
-    const scrollContainer = document.querySelector(".vertical-scroll-wrapper");
-    const scrollAmount = 260;
-    scrollContainer.scrollBy({ top: direction * scrollAmount, behavior: "smooth" });
-  }
-
-  // Toggle sort order and update button text
-  toggleSortBtn.addEventListener("click", () => {
-    isNewestFirst = !isNewestFirst;
-    toggleSortBtn.textContent = isNewestFirst ? "Sort: Newest" : "Sort: Oldest";
-    renderMovies();
-  });
-
-  // Filter movies on search input
-  searchInput.addEventListener("input", () => {
-    renderMovies();
-  });
-
-  window.addEventListener("DOMContentLoaded", loadVHSClips);
-</script>
-
-<script>
-const randomPlayer = document.getElementById("randomMoviePlayer");
-
-function playRandomMovie() {
-  if (!allVideos.length) {
-    console.warn("No videos loaded yet.");
-    return;
-  }
-
-  const player = document.getElementById("randomVideoPlayer");
-
-  function playNext() {
-    const randomIndex = Math.floor(Math.random() * allVideos.length);
-    const video = allVideos[randomIndex];
-    player.src = `tvhsmovies/${video.filename}`;
-    player.volume = 0.3; // set initial volume
-    player.play().catch((e) => {
-      console.warn("Autoplay prevented:", e);
-    });
-  }
-
-  // Play first video immediately
-  playNext();
-
-  // When video ends, play another random video
-  player.onended = playNext;
-}
-
-randomPlayer.addEventListener("ended", playRandomMovie);
-
-</script>
-
 
 <script>
   function scrollSlider(direction) {
