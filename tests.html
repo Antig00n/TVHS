@@ -1,173 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Slider</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TVHS Drive Videos</title>
   <style>
-    .slider-container {
-      overflow-x: auto;
-      white-space: nowrap;
-      padding: 1rem;
-    }
-    .video-card {
-      display: inline-block;
-      width: 300px;
-      margin-right: 16px;
-      vertical-align: top;
-      cursor: pointer;
-    }
-    .video-card img {
-      width: 100%;
-      border-radius: 8px;
-    }
-    .video-title {
-      font-size: 14px;
-      margin-top: 0.5rem;
-      color: #fff;
-    }
-    .video-popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-    .video-popup iframe {
-      width: 80vw;
-      height: 45vw;
-      max-width: 900px;
-      max-height: 506px;
-      border: none;
-    }
-    .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 28px;
-      color: white;
-      cursor: pointer;
-    }
     body {
-      background-color: #111;
-      color: white;
+      background: #111;
+      color: #fff;
       font-family: sans-serif;
+      padding: 20px;
+    }
+
+    .video-section {
+      margin-bottom: 40px;
+    }
+
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .title {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+
+    .notice {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
+  <h1>🎬 TVHS Video Library</h1>
+  <p class="notice">Tap on a video to hear sound. Google Drive does not allow autoplay with audio.</p>
 
-<h2 style="color: rgb(168, 0, 0);">RECENTE CLIPS</h2>
-    
-<div id="weeklySpotlightCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="30000">
- 
-  <div class="carousel-inner" >
-    <div class="carousel-item active">
-     <div class="video-wrapper">
-  <iframe id="video1" src="" frameborder="0" allowfullscreen></iframe>
-
-  <h2 style="text-align: center;">TVHS YouTube Videos</h2>
-  <div id="slider" class="slider-container"></div>
-
-  <div id="videoPopup" class="video-popup">
-    <span class="close-btn" onclick="closePopup()">&times;</span>
-    <iframe id="popupFrame" src="" allowfullscreen></iframe>
-  </div>
+  <div id="videoContainer"></div>
 
   <script>
-    const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
-    const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
-    const maxResults = 20;
-
-    async function fetchYouTubeVideos() {
+    async function loadVideos() {
       try {
-        const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=${maxResults}`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
+        const res = await fetch('/.netlify/functions/get-google-drive-videos');
+        if (!res.ok) throw new Error("Failed to fetch videos");
 
-        const slider = document.getElementById("slider");
+        const videos = await res.json();
+        const container = document.getElementById('videoContainer');
 
-        data.items
-          .filter(item => item.id.kind === "youtube#video")
-          .forEach(video => {
-            const videoId = video.id.videoId;
-            const title = video.snippet.title;
-            const thumbnail = video.snippet.thumbnails.medium.url;
+        videos.forEach(video => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'video-section';
 
-            const card = document.createElement("div");
-            card.className = "video-card";
-            card.innerHTML = `
-              <img src="${thumbnail}" alt="${title}" />
-              <div class="video-title">${title}</div>
-            `;
-            card.onclick = () => openPopup(videoId);
-            slider.appendChild(card);
-          });
-      } catch (error) {
-        console.error("Error loading YouTube videos:", error);
+          const title = document.createElement('div');
+          title.className = 'title';
+          title.textContent = video.title;
+
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://drive.google.com/file/d/${video.id}/preview`;
+          iframe.allow = 'autoplay';
+
+          wrapper.appendChild(title);
+          wrapper.appendChild(iframe);
+          container.appendChild(wrapper);
+        });
+      } catch (err) {
+        console.error('Error loading videos:', err);
       }
     }
 
-    function openPopup(videoId) {
-      const popup = document.getElementById('videoPopup');
-      const frame = document.getElementById('popupFrame');
-      frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-      popup.style.display = 'flex';
-    }
-
-    function closePopup() {
-      const popup = document.getElementById('videoPopup');
-      const frame = document.getElementById('popupFrame');
-      frame.src = '';
-      popup.style.display = 'none';
-    }
-
-    fetchYouTubeVideos();
+    loadVideos();
   </script>
-
- <script>
-
-  async function loadLatestVideos() {
-    try {
-      const playlistRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
-      );
-      const playlistData = await playlistRes.json();
-      console.log('Playlist response:', playlistData);
-
-      if (!playlistData.items || playlistData.items.length === 0) {
-        throw new Error("No playlist data found — check your channel ID and API key.");
-      }
-
-      const uploadsPlaylistId = playlistData.items[0].contentDetails.relatedPlaylists.uploads;
-
-      const videosRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${apiKey}`
-      );
-      const videosData = await videosRes.json();
-      console.log('Videos:', videosData);
-
-      videosData.items.forEach((item, index) => {
-        const videoId = item.snippet.resourceId.videoId;
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?origin=${location.origin}`;
-        const iframe = document.getElementById(`video${index + 1}`);
-        if (iframe) iframe.src = embedUrl;
-      });
-
-    } catch (error) {
-      console.error('Failed to load videos:', error);
-    }
-  }
-
-  loadLatestVideos();
-
-
-</script>
-
 </body>
 </html>
