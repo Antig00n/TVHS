@@ -162,12 +162,13 @@
 <main>
 
  <div id="randomMovieWrapper" style="margin-bottom: 2rem;">
-  <iframe
-    id="randomVideoPlayer"
-    allow="autoplay"
-    allowfullscreen
-    style="width: 100%; max-width: 900px; height: calc(100vw * 9 / 16); max-height: 506px; border: none; display: block; margin: 0 auto;"
-  ></iframe>
+ <video
+  id="randomVideoPlayer"
+  muted
+  autoplay
+  playsinline
+  style="width: 100%; max-width: 900px; height: auto; display: block; margin: 0 auto;"
+></video>
 </div>
 
 
@@ -320,76 +321,54 @@
 
 <script>
 let allVideos = [];
-let isPopupActive = false;
+
 const player = document.getElementById("randomVideoPlayer");
 const popup = document.getElementById("videoPopup");
-const popupIframe = popup.querySelector("iframe");
 
-// Load Google Drive videos
-async function setupRandomMoviePlayer() {
+async function setupRandomDriveVideoPlayer() {
   try {
     const res = await fetch("/.netlify/functions/get-google-drive-videos");
-    if (!res.ok) throw new Error("Failed to load videos");
+    if (!res.ok) throw new Error("Could not fetch videos");
 
     allVideos = await res.json();
-    if (!allVideos.length) {
-      console.warn("No videos found.");
-      return;
-    }
+    if (!allVideos.length) return;
 
     playRandomVideo();
+
+    // Pause/resume based on popup visibility
+    const observer = new MutationObserver(() => {
+      const active = popup.classList.contains("active");
+      if (active) {
+        player.pause();
+      } else {
+        playRandomVideo();
+      }
+    });
+
+    observer.observe(popup, { attributes: true, attributeFilter: ["class"] });
+
+    // When video ends, play next
+    player.addEventListener("ended", playRandomVideo);
   } catch (err) {
-    console.error("Error setting up random player:", err);
+    console.error("Error setting up video player:", err);
   }
 }
 
-// Play a random video
 function playRandomVideo() {
-  if (isPopupActive) return; // Don't play if popup is active
+  if (!allVideos.length) return;
 
   const randomIndex = Math.floor(Math.random() * allVideos.length);
   const video = allVideos[randomIndex];
 
-  player.src = `https://drive.google.com/file/d/${video.id}/preview?autoplay=1`;
-
-  // Re-randomize after ~30 seconds (or whatever average video length you want)
-  setTimeout(() => {
-    if (!isPopupActive) playRandomVideo();
-  }, 30000);
+  // Use your proxy endpoint
+  const streamUrl = `/.netlify/functions/stream-video?id=${video.id}`;
+  player.src = streamUrl;
+  player.load();
+  player.play().catch(e => console.warn("Autoplay blocked:", e));
 }
 
-// Stop the random player
-function stopRandomPlayer() {
-  player.src = "";
-}
+setupRandomDriveVideoPlayer();
 
-// Hook into popup events
-function overridePopupBehavior() {
-  const closeBtn = document.getElementById("closeBtn");
-
-  // When popup opens
-  const originalOpen = popupIframe.src;
-  const observer = new MutationObserver(() => {
-    isPopupActive = popup.classList.contains("active");
-    if (isPopupActive) {
-      stopRandomPlayer();
-    } else {
-      playRandomVideo();
-    }
-  });
-
-  observer.observe(popup, { attributes: true, attributeFilter: ["class"] });
-
-  // Fallback: resume when popup closes manually
-  closeBtn.addEventListener("click", () => {
-    isPopupActive = false;
-    playRandomVideo();
-  });
-}
-
-// Initialize
-setupRandomMoviePlayer();
-overridePopupBehavior();
 </script>
 
 
