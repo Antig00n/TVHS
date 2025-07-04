@@ -176,7 +176,11 @@ function closeVideo() {
 
   document.getElementById('videoPopup').style.display = 'none';
   document.getElementById('overlay').style.display = 'none';
+
+  // ✅ Resume the random video playback
+  document.getElementById("randomVideoPlayer")?.play();
 }
+
 
 function toggleFullscreen() {
   const video = document.getElementById('videoElement');
