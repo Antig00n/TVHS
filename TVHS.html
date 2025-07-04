@@ -6,137 +6,107 @@
   <meta name="viewport" content="width=device-width, initial-scale =1" />
   <title>TVHS</title>
 
-<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/reset.css"> 
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/moviecards.css">
 
- 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"/>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-           <link rel="stylesheet" href="css/moviecards.css">
 </head>
 <body>
-  <style> </style>
- <!-- NAVBAR -->
-   <div class="navvy">
-<nav class="navbar navbar-expand-lg ">
-  <div class="container-fluid d-flex flex-column flex-lg-row align-items-center justify-content-center gap-3">
+<div class="navvy">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
 
-    <!-- Guytje -->
-    <div class="guytje order-0 mb-2 mb-lg-0 order-lg-0" style="width: 5%;">
-      <img src="img/guytje2.png" class="img-fluid" alt="Cartoon placeholder" />
+      <!-- Guytje -->
+      <div class="guytje order-0 mb-2 mb-lg-0">
+        <a href="muziek.html">
+          <img src="img/guytje2.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
+        </a>
+      </div>
+
+      <!-- Left nav (FILMS / VHS) -->
+      <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-1 p-0">
+        <li class="nav-item d-flex">
+          <a class="nav-link px-2 py-1   btn-sm btn-red-active" href="TVHS.html">FILMS</a>
+        </li>
+        <li class="nav-item d-flex">
+          <a class="nav-link px-2 py-1" href="muziek.html">VHS</a>
+        </li>
+      </ul>
+
+      <!-- Logo -->
+      <a class="navbar-brand order-1 order-lg-2 my-2 my-lg-0 px-2" href="index.html">
+        <img class="logo" src="img/TVHSLL.png" alt="Logo">
+      </a>
+
+      <!-- Right nav (MERCH / CONTACT) -->
+      <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-3 p-0">
+        <li class="nav-item d-flex">
+          <a class="nav-link px-2 py-1" href="merch.html" >MERCH</a>
+        </li>
+        <li class="nav-item d-flex">
+          <a class="nav-link px-2 py-1" id="dates" href="datescon.html">CONTACT</a>
+        </li>
+      </ul>
+
     </div>
-
-    <!-- Left nav (SHOWS) -->
-    <ul class="navbar-nav d-flex flex-column flex-lg-row align-items-center order-2 order-lg-1 p-0 m-0">
-      <li class="nav-item d-flex align-items-center">
-        <a class="nav-link px-2 py-1  btn-sm btn-red-active" href="TVHS.html">CLIPS</a>
-      </li>
-             <li class="nav-item d-flex align-items-center">
-        <a class="nav-link px-2 py-1" href="muziek.html">MUSIC</a>
-      </li>
-    </ul>
-
-    <!-- Logo -->
-     
-    <a class="navbar-brand order-1 order-lg-2 my-2 my-lg-0 px-2" href="index.html">
-      <img class="logo" src="img/TVHSLL.png" alt="Logo">
-    </a>
-
-    <!-- Right nav (MUSIC and DATES) -->
-    <ul class="navbar-nav d-flex flex-column flex-lg-row align-items-center order-3 p-0 m-0">
-      
-      
-            <li class="nav-item d-flex align-items-center">
-        <a class="nav-link px-2 py-1" href="merch.html">MERCH</a>
-      </li>
-
-      
-       <li class="nav-item d-flex align-items-center">
-        <a class="nav-link px-2 py-1 " id="dates" href="datescon.html">DATES & CONTACT</a>
-      </li>
-      
-    </ul>
-
-  </div>
-</nav>
-
-
+  </nav>
 </div>
 
+
 <main>
-  <div class="slider-wrapper">
-    <div class="slider-title" style="color: rgb(168, 0, 0);" >ALLE VHS CLIPS</div>
+    <div id="loading-overlay" style="
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <img src="your-loading.gif" alt="Loading..." style="width: 100px; height: 100px; position: absolute; margin-top: 1%; margin-left: 1%;"  />
+</div>
 
-    <button class="arrow-btn arrow-left" onclick="scrollSlider(-1)">
-      ‹
-    </button>
+<div style="max-width: 100%; margin: auto; padding: 1rem;">
 
-    <div class="movies slider-container" id="movieSlider">
-      <div class="movie-card">
-        <button onclick="showVideo(this)" data-src="videos/ROI1.mp4" data-description="Een aflevering over de wonderen van de natuur met Kleine Kova.">
-          <div class="position-relative">
-            <img src="img/NMK.png" alt="Movie 1">
-            <div class="badge-custom">Recently Added</div>
-          </div>
-          <div class="movie-title">Natuur Met Kleine Kova</div>
-        </button>
-      </div>
+<!-- Random Autoplaying Movie Player -->
+<div class="random-player-container text-center mb-4">
+  <!-- place above slider -->
+<video
+  id="randomVideoPlayer"
+  class="video-player"
+  autoplay
+  playsinline
+  style="width: 480px; height: 270px; margin-bottom: -1rem; margin-top: -3%; object-fit: cover;">
 
-      <div class="movie-card">
-        <button onclick="alert('Clicked K-Pop Demon Hunters')">
-          <div class="position-relative">
-            <img src="img/IDMR.png" alt="Movie 2">
-            <div class="badge-custom">Recently Added</div>
-          </div>
-          <div class="movie-title">Iets Doen ft Roi</div>
-        </button>
-      </div>
+    <source src="" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
-      <div class="movie-card">
-        <button onclick="alert('Clicked Wicked')">
-          <div class="position-relative">
-            <img src="img/TMS.jpg" alt="Movie 3">
-            <div class="badge-custom">Recently Added</div>
-          </div>
-          <div class="movie-title">Trivia Met Slagter</div>
-        </button>
-      </div>
 
-      <div class="movie-card">
-        <button onclick="alert('Clicked Case 39')">
-          <div class="position-relative">
-            <img src="img/ECMP.png"Movie 4">
-          </div>
-          <div class="movie-title">Enge Chap avec Parsa</div>
-        </button>
-      </div>
 
-      <div class="movie-card">
-        <button onclick="alert('Clicked R.I.F')">
-          <div class="position-relative">
-            <img src="img/PTKC.png" alt="Movie 5">
-          </div>
-          <div class="movie-title">Parenting Tips Met Crack</div>
-        </button>
-      </div>
-
-      <div class="movie-card">
-        <button onclick="alert('Clicked Straw')">
-          <div class="position-relative">
-            <img src="img/ECMP.png" alt="Movie 6">
-            <div class="badge-custom">Recently Added</div>
-          </div>
-          <div class="movie-title">Gay Seks Met Antigoon</div>
-        </button>
-      </div>
-    </div>
-
-    <button class="arrow-btn arrow-right" onclick="scrollSlider(1)">
-      ›
+  <!-- Search & Sort Controls -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;"/>
+    <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
+      Sort: Newest
     </button>
   </div>
+
+  <!-- Vertical scroll wrapper with horizontal movie slider inside -->
+  <div class="vertical-scroll-wrapper" style="height: 300px; overflow-y: auto; overflow-x: hidden; margin-bottom: -8%;">
+    <div class="slider-container" id="movieSlider" style="overflow-y: hidden;" >
+      <!-- movie cards injected here -->
+    </div>
+  </div>
+
+  
+</div>
 </main>
 
   <footer class="footers2">
@@ -177,12 +147,15 @@
 
 
   <script>
-  function showVideo(button) {
+function showVideo(button) {
   const src = button.getAttribute('data-src');
-  const description = button.getAttribute('data-description') || ""; // 👈 fallback if missing
+  const description = button.getAttribute('data-description') || "";
   const video = document.getElementById('videoElement');
   const source = document.getElementById('videoSource');
   const descriptionBox = document.getElementById('videoDescription');
+
+  // ✅ Stop autoplaying video
+  document.getElementById("randomVideoPlayer")?.pause();
 
   source.src = src;
   video.load();
@@ -195,6 +168,7 @@
 }
 
 
+
 function closeVideo() {
   const video = document.getElementById('videoElement');
   video.pause();
@@ -202,7 +176,11 @@ function closeVideo() {
 
   document.getElementById('videoPopup').style.display = 'none';
   document.getElementById('overlay').style.display = 'none';
+
+  // ✅ Resume the random video playback
+  document.getElementById("randomVideoPlayer")?.play();
 }
+
 
 function toggleFullscreen() {
   const video = document.getElementById('videoElement');
@@ -212,6 +190,133 @@ function toggleFullscreen() {
 }
 
   </script>
+
+<script>
+  let allVideos = [];
+  let isNewestFirst = true;
+  const container = document.getElementById("movieSlider");
+  const searchInput = document.getElementById("searchInput");
+  const toggleSortBtn = document.getElementById("toggleSortBtn");
+
+  async function loadVHSClips() {
+  try {
+    const res = await fetch("/.netlify/functions/get-vhs-videos");
+    if (!res.ok) throw new Error("Failed to fetch videos");
+    allVideos = await res.json();
+    renderMovies();
+
+    // ✅ 👇 ADD THIS LINE AT THE END
+    playRandomMovie(); // now that videos are loaded, start random playback
+
+  } catch (err) {
+    console.error("Failed to load VHS movies:", err);
+    container.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
+  }
+}
+
+  function renderMovies() {
+    container.innerHTML = ""; // Clear current
+
+    // Get search query, lowercase for case-insensitive match
+    const query = searchInput.value.toLowerCase();
+
+    // Filter by title match
+    let filteredVideos = allVideos.filter(video => {
+      const filename = video.filename;
+      const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "").replace(/_/g, " ").toLowerCase();
+      return titleRaw.includes(query);
+    });
+
+    // Sort by date (assuming video.showdate exists or use filename as fallback)
+    filteredVideos.sort((a, b) => {
+      // If you have a date property like a.showdate, use it here. Otherwise fallback:
+      // Example: date format YYYY-MM-DD or just sort by filename string:
+      const dateA = a.showdate ? new Date(a.showdate) : new Date(a.filename);
+      const dateB = b.showdate ? new Date(b.showdate) : new Date(b.filename);
+
+      return isNewestFirst ? dateB - dateA : dateA - dateB;
+    });
+
+    filteredVideos.forEach(video => {
+      const filename = video.filename;
+      const titleRaw = filename.replace("vhsmovie", "").replace(".mp4", "");
+      const title = titleRaw.replace(/_/g, " ").trim();
+
+      const card = document.createElement("div");
+      card.className = "movie-card";
+
+      card.innerHTML = `
+        <button onclick="showVideo(this)" data-src="tvhsmovies/${filename}" data-description="${video.description || ''}">
+          <div class="position-relative">
+            <img src="img/vhsthumbs/${titleRaw}.webp" alt="${title}"
+                 onerror="this.onerror=null;this.src='img/vhsthumbs/${titleRaw}.png';
+                          this.onerror=function(){this.src='img/vhsthumbs/${titleRaw}.jpg'};">
+          </div>
+          <div class="movie-title">${title}</div>
+        </button>
+      `;
+
+      container.appendChild(card);
+    });
+
+    if (filteredVideos.length === 0) {
+      container.innerHTML = "<p style='color: white;'>No videos found.</p>";
+    }
+  }
+
+  // Scroll vertical wrapper vertically
+  function scrollSlider(direction) {
+    const scrollContainer = document.querySelector(".vertical-scroll-wrapper");
+    const scrollAmount = 260;
+    scrollContainer.scrollBy({ top: direction * scrollAmount, behavior: "smooth" });
+  }
+
+  // Toggle sort order and update button text
+  toggleSortBtn.addEventListener("click", () => {
+    isNewestFirst = !isNewestFirst;
+    toggleSortBtn.textContent = isNewestFirst ? "Sort: Newest" : "Sort: Oldest";
+    renderMovies();
+  });
+
+  // Filter movies on search input
+  searchInput.addEventListener("input", () => {
+    renderMovies();
+  });
+
+  window.addEventListener("DOMContentLoaded", loadVHSClips);
+</script>
+
+<script>
+const randomPlayer = document.getElementById("randomMoviePlayer");
+
+function playRandomMovie() {
+  if (!allVideos.length) {
+    console.warn("No videos loaded yet.");
+    return;
+  }
+
+  const player = document.getElementById("randomVideoPlayer");
+
+  function playNext() {
+    const randomIndex = Math.floor(Math.random() * allVideos.length);
+    const video = allVideos[randomIndex];
+    player.src = `tvhsmovies/${video.filename}`;
+    player.volume = 0.3; // set initial volume
+    player.play().catch((e) => {
+      console.warn("Autoplay prevented:", e);
+    });
+  }
+
+  // Play first video immediately
+  playNext();
+
+  // When video ends, play another random video
+  player.onended = playNext;
+}
+
+randomPlayer.addEventListener("ended", playRandomMovie);
+
+</script>
 
 
 <script>
@@ -223,6 +328,16 @@ function toggleFullscreen() {
       behavior: "smooth"
     });
   }
+</script>
+
+<script>
+  // Wait 5 seconds then hide loading overlay
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      const overlay = document.getElementById("loading-overlay");
+      if (overlay) overlay.style.display = "none";
+    }, 2000); // 5000ms = 5 seconds
+  });
 </script>
 
 </body>
