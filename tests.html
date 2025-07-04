@@ -320,45 +320,78 @@
 
 <script>
 let allVideos = [];
+let isPopupActive = false;
+const player = document.getElementById("randomVideoPlayer");
+const popup = document.getElementById("videoPopup");
+const popupIframe = popup.querySelector("iframe");
 
+// Load Google Drive videos
 async function setupRandomMoviePlayer() {
-  const player = document.getElementById("randomVideoPlayer");
-
   try {
     const res = await fetch("/.netlify/functions/get-google-drive-videos");
     if (!res.ok) throw new Error("Failed to load videos");
-    allVideos = await res.json();
 
+    allVideos = await res.json();
     if (!allVideos.length) {
       console.warn("No videos found.");
       return;
     }
 
-    function playNext() {
-      const randomIndex = Math.floor(Math.random() * allVideos.length);
-      const video = allVideos[randomIndex];
-
-      player.src = `https://drive.google.com/file/d/${video.id}/preview`;
-      player.volume = 0.3;
-
-      player.play().catch(e => {
-        console.warn("Autoplay prevented:", e);
-      });
-    }
-
-    // First play
-    playNext();
-
-    // On video end, play next
-    player.onended = playNext;
-
+    playRandomVideo();
   } catch (err) {
     console.error("Error setting up random player:", err);
   }
 }
 
+// Play a random video
+function playRandomVideo() {
+  if (isPopupActive) return; // Don't play if popup is active
+
+  const randomIndex = Math.floor(Math.random() * allVideos.length);
+  const video = allVideos[randomIndex];
+
+  player.src = `https://drive.google.com/file/d/${video.id}/preview?autoplay=1`;
+
+  // Re-randomize after ~30 seconds (or whatever average video length you want)
+  setTimeout(() => {
+    if (!isPopupActive) playRandomVideo();
+  }, 30000);
+}
+
+// Stop the random player
+function stopRandomPlayer() {
+  player.src = "";
+}
+
+// Hook into popup events
+function overridePopupBehavior() {
+  const closeBtn = document.getElementById("closeBtn");
+
+  // When popup opens
+  const originalOpen = popupIframe.src;
+  const observer = new MutationObserver(() => {
+    isPopupActive = popup.classList.contains("active");
+    if (isPopupActive) {
+      stopRandomPlayer();
+    } else {
+      playRandomVideo();
+    }
+  });
+
+  observer.observe(popup, { attributes: true, attributeFilter: ["class"] });
+
+  // Fallback: resume when popup closes manually
+  closeBtn.addEventListener("click", () => {
+    isPopupActive = false;
+    playRandomVideo();
+  });
+}
+
+// Initialize
 setupRandomMoviePlayer();
+overridePopupBehavior();
 </script>
+
 
 
 </body>
