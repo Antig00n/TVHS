@@ -84,7 +84,7 @@ width: 97% !important ;
       display: inline-block;
       transform: rotate(-10deg);
       animation: floatUpDown 2s ease-in-out infinite;
-
+margin-top: 20%;
 
     }
     @keyframes floatUpDown {
