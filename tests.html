@@ -2,111 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VHS Movies</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Google Drive VHS Video Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-    }
-    #player {
-      width: 100%;
-      max-height: 400px;
-      margin-bottom: 20px;
-      background: black;
+      padding: 2rem;
+      background: #111;
+      color: white;
     }
     video {
-      width: 100%;
-      height: auto;
-      background: black;
-    }
-    .video-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
+      max-width: 100%;
+      margin-bottom: 1rem;
     }
     .video-card {
-      cursor: pointer;
-      border: 1px solid #ccc;
-      padding: 8px;
-      width: calc(33% - 10px);
-      box-sizing: border-box;
-      border-radius: 6px;
-      transition: box-shadow 0.3s;
-    }
-    .video-card:hover {
-      box-shadow: 0 0 8px #007bff;
+      margin-bottom: 2rem;
+      border: 1px solid #333;
+      padding: 1rem;
+      border-radius: 8px;
+      background: #222;
     }
     .video-title {
-      margin-top: 6px;
-      font-weight: bold;
-      font-size: 14px;
-      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
 
-  <h1>VHS Movies</h1>
-
-  <div id="player">
-    <video id="videoPlayer" controls></video>
-  </div>
-
-  <div class="video-list" id="videoList"></div>
+  <h1>🎥 VHS Video Test (Google Drive)</h1>
+  <div id="videoContainer">Loading videos...</div>
 
   <script>
     async function loadVideos() {
       try {
         const res = await fetch('/.netlify/functions/get-google-drive-videos');
-        if (!res.ok) throw new Error('Failed to fetch videos');
+        if (!res.ok) throw new Error("Failed to fetch videos");
+
         const videos = await res.json();
+        const container = document.getElementById('videoContainer');
+        container.innerHTML = '';
 
-        const videoList = document.getElementById('videoList');
-        const player = document.getElementById('videoPlayer');
-
-        // If there are videos, play the first by default
-        if (videos.length > 0) {
-          player.src = videos[0].src;
-          player.play().catch(() => {});
+        if (!Array.isArray(videos) || videos.length === 0) {
+          container.innerHTML = '<p>No videos found.</p>';
+          return;
         }
 
-        // Clear existing list
-        videoList.innerHTML = '';
-
         videos.forEach(video => {
-          const card = document.createElement('div');
-          card.className = 'video-card';
-          card.tabIndex = 0;
-
-          card.innerHTML = `
+          const div = document.createElement('div');
+          div.className = 'video-card';
+          div.innerHTML = `
             <div class="video-title">${video.title}</div>
+            <video controls preload="metadata">
+              <source src="${video.src}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
           `;
-
-          // Play selected video on click
-          card.addEventListener('click', () => {
-            player.src = video.src;
-            player.play();
-          });
-
-          // Also support keyboard enter key to play
-          card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              player.src = video.src;
-              player.play();
-            }
-          });
-
-          videoList.appendChild(card);
+          container.appendChild(div);
         });
       } catch (err) {
-        console.error('Error loading videos:', err);
+        console.error("Error loading videos:", err);
+        document.getElementById('videoContainer').innerHTML = '<p style="color:red;">Error loading videos.</p>';
       }
     }
 
     loadVideos();
   </script>
+
 </body>
 </html>
