@@ -134,76 +134,96 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- JS LOGIC -->
-  <script>
-    const spotifyLinks = [
-      "https://open.spotify.com/track/3e7Kg5vap2At8PhpfrFnkm",
-      "https://open.spotify.com/artist/1unNlIDYglZrzncLClICcI",
-      "https://open.spotify.com/artist/2YgfyYuSjaYe5sQmdTOBx4",
-      "https://open.spotify.com/artist/475wxlMSOjFpIZtjaBZdEa",
-      "https://open.spotify.com/artist/1O7ZmdpFR4RanU6zwEEFFZ",
-    ];
 
-    const soundcloudLinks = [
-      null,
-      null,
-      "https://soundcloud.com/bigpoppaparsa",
-      null,
-      null,
-    ];
+<script>
+  const spotifyLinks = [
+    "https://open.spotify.com/track/3e7Kg5vap2At8PhpfrFnkm",
+    "https://open.spotify.com/artist/1unNlIDYglZrzncLClICcI",
+    "https://open.spotify.com/artist/2YgfyYuSjaYe5sQmdTOBx4",
+    "https://open.spotify.com/artist/475wxlMSOjFpIZtjaBZdEa",
+    "https://open.spotify.com/artist/1O7ZmdpFR4RanU6zwEEFFZ",
+    "https://open.spotify.com/artist/bonus1",
+    "https://open.spotify.com/artist/bonus2",
+    "https://open.spotify.com/artist/bonus3",
+    "https://open.spotify.com/artist/bonus4",
+    "https://open.spotify.com/artist/bonus5",
+    "https://open.spotify.com/artist/bonus6",
+    "https://open.spotify.com/artist/bonus7",
+    "https://open.spotify.com/artist/bonus8",
+    "https://open.spotify.com/artist/bonus9",
+    "https://open.spotify.com/artist/bonus10"
+  ];
 
-    const youtubeLinks = [
-      "https://www.youtube.com/@vhs847",
-      null,
-      null,
-      null,
-      null,
-    ];
+  const soundcloudLinks = [
+    null,
+    null,
+    "https://soundcloud.com/bigpoppaparsa",
+    null,
+    null,
+    null, null, null, null, null,
+    null, null, null, null, null
+  ];
 
-    const instagramLinks = [
-      "https://www.instagram.com/vhs847",
-      "https://www.instagram.com/kleinecrack",
-      "https://www.instagram.com/bigpoppaparsa",
-      "https://www.instagram.com/roi____",
-      null,
-    ];
+  const youtubeLinks = [
+    "https://www.youtube.com/@vhs847",
+    null,
+    null,
+    null,
+    null,
+    null, null, null, null, null,
+    null, null, null, null, null
+  ];
 
-    const appleMusicLinks = [
-      "https://music.apple.com/us/artist/vhs/1234567890",
-      null,
-      null,
-      null,
-      null,
-    ];
+  const instagramLinks = [
+    "https://www.instagram.com/vhs847",
+    "https://www.instagram.com/kleinecrack",
+    "https://www.instagram.com/bigpoppaparsa",
+    "https://www.instagram.com/roi____",
+    null,
+    null, null, null, null, null,
+    null, null, null, null, null
+  ];
 
-    const modalLinksContainer = document.getElementById("modalLinksContainer");
-    const artistModal = new bootstrap.Modal(document.getElementById('artistModal'));
+  const appleMusicLinks = [
+    "https://music.apple.com/us/artist/vhs/1234567890",
+    null,
+    null,
+    null,
+    null,
+    null, null, null, null, null,
+    null, null, null, null, null
+  ];
 
-    document.querySelectorAll('.pentagram-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const index = parseInt(item.dataset.index);
-        modalLinksContainer.innerHTML = "";
+  const modal = new bootstrap.Modal(document.getElementById('artistModal'));
+  const container = document.getElementById('modalLinksContainer');
 
-        const links = [
-          { href: spotifyLinks[index], icon: "img/SPOTIFY.png", label: "Spotify" },
-          { href: soundcloudLinks[index], icon: "img/soundcloud.png", label: "SoundCloud" },
-          { href: youtubeLinks[index], icon: "img/YOUTUBE.png", label: "YouTube" },
-          { href: instagramLinks[index], icon: "img/instagram.png", label: "Instagram" },
-          { href: appleMusicLinks[index], icon: "img/applemusic.png", label: "Apple Music" },
-        ];
+  document.querySelectorAll('.pentagram-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const index = parseInt(item.dataset.index);
+      container.innerHTML = '';
 
-        links.forEach(link => {
-          if (link.href) {
-            const a = document.createElement("a");
-            a.href = link.href;
-            a.target = "_blank";
-            a.innerHTML = `<img src="${link.icon}" alt="${link.label}">`;
-            modalLinksContainer.appendChild(a);
-          }
-        });
+      const links = [
+        { href: instagramLinks[index], icon: 'img/instagram.png', label: 'Instagram' },
+        { href: spotifyLinks[index], icon: 'img/SPOTIFY.png', label: 'Spotify' },
+        { href: appleMusicLinks[index], icon: 'img/applemusic.png', label: 'Apple Music' },
+        { href: youtubeLinks[index], icon: 'img/YOUTUBE.png', label: 'YouTube' },
+        { href: soundcloudLinks[index], icon: 'img/soundcloud.png', label: 'SoundCloud' }
+      ];
 
-        artistModal.show();
+      links.forEach(link => {
+        if (link.href) {
+          const a = document.createElement('a');
+          a.href = link.href;
+          a.target = '_blank';
+          a.innerHTML = `<img src="${link.icon}" alt="${link.label}">`;
+          container.appendChild(a);
+        }
       });
+
+      modal.show();
     });
+  });
+
   </script>
 </body>
 </html>
