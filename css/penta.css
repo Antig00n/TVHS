@@ -1,0 +1,103 @@
+.pentagram-wrapper {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  position: relative;
+  margin-top: 30%;
+}
+
+.pentagram-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 450px;
+  margin: 0 auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+
+.pentagram-item {
+  position: absolute;
+  width: 120px; /* smaller width pulls items inward */
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.pentagram-item img {
+  width: 100%;
+  /* Removed border-radius */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.pentagram-item img:hover {
+  transform: scale(1.05);
+}
+
+/* Updated tighter coordinates */
+.pentagram-item:nth-child(1) {
+  top: 5%;
+  left: 50%;
+}
+
+.pentagram-item:nth-child(2) {
+  top: 40%;
+  left: 100%;
+}
+
+.pentagram-item:nth-child(3) {
+  top: 100%;
+  left: 80%;
+}
+
+.pentagram-item:nth-child(4) {
+  top: 100%;
+  left: 20%;
+}
+
+.pentagram-item:nth-child(5) {
+  top: 40%;
+  left: 0%;
+}
+
+
+
+@media (max-width: 576px) {
+  .pentagram-item {
+    width: 80px;
+  }
+
+  /* Updated tighter coordinates */
+.pentagram-item:nth-child(1) {
+  top: 15%;
+  left: 50%;
+}
+
+.pentagram-item:nth-child(2) {
+  top: 40%;
+  left: 88%;
+}
+
+.pentagram-item:nth-child(3) {
+  top: 100%;
+  left: 80%;
+}
+
+.pentagram-item:nth-child(4) {
+  top: 100%;
+  left: 20%;
+}
+
+.pentagram-item:nth-child(5) {
+  top: 40%;
+  left: 12%;
+}
+
+
+}
+
