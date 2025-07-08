@@ -40,27 +40,27 @@
 
 /* Updated tighter coordinates */
 .pentagram-item:nth-child(1) {
-  top: 5%;
-  left: 50%;
+  top: 10%;
+  left: 40%;
 }
 
 .pentagram-item:nth-child(2) {
-  top: 40%;
-  left: 100%;
-}
-
-.pentagram-item:nth-child(3) {
-  top: 100%;
+  top: 50%;
   left: 80%;
 }
 
+.pentagram-item:nth-child(3) {
+  top: 90%;
+  left: 65%;
+}
+
 .pentagram-item:nth-child(4) {
-  top: 100%;
-  left: 20%;
+  top: 90%;
+  left: 15%;
 }
 
 .pentagram-item:nth-child(5) {
-  top: 40%;
+  top: 50%;
   left: 0%;
 }
 
