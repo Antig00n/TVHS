@@ -164,8 +164,9 @@
 
   // Optional: Set initial button label based on mute state
   window.addEventListener("DOMContentLoaded", () => {
-        const audio = document.getElementById("siteAudio");
+    const audio = document.getElementById("siteAudio");
     audio.volume = 0.5;
+    
     if (audio.muted) {
       toggleBtn.textContent = "🔇 Sound Off";
     }
