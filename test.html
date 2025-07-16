@@ -69,39 +69,12 @@
     .vertical-scroll-wrapper {
       scrollbar-width: thin;
       scrollbar-color: red #222;
+      margin-top: -1rem;
     }
   </style>
 </head>
 
 <body>
-  <div class="navvy">
-    <nav class="navbar navbar-expand-lg">
-      <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
-        <a class="navbar-brand order-0 order-lg-2 my-2 my-lg-0 px-2" href="index.html">
-          <img class="logo" src="img/TVHSLL.png" alt="Logo">
-        </a>
-        <ul class="navbar-nav d-flex flex-column flex-lg-row order-1 order-lg-0 p-0">
-          <li class="nav-item d-flex">
-            <a class="nav-link px-2 py-1 btn-sm btn-red-active" href="TVHS.html">FILMS</a>
-          </li>
-          <li class="nav-item d-flex">
-            <a class="nav-link px-2 py-1" href="muziek.html">VHS</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-3 p-0">
-          <li class="nav-item d-flex">
-            <a class="nav-link px-2 py-1" href="http://www.2rare.nl">MERCH</a>
-          </li>
-        </ul>
-        <div class="guytje order-3 order-lg-4 d-none d-lg-block mb-lg-0">
-          <a href="muziek.html">
-            <img src="img/guytje.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
-          </a>
-        </div>
-      </div>
-    </nav>
-  </div>
-
   <main>
     <div id="loading-overlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
       <div style="color: white; font-size: 1.5rem;">Loading...</div>
@@ -117,7 +90,7 @@
         <div class="slider-container d-inline-flex" id="movieSlider"></div>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: -3%;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
         <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;" />
         <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
           Sort: Newest
@@ -125,13 +98,6 @@
       </div>
     </div>
   </main>
-
-  <footer class="footers2">
-    <div class="footer-logos">
-      <img src="img/yuhd.png" alt="VHS logo" />
-      <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
-    </div>
-  </footer>
 
   <div id="overlay" onclick="closeVideo()"></div>
   <div id="videoPopup" class="video-popup-container p-3">
@@ -151,7 +117,7 @@
 
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
+  const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
 const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
 
     let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false, isNewestFirst = true;
@@ -161,6 +127,10 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
     const muteBtn = document.getElementById("muteBtn");
     const movieSlider = document.getElementById("movieSlider");
     const loadingOverlay = document.getElementById("loading-overlay");
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
 
     async function fetchPlaylist() {
       const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
@@ -258,7 +228,7 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
       });
     }
 
-    function showYouTubeVideo(videoId, description = "") {
+    async function showYouTubeVideo(videoId, description = "") {
       const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
       const iframe = document.createElement("iframe");
       iframe.width = "100%";
@@ -269,7 +239,20 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
       container.innerHTML = "";
       container.appendChild(iframe);
 
-      document.getElementById("videoDescription").textContent = description;
+      let viewCountText = "";
+      try {
+        const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${apiKey}`;
+        const statsRes = await fetch(statsUrl);
+        const statsData = await statsRes.json();
+        const viewCount = statsData.items?.[0]?.statistics?.viewCount;
+        if (viewCount) {
+          viewCountText = `\n\nViews: ${parseInt(viewCount).toLocaleString()}`;
+        }
+      } catch (err) {
+        console.error("View count fetch error:", err);
+      }
+
+      document.getElementById("videoDescription").textContent = description + viewCountText;
       document.getElementById("overlay").style.display = "block";
       document.getElementById("videoPopup").style.display = "block";
     }
@@ -282,7 +265,6 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
     }
 
     searchInput.addEventListener("input", renderMovies);
-
     toggleSortBtn.addEventListener("click", () => {
       isNewestFirst = !isNewestFirst;
       toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
