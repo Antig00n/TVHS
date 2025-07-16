@@ -71,6 +71,45 @@
       scrollbar-color: red #222;
       margin-top: -1rem;
     }
+
+    #videoPopup {
+      max-width: 640px;
+      margin: 0 auto;
+      background: #111;
+      border-radius: 8px;
+      color: white;
+      z-index: 10000;
+      position: fixed;
+      top: 10vh;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      z-index: 9999;
+    }
+
+    .video-player {
+      width: 100%;
+      border-radius: 6px;
+      background: black;
+    }
+
+    .button-column {
+      min-width: 80px;
+    }
+
+    #viewCount {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      color: white;
+    }
   </style>
 </head>
 
@@ -110,6 +149,7 @@
     <div class="d-flex flex-column flex-md-row align-items-start gap-3">
       <div class="button-column d-flex flex-column gap-2">
         <button onclick="closeVideo()" class="btn btn-sm btn-danger">Sloate</button>
+        <div id="viewCount"></div>
       </div>
       <div id="videoDescription" class="text-white description-box"></div>
     </div>
@@ -117,7 +157,7 @@
 
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-  const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
+const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
 const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
 
     let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false, isNewestFirst = true;
@@ -127,10 +167,7 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
     const muteBtn = document.getElementById("muteBtn");
     const movieSlider = document.getElementById("movieSlider");
     const loadingOverlay = document.getElementById("loading-overlay");
-
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.body.appendChild(tag);
+    const viewCountDiv = document.getElementById("viewCount");
 
     async function fetchPlaylist() {
       const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
@@ -246,13 +283,14 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
         const statsData = await statsRes.json();
         const viewCount = statsData.items?.[0]?.statistics?.viewCount;
         if (viewCount) {
-          viewCountText = `\n\nViews: ${parseInt(viewCount).toLocaleString()}`;
+          viewCountText = `Views: ${parseInt(viewCount).toLocaleString()}`;
         }
       } catch (err) {
         console.error("View count fetch error:", err);
       }
 
-      document.getElementById("videoDescription").textContent = description + viewCountText;
+      viewCountDiv.textContent = viewCountText;
+      document.getElementById("videoDescription").textContent = description;
       document.getElementById("overlay").style.display = "block";
       document.getElementById("videoPopup").style.display = "block";
     }
@@ -262,6 +300,7 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
       document.getElementById("videoPopup").style.display = "none";
       const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
       container.innerHTML = "";
+      viewCountDiv.textContent = "";
     }
 
     searchInput.addEventListener("input", renderMovies);
