@@ -63,34 +63,35 @@
 </head>
 
 <body>
+  <!-- NAVBAR -->
 <div class="navvy">
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
 
+      <!-- Logo (TOP on mobile, CENTER on desktop) -->
+      <a class="navbar-brand order-0 order-lg-2 my-2 my-lg-0 px-2" href="index.html">
+        <img class="logo" src="img/TVHSLL.png" alt="Logo">
+      </a>
+
       <!-- Left nav (FILMS / VHS) -->
-      <ul class="navbar-nav d-flex flex-column flex-lg-row order-2 p-0">
+      <ul class="navbar-nav d-flex flex-column flex-lg-row order-1 order-lg-0 p-0">
         <li class="nav-item d-flex">
-          <a class="nav-link px-2 py-1  btn-sm btn-red-active" href="TVHS.html">FILMS</a>
+          <a class="nav-link px-2 py-1   btn-sm btn-red-active" href="TVHS.html">FILMS</a>
         </li>
         <li class="nav-item d-flex">
           <a class="nav-link px-2 py-1" href="muziek.html">VHS</a>
         </li>
       </ul>
 
-      <!-- Logo -->
-      <a class="navbar-brand order-1 my-2 my-lg-0 px-2" href="index.html">
-        <img class="logo" src="img/TVHSLL.png" alt="Logo">
-      </a>
-
-      <!-- Right nav (MERCH / CONTACT) -->
-      <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-3 p-0">
+      <!-- Right nav (MERCH) -->
+      <ul class="navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-3 p-0">
         <li class="nav-item d-flex">
           <a class="nav-link px-2 py-1" href="http://www.2rare.nl">MERCH</a>
         </li>
       </ul>
 
-      <!-- Guytje: moved to right and hidden on mobile -->
-      <div class="guytje order-4 order-lg-last d-none d-lg-block mb-lg-0">
+      <!-- Guytje (last on desktop, hidden on mobile) -->
+      <div class="guytje order-3 order-lg-4 d-none d-lg-block mb-lg-0">
         <a href="muziek.html">
           <img src="img/guytje.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
         </a>
@@ -99,6 +100,7 @@
     </div>
   </nav>
 </div>
+
 
 <main>
   <div id="loading-overlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
