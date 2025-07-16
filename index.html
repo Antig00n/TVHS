@@ -50,7 +50,7 @@
 
       <!-- Guytje (last on desktop, hidden on mobile) -->
       <div class="guytje order-3 order-lg-4 d-none d-lg-block mb-lg-0">
-        <a class="mutesite" href="">
+        <a class="mutesite" id="toggleSiteAudio" href="">
           <img src="img/guytje.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
         </a>
       </div>
@@ -149,11 +149,18 @@
 
 
 <script>
-  // Mute the background track if the body has the class 'mutesite'
+  const audio = document.getElementById("siteAudio");
+  const toggleBtn = document.getElementById("toggleSiteAudio");
+
+  toggleBtn.addEventListener("click", () => {
+    audio.muted = !audio.muted;
+    toggleBtn.textContent = audio.muted ? "🔇 Sound Off" : "🔊 Sound On";
+  });
+
+  // Optional: Set initial button label based on mute state
   window.addEventListener("DOMContentLoaded", () => {
-    const audio = document.getElementById("siteAudio");
-    if (document.body.classList.contains("mutesite")) {
-      audio.muted = true;
+    if (audio.muted) {
+      toggleBtn.textContent = "🔇 Sound Off";
     }
   });
 </script>
