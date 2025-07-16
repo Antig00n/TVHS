@@ -12,21 +12,18 @@
   <link rel="stylesheet" href="css/moviecards.css">
 
   <style>
-    /* Updated random-player-container for bigger, responsive video */
     .random-player-container {
       position: relative;
       width: 640px;
-      max-width: 90vw;  /* shrink on small screens */
+      max-width: 90vw;
       margin: 0 auto 1rem;
-      margin-top: -3%; /* less space from nav */
+      margin-top: -3%;
     }
 
     #youtubePlayer {
-      width: 100% !important;  /* full container width */
-
+      width: 100% !important;
     }
 
-    /* Bigger mute button that scales on small screens */
     #muteBtn {
       position: absolute;
       top: 8px;
@@ -48,7 +45,6 @@
       background-color: #bb2d3b;
     }
 
-    /* Responsive font and padding for the button */
     @media (max-width: 480px) {
       .random-player-container {
         width: 100%;
@@ -59,10 +55,67 @@
         font-size: 1rem;
       }
     }
+
+    .vertical-scroll-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    .vertical-scroll-wrapper::-webkit-scrollbar-track {
+      background: #222;
+    }
+    .vertical-scroll-wrapper::-webkit-scrollbar-thumb {
+      background: red;
+      border-radius: 10px;
+    }
+    .vertical-scroll-wrapper {
+      scrollbar-width: thin;
+      scrollbar-color: red #222;
+      margin-top: -1rem;
+    }
+
+    #videoPopup {
+      max-width: 640px;
+      margin: 0 auto;
+      background: #111;
+      border-radius: 8px;
+      color: white;
+      z-index: 10000;
+      position: fixed;
+      top: 10vh;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      z-index: 9999;
+    }
+
+    .video-player {
+      width: 100%;
+      border-radius: 6px;
+      background: black;
+    }
+
+    .button-column {
+      min-width: 80px;
+    }
+
+    #viewCount {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      color: white;
+    }
   </style>
 </head>
 
 <body>
+
+
   <!-- NAVBAR -->
 <div class="navvy">
   <nav class="navbar navbar-expand-lg">
@@ -74,7 +127,7 @@
       </a>
 
       <!-- Left nav (FILMS / VHS) -->
-      <ul class="navbar-nav d-flex flex-column flex-lg-row order-1 order-lg-0 p-0">
+      <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-1 order-lg-0 p-0">
         <li class="nav-item d-flex">
           <a class="nav-link px-2 py-1   btn-sm btn-red-active" href="TVHS.html">FILMS</a>
         </li>
@@ -84,7 +137,7 @@
       </ul>
 
       <!-- Right nav (MERCH) -->
-      <ul class="navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-3 p-0">
+      <ul class="ulnavmob navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-3 p-0">
         <li class="nav-item d-flex">
           <a class="nav-link px-2 py-1" href="http://www.2rare.nl">MERCH</a>
         </li>
@@ -102,233 +155,201 @@
 </div>
 
 
-<main>
-  <div id="loading-overlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
-    <div style="color: white; font-size: 1.5rem;">Loading...</div>
-  </div>
-
-  <div style="max-width: 100%; margin: auto; padding: 1rem;">
-    <!-- YouTube Player Replacement -->
-    <div class="random-player-container text-center mb-4 d-flex flex-column align-items-center">
-      <div id="youtubePlayer"></div>
-      <button id="muteBtn">Mute</button>
+  <main>
+    <div id="loading-overlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+      <div style="color: white; font-size: 1.5rem;">Loading...</div>
     </div>
 
-  
-    <!-- Scrollable Slider -->
-    <div class="vertical-scroll-wrapper" style="height: 300px; overflow-y: auto; overflow-x: hidden; margin-bottom: -8%;">
-      <div class="slider-container" id="movieSlider" style="overflow-y: hidden; touch-action: pan-x;"></div>
-<input type="range" id="scrollRange" min="0" max="100" value="0" aria-label="Scroll slider for movie thumbnails">
+    <div style="max-width: 100%; margin: auto; padding: 1rem;">
+      <div class="random-player-container text-center mb-4 d-flex flex-column align-items-center">
+        <div id="youtubePlayer"></div>
+        <button id="muteBtn">Mute</button>
+      </div>
 
+      <div class="vertical-scroll-wrapper" style="height: 100%; overflow-x: auto; white-space: nowrap;">
+        <div class="slider-container d-inline-flex" id="movieSlider"></div>
+      </div>
 
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+        <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;" />
+        <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
+          Sort: Newest
+        </button>
+      </div>
     </div>
+  </main>
 
- <!-- Search & Sort Controls -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: -3%;">
-      <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;"/>
-      <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
-        Sort: Newest
-      </button>
+  <div id="overlay" onclick="closeVideo()"></div>
+  <div id="videoPopup" class="video-popup-container p-3">
+    <div class="d-flex justify-content-center mb-3">
+      <video id="videoElement" controls class="video-player">
+        <source id="videoSource" src="" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
     </div>
-
-  </div>
-</main>
-
-<footer class="footers2">
-  <div class="footer-logos">
-    <img src="img/yuhd.png" alt="VHS logo" />
-    <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
-  </div>
-</footer>
-
-<div id="overlay" onclick="closeVideo()"></div>
-<div id="videoPopup" class="video-popup-container p-3">
-  <div class="d-flex justify-content-center mb-3">
-    <video id="videoElement" controls class="video-player">
-      <source id="videoSource" src="" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-  <div class="d-flex flex-column flex-md-row align-items-start gap-3">
-    <div class="button-column d-flex flex-column gap-2">
-      <button onclick="closeVideo()" class="btn btn-sm btn-danger">Sloate</button>
+    <div class="d-flex flex-column flex-md-row align-items-start gap-3">
+      <div class="button-column d-flex flex-column gap-2">
+        <button onclick="closeVideo()" class="btn btn-sm btn-danger">Sloate</button>
+        <div id="viewCount"></div>
+      </div>
+      <div id="videoDescription" class="text-white description-box"></div>
     </div>
-    <div id="videoDescription" class="text-white description-box"></div>
   </div>
-</div>
 
-<script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
 const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
 const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
 
-let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false, isNewestFirst = true;
+    let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false, isNewestFirst = true;
 
-const searchInput = document.getElementById("searchInput");
-const toggleSortBtn = document.getElementById("toggleSortBtn");
-const muteBtn = document.getElementById("muteBtn");
-const movieSlider = document.getElementById("movieSlider");
-const loadingOverlay = document.getElementById("loading-overlay");
+    const searchInput = document.getElementById("searchInput");
+    const toggleSortBtn = document.getElementById("toggleSortBtn");
+    const muteBtn = document.getElementById("muteBtn");
+    const movieSlider = document.getElementById("movieSlider");
+    const loadingOverlay = document.getElementById("loading-overlay");
+    const viewCountDiv = document.getElementById("viewCount");
 
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-document.body.appendChild(tag);
-
-async function fetchPlaylist() {
-  const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
-  const res = await fetch(url);
-  const data = await res.json();
-  playlist = data.items.filter(item => item.id.kind === 'youtube#video').map(item => item.id.videoId);
-  allVideos = data.items.filter(item => item.id.kind === 'youtube#video').map(item => ({
-    videoId: item.id.videoId,
-    title: item.snippet.title,
-    description: item.snippet.description,
-    thumbnail: item.snippet.thumbnails?.medium?.url || '',
-    publishedAt: item.snippet.publishedAt
-  }));
-  renderMovies();
-  loadingOverlay.style.display = 'none'; // Hide loading after videos rendered
-}
-
-function loadVideo(index) {
-  if (!playlist.length) return;
-  const videoId = playlist[index];
-  if (youtubePlayer) {
-    youtubePlayer.loadVideoById(videoId);
-  } else {
-    youtubePlayer = new YT.Player('youtubePlayer', {
-      height: '360', width: '640', videoId,
-      playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, origin: window.location.origin, enablejsapi: 1 },
-      events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange }
-    });
-  }
-}
-
-function onPlayerReady(event) {
-  youtubePlayer.setVolume(50);
-  youtubePlayer.unMute();
-  event.target.playVideo();
-}
-
-function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.ENDED) {
-    currentIndex = (currentIndex + 1) % playlist.length;
-    loadVideo(currentIndex);
-  }
-}
-
-function onYouTubeIframeAPIReady() {
-  fetchPlaylist().then(() => {
-    loadVideo(currentIndex);
-  });
-}
-window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-
-muteBtn.addEventListener("click", () => {
-  if (!youtubePlayer) return;
-  if (isMuted) {
-    youtubePlayer.unMute();
-    muteBtn.textContent = "Mute";
-  } else {
-    youtubePlayer.mute();
-    muteBtn.textContent = "Unmute";
-  }
-  isMuted = !isMuted;
-});
-
-function renderMovies() {
-  const query = searchInput.value.toLowerCase();
-  movieSlider.innerHTML = "";
-  let filtered = allVideos.filter(v => v.title.toLowerCase().includes(query));
-  filtered.sort((a, b) => new Date(isNewestFirst ? b.publishedAt : a.publishedAt) - new Date(isNewestFirst ? a.publishedAt : b.publishedAt));
-
-  filtered.forEach(video => {
-    const card = document.createElement("div");
-    card.className = "movie-card";
-
-    // Safer event listener instead of inline onclick
-    const button = document.createElement("button");
-    button.type = "button";
-
-    const imgWrapper = document.createElement("div");
-    imgWrapper.className = "position-relative";
-
-    const img = document.createElement("img");
-    img.src = video.thumbnail;
-    img.alt = video.title;
-    imgWrapper.appendChild(img);
-
-    const titleDiv = document.createElement("div");
-    titleDiv.className = "movie-title";
-    titleDiv.textContent = video.title;
-
-    button.appendChild(imgWrapper);
-    button.appendChild(titleDiv);
-    button.addEventListener('click', () => showYouTubeVideo(video.videoId, video.description));
-
-    card.appendChild(button);
-    movieSlider.appendChild(card);
-  });
-
-  // Connect the input[type=range] to scroll the movie slider
-  scrollRange.addEventListener('input', () => {
-    const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
-    const scrollValue = (scrollRange.value / 100) * maxScrollLeft;
-    movieSlider.scrollLeft = scrollValue;
-  });
-
-  // Sync slider value when user scrolls the movieSlider manually
-  movieSlider.addEventListener('scroll', () => {
-    const maxScrollLeft = movieSlider.scrollWidth - movieSlider.clientWidth;
-    if (maxScrollLeft > 0) {
-      scrollRange.value = (movieSlider.scrollLeft / maxScrollLeft) * 100;
-    } else {
-      scrollRange.value = 0;
+    async function fetchPlaylist() {
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
+      const res = await fetch(url);
+      const data = await res.json();
+      playlist = data.items.filter(item => item.id.kind === 'youtube#video').map(item => item.id.videoId);
+      allVideos = data.items.filter(item => item.id.kind === 'youtube#video').map(item => ({
+        videoId: item.id.videoId,
+        title: item.snippet.title,
+        description: item.snippet.description,
+        thumbnail: item.snippet.thumbnails?.medium?.url || '',
+        publishedAt: item.snippet.publishedAt
+      }));
+      renderMovies();
+      loadingOverlay.style.display = 'none';
     }
-  });
 
+    function loadVideo(index) {
+      if (!playlist.length) return;
+      const videoId = playlist[index];
+      if (youtubePlayer) {
+        youtubePlayer.loadVideoById(videoId);
+      } else {
+        youtubePlayer = new YT.Player('youtubePlayer', {
+          height: '360', width: '640', videoId,
+          playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, origin: window.location.origin, enablejsapi: 1 },
+          events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange }
+        });
+      }
+    }
 
-}
+    function onPlayerReady(event) {
+      youtubePlayer.setVolume(50);
+      youtubePlayer.unMute();
+      event.target.playVideo();
+    }
 
-function showYouTubeVideo(videoId, description = "") {
-  const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
-  const iframe = document.createElement("iframe");
-  iframe.width = "100%";
-  iframe.height = "270";
-  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
-  iframe.allow = "autoplay; encrypted-media";
-  iframe.allowFullscreen = true;
-  container.innerHTML = "";
-  container.appendChild(iframe);
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadVideo(currentIndex);
+      }
+    }
 
-  document.getElementById("videoDescription").textContent = description;
-  document.getElementById("overlay").style.display = "block";
-  document.getElementById("videoPopup").style.display = "block";
-}
+    function onYouTubeIframeAPIReady() {
+      fetchPlaylist().then(() => {
+        loadVideo(currentIndex);
+      });
+    }
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
-function closeVideo() {
-  document.getElementById("overlay").style.display = "none";
-  document.getElementById("videoPopup").style.display = "none";
-  const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
-  container.innerHTML = "";
-}
+    muteBtn.addEventListener("click", () => {
+      if (!youtubePlayer) return;
+      if (isMuted) {
+        youtubePlayer.unMute();
+        muteBtn.textContent = "Mute";
+      } else {
+        youtubePlayer.mute();
+        muteBtn.textContent = "Unmute";
+      }
+      isMuted = !isMuted;
+    });
 
-searchInput.addEventListener("input", renderMovies);
+    function renderMovies() {
+      const query = searchInput.value.toLowerCase();
+      movieSlider.innerHTML = "";
+      let filtered = allVideos.filter(v => v.title.toLowerCase().includes(query));
+      filtered.sort((a, b) => new Date(isNewestFirst ? b.publishedAt : a.publishedAt) - new Date(isNewestFirst ? a.publishedAt : b.publishedAt));
 
-toggleSortBtn.addEventListener("click", () => {
-  isNewestFirst = !isNewestFirst;
-  toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
-  renderMovies();
-});
+      filtered.forEach(video => {
+        const card = document.createElement("div");
+        card.className = "movie-card";
 
-function toggleFullscreen() {
-  const videoElement = document.getElementById("videoElement");
-  if (!document.fullscreenElement) {
-    videoElement.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-}
-</script>
+        const button = document.createElement("button");
+        button.type = "button";
 
+        const imgWrapper = document.createElement("div");
+        imgWrapper.className = "position-relative";
+
+        const img = document.createElement("img");
+        img.src = video.thumbnail;
+        img.alt = video.title;
+        imgWrapper.appendChild(img);
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "movie-title";
+        titleDiv.textContent = video.title;
+
+        button.appendChild(imgWrapper);
+        button.appendChild(titleDiv);
+        button.addEventListener('click', () => showYouTubeVideo(video.videoId, video.description));
+
+        card.appendChild(button);
+        movieSlider.appendChild(card);
+      });
+    }
+
+    async function showYouTubeVideo(videoId, description = "") {
+      const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+      const iframe = document.createElement("iframe");
+      iframe.width = "100%";
+      iframe.height = "270";
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
+      iframe.allow = "autoplay; encrypted-media";
+      iframe.allowFullscreen = true;
+      container.innerHTML = "";
+      container.appendChild(iframe);
+
+      let viewCountText = "";
+      try {
+        const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${apiKey}`;
+        const statsRes = await fetch(statsUrl);
+        const statsData = await statsRes.json();
+        const viewCount = statsData.items?.[0]?.statistics?.viewCount;
+        if (viewCount) {
+          viewCountText = `Views: ${parseInt(viewCount).toLocaleString()}`;
+        }
+      } catch (err) {
+        console.error("View count fetch error:", err);
+      }
+
+      viewCountDiv.textContent = viewCountText;
+      document.getElementById("videoDescription").textContent = description;
+      document.getElementById("overlay").style.display = "block";
+      document.getElementById("videoPopup").style.display = "block";
+    }
+
+    function closeVideo() {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("videoPopup").style.display = "none";
+      const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+      container.innerHTML = "";
+      viewCountDiv.textContent = "";
+    }
+
+    searchInput.addEventListener("input", renderMovies);
+    toggleSortBtn.addEventListener("click", () => {
+      isNewestFirst = !isNewestFirst;
+      toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
+      renderMovies();
+    });
+  </script>
 </body>
 </html>
