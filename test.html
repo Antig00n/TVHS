@@ -1,349 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 <head>
-  <link rel="icon" type="image/png" href="favicon.ico" />
+  <link rel="icon" type="image/png" href="favicon.ico">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TVHS</title>
 
-  <link rel="stylesheet" href="css/reset.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="css/penta.css" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/reset.css"> 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/moviecards.css">
 
   <style>
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    /* === MODAL STYLE === */
-    .modal-content {
-      background-color: #111;
-      color: white;
-      border: 2px solid white;
-      border-radius: 12px;
-    }
-
-    .modal-body a img {
-      width: 120px;
-      transition: transform 0.2s ease;
-    }
-
-    .modal-body a img:hover {
-      transform: scale(1.1);
-    }
-
-    @media (max-width: 576px) {
-      .pentagram-item img {
-        max-width: 120px;
-      }
-    }
-
-    /* PENTAGRAM CSS */
-    .pentagram-wrapper {
-      width: 100%;
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
+    .random-player-container {
       position: relative;
+      width: 640px;
+      max-width: 90vw;
+      margin: 0 auto 1rem;
+      margin-top: -3%;
     }
 
-    .pentagram-container {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      max-width: 450px;
-      margin: 0 auto;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
+    #youtubePlayer {
+      width: 100% !important;
     }
 
-    .pentagram-item {
+    #muteBtn {
       position: absolute;
-      width: 120px;
-      text-align: center;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+      background-color: #dc3545;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.4rem;
+      border-radius: 0.3rem;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      user-select: none;
+      transition: background-color 0.2s ease;
     }
 
-    .pentagram-item img {
-      width: 100%;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease;
+    #muteBtn:hover {
+      background-color: #bb2d3b;
     }
 
-    .pentagram-item img:hover {
-      transform: scale(1.05);
-    }
-
-    /* Original 5 artists coordinates */
-    .pentagram-item:nth-child(1) { top: 10%; left: 40%; }
-    .pentagram-item:nth-child(2) { top: 50%; left: 80%; }
-    .pentagram-item:nth-child(3) { top: 90%; left: 65%; }
-    .pentagram-item:nth-child(4) { top: 90%; left: 15%; }
-    .pentagram-item:nth-child(5) { top: 50%; left: 0%; }
-
-    /* Bonus artists - scattered roughly around */
-    .pentagram-item.bonus-6  { width: 95px; top: 0%;  left: 130%; }
-    .pentagram-item.bonus-7  { width: 95px; top: 0%; left: 90%; }
-    .pentagram-item.bonus-8  { width: 95px; top: 55%; left: 120%; }
-    .pentagram-item.bonus-9  { width: 95px; top: 100%; left: 110%; }
-    .pentagram-item.bonus-10 { width: 95px; top: 120%; left: 45%; }
-    .pentagram-item.bonus-11 { width: 95px; top: 0%; left: -5%;  }
-    .pentagram-item.bonus-12 { width: 95px; top: 55%; left: -35%; }
-    .pentagram-item.bonus-13 { width: 95px; top: 100%; left: -25%; }
-    .pentagram-item.bonus-14 { width: 95px; top: 30%; left: -60%; }
-    .pentagram-item.bonus-15 { width: 95px; top: 0%; left: -20%; }
-
-    @media (max-width: 576px) {
-      .pentagram-item {
-        position: static !important; /* Stack all items */
-        width: 80px;
-        margin: 0.4rem auto;
+    @media (max-width: 480px) {
+      .random-player-container {
+        width: 100%;
+        margin-top: 0.2rem;
       }
-
-      .pentagram-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        max-width: 100%;
-        aspect-ratio: auto;
+      #muteBtn {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
       }
+    }
+
+    .vertical-scroll-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    .vertical-scroll-wrapper::-webkit-scrollbar-track {
+      background: #222;
+    }
+    .vertical-scroll-wrapper::-webkit-scrollbar-thumb {
+      background: red;
+      border-radius: 10px;
+    }
+    .vertical-scroll-wrapper {
+      scrollbar-width: thin;
+      scrollbar-color: red #222;
     }
   </style>
 </head>
 
 <body>
   <div class="navvy">
-  <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
-
-      <!-- Left nav (FILMS / VHS) -->
-      <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-1 p-0">
-        <li class="nav-item d-flex">
-          <a class="nav-link px-2 py-1" href="TVHS.html">FILMS</a>
-        </li>
-        <li class="nav-item d-flex">
-          <a class="nav-link px-2 py-1 btn-sm btn-red-active" href="muziek.html">VHS</a>
-        </li>
-      </ul>
-
-      <!-- Logo -->
-      <a class="navbar-brand order-2 my-2 my-lg-0 px-2" href="index.html">
-        <img class="logo" src="img/TVHSLL.png" alt="Logo">
-      </a>
-
-      <!-- Right nav (MERCH / CONTACT) -->
-      <ul class="ulnav navbar-nav d-flex flex-column flex-lg-row order-3 p-0">
-        <li class="nav-item d-flex">
-          <a class="nav-link px-2 py-1" src="2rare.nl">MERCH</a>
-        </li>
-      </ul>
-
-      <!-- Guytje: moved to right and hidden on mobile -->
-      <div class="guytje order-4 order-lg-last d-none d-lg-block mb-lg-0">
-        <a href="muziek.html">
-          <img src="img/guytje.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
+        <a class="navbar-brand order-0 order-lg-2 my-2 my-lg-0 px-2" href="index.html">
+          <img class="logo" src="img/TVHSLL.png" alt="Logo">
         </a>
-      </div>
-
-    </div>
-  </nav>
-</div>
-
-
-  <!-- ARTIST SECTION -->
-  <section class="pentagram-wrapper">
-    <div class="pentagram-container">
-      <!-- Original 5 -->
-      <div class="pentagram-item" data-index="0">
-        <img src="img/GVHSS.jpg" alt="VHS" />
-        <h6>VHS</h6>
-      </div>
-      <div class="pentagram-item" data-index="1">
-        <img src="img/PTKC.png" alt="Kleine Crack" />
-        <h6>Kleine Crack</h6>
-      </div>
-      <div class="pentagram-item" data-index="2">
-        <img src="img/ECMP.png" alt="Parsa" />
-        <h6>Parsa</h6>
-      </div>
-      <div class="pentagram-item" data-index="3">
-        <img src="img/IDMR.png" alt="ROI" />
-        <h6>ROI</h6>
-      </div>
-      <div class="pentagram-item" data-index="4">
-        <img src="img/NMK.png" alt="Kleine Kova" />
-        <h6>Kleine Kova</h6>
-      </div>
-
-      <!-- Bonus 10 artists -->
-      <div class="pentagram-item bonus-6" data-index="5">
-        <img src="img/" alt="" />
-        <h6></h6> 
-      </div>
-      <div class="pentagram-item bonus-7" data-index="6">
-        <img src="img/NMK.png" alt="Bonus Artist 2" />
-        <h6>Valdo</h6>
-      </div>
-      <div class="pentagram-item bonus-8" data-index="7">
-        <img src="img/NMK.png" alt="Bonus Artist 3" />
-        <h6>OPASOS</h6>
-      </div>
-      <div class="pentagram-item bonus-9" data-index="8">
-        <img src="img/NMK.png" alt="Bonus Artist 4" />
-        <h6>VHS CULT</h6>
-      </div>
-      <div class="pentagram-item bonus-10" data-index="9">
-        <img src="img/NMK.png" alt="Bonus Artist 5" />
-        <h6>100GEN</h6>
-      </div>
-      <div class="pentagram-item bonus-11" data-index="10">
-        <img src="img/NMK.png" alt="Bonus Artist 6" />
-        <h6>STOMP</h6>
-      </div>
-      <div class="pentagram-item bonus-12" data-index="11">
-        <img src="img/NMK.png" alt="Bonus Artist 7" />
-        <h6>Majin Bu</h6>
-      </div>
-      <div class="pentagram-item bonus-13" data-index="12">
-        <img src="img/NMK.png" alt="Bonus Artist 8" />
-        <h6>Antigoon</h6>
-      </div> 
-    <!--  <div class="pentagram-item bonus-14" data-index="13">
-        <img src="img/NMK.png" alt="Bonus Artist 9" />
-        <h6>Bonus Artist 9</h6>
-      </div> -->
-     <!--   <div class="pentagram-item bonus-15" data-index="14">
-        <img src="img/NMK.png" alt="Bonus Artist 10" />
-        <h6>Bonus Artist 10</h6>
-      </div> -->
-    </div>
-  </section>
-
-
-  <div
-    class="modal fade"
-    id="artistModal"
-    tabindex="-1"
-    aria-labelledby="artistModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content p-4">
-        <div class="modal-header border-0 pb-0">
-          <button
-            type="button"
-            class="btn-close btn-close-white"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+        <ul class="navbar-nav d-flex flex-column flex-lg-row order-1 order-lg-0 p-0">
+          <li class="nav-item d-flex">
+            <a class="nav-link px-2 py-1 btn-sm btn-red-active" href="TVHS.html">FILMS</a>
+          </li>
+          <li class="nav-item d-flex">
+            <a class="nav-link px-2 py-1" href="muziek.html">VHS</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav d-flex flex-column flex-lg-row order-2 order-lg-3 p-0">
+          <li class="nav-item d-flex">
+            <a class="nav-link px-2 py-1" href="http://www.2rare.nl">MERCH</a>
+          </li>
+        </ul>
+        <div class="guytje order-3 order-lg-4 d-none d-lg-block mb-lg-0">
+          <a href="muziek.html">
+            <img src="img/guytje.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
+          </a>
         </div>
-        <div class="modal-body d-flex justify-content-center flex-wrap gap-4" id="modalLinksContainer"></div>
       </div>
+    </nav>
+  </div>
+
+  <main>
+    <div id="loading-overlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+      <div style="color: white; font-size: 1.5rem;">Loading...</div>
+    </div>
+
+    <div style="max-width: 100%; margin: auto; padding: 1rem;">
+      <div class="random-player-container text-center mb-4 d-flex flex-column align-items-center">
+        <div id="youtubePlayer"></div>
+        <button id="muteBtn">Mute</button>
+      </div>
+
+      <div class="vertical-scroll-wrapper" style="height: 300px; overflow-x: auto; white-space: nowrap;">
+        <div class="slider-container d-inline-flex" id="movieSlider"></div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: -3%;">
+        <input id="searchInput" type="text" placeholder="Search videos..." style="flex: 1; padding: 0.5rem; font-size: 1rem;" />
+        <button id="toggleSortBtn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 1rem;">
+          Sort: Newest
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footers2">
+    <div class="footer-logos">
+      <img src="img/yuhd.png" alt="VHS logo" />
+      <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
+    </div>
+  </footer>
+
+  <div id="overlay" onclick="closeVideo()"></div>
+  <div id="videoPopup" class="video-popup-container p-3">
+    <div class="d-flex justify-content-center mb-3">
+      <video id="videoElement" controls class="video-player">
+        <source id="videoSource" src="" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="d-flex flex-column flex-md-row align-items-start gap-3">
+      <div class="button-column d-flex flex-column gap-2">
+        <button onclick="closeVideo()" class="btn btn-sm btn-danger">Sloate</button>
+      </div>
+      <div id="videoDescription" class="text-white description-box"></div>
     </div>
   </div>
 
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    const apiKey = 'YOUR_API_KEY';
+    const channelId = 'YOUR_CHANNEL_ID';
 
+    let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false, isNewestFirst = true;
 
-  <!-- BOOTSTRAP -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    const searchInput = document.getElementById("searchInput");
+    const toggleSortBtn = document.getElementById("toggleSortBtn");
+    const muteBtn = document.getElementById("muteBtn");
+    const movieSlider = document.getElementById("movieSlider");
+    const loadingOverlay = document.getElementById("loading-overlay");
 
-  <!-- JS LOGIC -->
+    async function fetchPlaylist() {
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
+      const res = await fetch(url);
+      const data = await res.json();
+      playlist = data.items.filter(item => item.id.kind === 'youtube#video').map(item => item.id.videoId);
+      allVideos = data.items.filter(item => item.id.kind === 'youtube#video').map(item => ({
+        videoId: item.id.videoId,
+        title: item.snippet.title,
+        description: item.snippet.description,
+        thumbnail: item.snippet.thumbnails?.medium?.url || '',
+        publishedAt: item.snippet.publishedAt
+      }));
+      renderMovies();
+      loadingOverlay.style.display = 'none';
+    }
 
-<script>
-  const spotifyLinks = [
-    "https://open.spotify.com/track/3e7Kg5vap2At8PhpfrFnkm",
-    "https://open.spotify.com/artist/1unNlIDYglZrzncLClICcI",
-    "https://open.spotify.com/artist/2YgfyYuSjaYe5sQmdTOBx4",
-    "https://open.spotify.com/artist/475wxlMSOjFpIZtjaBZdEa",
-    "https://open.spotify.com/artist/1O7ZmdpFR4RanU6zwEEFFZ",
-    "https://open.spotify.com/artist/bonus1",
-    "https://open.spotify.com/artist/bonus2",
-    "https://open.spotify.com/artist/bonus3",
-    "https://open.spotify.com/artist/bonus4",
-    "https://open.spotify.com/artist/bonus5",
-    "https://open.spotify.com/artist/bonus6",
-    "https://open.spotify.com/artist/bonus7",
-    "https://open.spotify.com/artist/bonus8",
-    "https://open.spotify.com/artist/bonus9",
-    "https://open.spotify.com/artist/bonus10"
-  ];
+    function loadVideo(index) {
+      if (!playlist.length) return;
+      const videoId = playlist[index];
+      if (youtubePlayer) {
+        youtubePlayer.loadVideoById(videoId);
+      } else {
+        youtubePlayer = new YT.Player('youtubePlayer', {
+          height: '360', width: '640', videoId,
+          playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, origin: window.location.origin, enablejsapi: 1 },
+          events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange }
+        });
+      }
+    }
 
-  const soundcloudLinks = [
-    null,
-    null,
-    "https://soundcloud.com/bigpoppaparsa",
-    null,
-    null,
-    null, null, null, null, null,
-    null, null, null, null, null
-  ];
+    function onPlayerReady(event) {
+      youtubePlayer.setVolume(50);
+      youtubePlayer.unMute();
+      event.target.playVideo();
+    }
 
-  const youtubeLinks = [
-    "https://www.youtube.com/@vhs847",
-    null,
-    null,
-    null,
-    null,
-    null, null, null, null, null,
-    null, null, null, null, null
-  ];
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadVideo(currentIndex);
+      }
+    }
 
-  const instagramLinks = [
-    "https://www.instagram.com/vhs847",
-    "https://www.instagram.com/kleinecrack",
-    "https://www.instagram.com/bigpoppaparsa",
-    "https://www.instagram.com/roi____",
-    null,
-    null, null, null, null, null,
-    null, null, null, null, null
-  ];
-
-  const appleMusicLinks = [
-    "https://music.apple.com/us/artist/vhs/1234567890",
-    null,
-    null,
-    null,
-    null,
-    null, null, null, null, null,
-    null, null, null, null, null
-  ];
-
-  const modal = new bootstrap.Modal(document.getElementById('artistModal'));
-  const container = document.getElementById('modalLinksContainer');
-
-  document.querySelectorAll('.pentagram-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const index = parseInt(item.dataset.index);
-      container.innerHTML = '';
-
-      const links = [
-        { href: instagramLinks[index], icon: 'img/instagram.png', label: 'Instagram' },
-        { href: spotifyLinks[index], icon: 'img/SPOTIFY.png', label: 'Spotify' },
-        { href: appleMusicLinks[index], icon: 'img/applemusic.png', label: 'Apple Music' },
-        { href: youtubeLinks[index], icon: 'img/YOUTUBE.png', label: 'YouTube' },
-        { href: soundcloudLinks[index], icon: 'img/soundcloud.png', label: 'SoundCloud' }
-      ];
-
-      links.forEach(link => {
-        if (link.href) {
-          const a = document.createElement('a');
-          a.href = link.href;
-          a.target = '_blank';
-          a.innerHTML = `<img src="${link.icon}" alt="${link.label}">`;
-          container.appendChild(a);
-        }
+    function onYouTubeIframeAPIReady() {
+      fetchPlaylist().then(() => {
+        loadVideo(currentIndex);
       });
+    }
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
-      modal.show();
+    muteBtn.addEventListener("click", () => {
+      if (!youtubePlayer) return;
+      if (isMuted) {
+        youtubePlayer.unMute();
+        muteBtn.textContent = "Mute";
+      } else {
+        youtubePlayer.mute();
+        muteBtn.textContent = "Unmute";
+      }
+      isMuted = !isMuted;
     });
-  });
 
+    function renderMovies() {
+      const query = searchInput.value.toLowerCase();
+      movieSlider.innerHTML = "";
+      let filtered = allVideos.filter(v => v.title.toLowerCase().includes(query));
+      filtered.sort((a, b) => new Date(isNewestFirst ? b.publishedAt : a.publishedAt) - new Date(isNewestFirst ? a.publishedAt : b.publishedAt));
+
+      filtered.forEach(video => {
+        const card = document.createElement("div");
+        card.className = "movie-card";
+
+        const button = document.createElement("button");
+        button.type = "button";
+
+        const imgWrapper = document.createElement("div");
+        imgWrapper.className = "position-relative";
+
+        const img = document.createElement("img");
+        img.src = video.thumbnail;
+        img.alt = video.title;
+        imgWrapper.appendChild(img);
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "movie-title";
+        titleDiv.textContent = video.title;
+
+        button.appendChild(imgWrapper);
+        button.appendChild(titleDiv);
+        button.addEventListener('click', () => showYouTubeVideo(video.videoId, video.description));
+
+        card.appendChild(button);
+        movieSlider.appendChild(card);
+      });
+    }
+
+    function showYouTubeVideo(videoId, description = "") {
+      const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+      const iframe = document.createElement("iframe");
+      iframe.width = "100%";
+      iframe.height = "270";
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
+      iframe.allow = "autoplay; encrypted-media";
+      iframe.allowFullscreen = true;
+      container.innerHTML = "";
+      container.appendChild(iframe);
+
+      document.getElementById("videoDescription").textContent = description;
+      document.getElementById("overlay").style.display = "block";
+      document.getElementById("videoPopup").style.display = "block";
+    }
+
+    function closeVideo() {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("videoPopup").style.display = "none";
+      const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+      container.innerHTML = "";
+    }
+
+    searchInput.addEventListener("input", renderMovies);
+
+    toggleSortBtn.addEventListener("click", () => {
+      isNewestFirst = !isNewestFirst;
+      toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
+      renderMovies();
+    });
   </script>
 </body>
 </html>
