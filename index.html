@@ -50,7 +50,7 @@
 
       <!-- Guytje (last on desktop, hidden on mobile) -->
       <div class="guytje order-3 order-lg-4 d-none d-lg-block mb-lg-0">
-        <a href="muziek.html">
+        <a class="mutesite" href="">
           <img src="img/guytje.png" class="img-fluid" alt="Cartoon placeholder" style="margin-top: 50%;" />
         </a>
       </div>
@@ -144,6 +144,19 @@
       <img class="footer-white" src="img/vhs.png" alt="VHS logo" />
     </div>
   </footer>
+
+
+
+
+<script>
+  // Mute the background track if the body has the class 'mutesite'
+  window.addEventListener("DOMContentLoaded", () => {
+    const audio = document.getElementById("siteAudio");
+    if (document.body.classList.contains("mutesite")) {
+      audio.muted = true;
+    }
+  });
+</script>
 
   <!-- Bootstrap JS bundle (includes Popper) -->
   <script
