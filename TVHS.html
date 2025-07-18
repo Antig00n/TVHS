@@ -197,159 +197,168 @@
   </div>
 
   <script src="https://www.youtube.com/iframe_api"></script>
-  <script>
+
+<script>
 const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
 const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
 
-    let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false, isNewestFirst = true;
+let playlist = [], allVideos = [], currentIndex = 0, youtubePlayer, isMuted = false, isNewestFirst = true;
 
-    const searchInput = document.getElementById("searchInput");
-    const toggleSortBtn = document.getElementById("toggleSortBtn");
-    const muteBtn = document.getElementById("muteBtn");
-    const movieSlider = document.getElementById("movieSlider");
-    const loadingOverlay = document.getElementById("loading-overlay");
-    const viewCountDiv = document.getElementById("viewCount");
+const searchInput = document.getElementById("searchInput");
+const toggleSortBtn = document.getElementById("toggleSortBtn");
+const muteBtn = document.getElementById("muteBtn");
+const movieSlider = document.getElementById("movieSlider");
+const loadingOverlay = document.getElementById("loading-overlay");
+const viewCountDiv = document.getElementById("viewCount");
 
-    async function fetchPlaylist() {
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
-      const res = await fetch(url);
-      const data = await res.json();
-      playlist = data.items.filter(item => item.id.kind === 'youtube#video').map(item => item.id.videoId);
-      allVideos = data.items.filter(item => item.id.kind === 'youtube#video').map(item => ({
-        videoId: item.id.videoId,
-        title: item.snippet.title,
-        description: item.snippet.description,
-        thumbnail: item.snippet.thumbnails?.medium?.url || '',
-        publishedAt: item.snippet.publishedAt
-      }));
-      renderMovies();
-      loadingOverlay.style.display = 'none';
-    }
+async function fetchPlaylist() {
+  const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=50`;
+  const res = await fetch(url);
+  const data = await res.json();
+  playlist = data.items.filter(item => item.id.kind === 'youtube#video').map(item => item.id.videoId);
+  allVideos = data.items.filter(item => item.id.kind === 'youtube#video').map(item => ({
+    videoId: item.id.videoId,
+    title: item.snippet.title,
+    description: item.snippet.description,
+    thumbnail: item.snippet.thumbnails?.medium?.url || '',
+    publishedAt: item.snippet.publishedAt
+  }));
+  renderMovies();
+  loadingOverlay.style.display = 'none';
+}
 
-    function loadVideo(index) {
-      if (!playlist.length) return;
-      const videoId = playlist[index];
-      if (youtubePlayer) {
-        youtubePlayer.loadVideoById(videoId);
-      } else {
-        youtubePlayer = new YT.Player('youtubePlayer', {
-          height: '360', width: '640', videoId,
-          playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, origin: window.location.origin, enablejsapi: 1 },
-          events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange }
-        });
-      }
-    }
-
-    function onPlayerReady(event) {
-      youtubePlayer.setVolume(10);
-      youtubePlayer.unMute();
-      event.target.playVideo();
-    }
-
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.ENDED) {
-        currentIndex = (currentIndex + 1) % playlist.length;
-        loadVideo(currentIndex);
-      }
-    }
-
-    function onYouTubeIframeAPIReady() {
-      fetchPlaylist().then(() => {
-        loadVideo(currentIndex);
-      });
-    }
-    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-
-    muteBtn.addEventListener("click", () => {
-      if (!youtubePlayer) return;
-      if (isMuted) {
-        youtubePlayer.unMute();
-        muteBtn.textContent = "Mute";
-      } else {
-        youtubePlayer.mute();
-        muteBtn.textContent = "Unmute";
-      }
-      isMuted = !isMuted;
+function loadVideo(index) {
+  if (!playlist.length) return;
+  const videoId = playlist[index];
+  if (youtubePlayer) {
+    youtubePlayer.loadVideoById(videoId);
+  } else {
+    youtubePlayer = new YT.Player('youtubePlayer', {
+      height: '360', width: '640', videoId,
+      playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, origin: window.location.origin, enablejsapi: 1 },
+      events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange }
     });
+  }
+}
 
-    function renderMovies() {
-      const query = searchInput.value.toLowerCase();
-      movieSlider.innerHTML = "";
-      let filtered = allVideos.filter(v => v.title.toLowerCase().includes(query));
-      filtered.sort((a, b) => new Date(isNewestFirst ? b.publishedAt : a.publishedAt) - new Date(isNewestFirst ? a.publishedAt : b.publishedAt));
+function onPlayerReady(event) {
+  youtubePlayer.setVolume(10);
+  youtubePlayer.unMute();
+  event.target.playVideo();
+}
 
-      filtered.forEach(video => {
-        const card = document.createElement("div");
-        card.className = "movie-card";
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    currentIndex = (currentIndex + 1) % playlist.length;
+    loadVideo(currentIndex);
+  }
+}
 
-        const button = document.createElement("button");
-        button.type = "button";
+function onYouTubeIframeAPIReady() {
+  fetchPlaylist().then(() => {
+    loadVideo(currentIndex);
+  });
+}
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
-        const imgWrapper = document.createElement("div");
-        imgWrapper.className = "position-relative";
+muteBtn.addEventListener("click", () => {
+  if (!youtubePlayer) return;
+  if (isMuted) {
+    youtubePlayer.unMute();
+    muteBtn.textContent = "Mute";
+  } else {
+    youtubePlayer.mute();
+    muteBtn.textContent = "Unmute";
+  }
+  isMuted = !isMuted;
+});
 
-        const img = document.createElement("img");
-        img.src = video.thumbnail;
-        img.alt = video.title;
-        imgWrapper.appendChild(img);
+function renderMovies() {
+  const query = searchInput.value.toLowerCase();
+  movieSlider.innerHTML = "";
+  let filtered = allVideos.filter(v => v.title.toLowerCase().includes(query));
+  filtered.sort((a, b) => new Date(isNewestFirst ? b.publishedAt : a.publishedAt) - new Date(isNewestFirst ? a.publishedAt : b.publishedAt));
 
-        const titleDiv = document.createElement("div");
-        titleDiv.className = "movie-title";
-        titleDiv.textContent = video.title;
+  filtered.forEach(video => {
+    const card = document.createElement("div");
+    card.className = "movie-card";
 
-        button.appendChild(imgWrapper);
-        button.appendChild(titleDiv);
-        button.addEventListener('click', () => showYouTubeVideo(video.videoId, video.description));
+    const button = document.createElement("button");
+    button.type = "button";
 
-        card.appendChild(button);
-        movieSlider.appendChild(card);
-      });
+    const imgWrapper = document.createElement("div");
+    imgWrapper.className = "position-relative";
+
+    const img = document.createElement("img");
+    img.src = video.thumbnail;
+    img.alt = video.title;
+    imgWrapper.appendChild(img);
+
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "movie-title";
+    titleDiv.textContent = video.title;
+
+    button.appendChild(imgWrapper);
+    button.appendChild(titleDiv);
+    button.addEventListener('click', () => showYouTubeVideo(video.videoId, video.description));
+
+    card.appendChild(button);
+    movieSlider.appendChild(card);
+  });
+}
+
+async function showYouTubeVideo(videoId, description = "") {
+  const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+  const iframe = document.createElement("iframe");
+  iframe.width = "100%";
+  iframe.height = "270";
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
+  iframe.allow = "autoplay; encrypted-media";
+  iframe.allowFullscreen = true;
+  container.innerHTML = "";
+  container.appendChild(iframe);
+
+  // ✅ Mute the top player if it's active
+  if (youtubePlayer && typeof youtubePlayer.mute === "function") {
+    youtubePlayer.mute();
+    isMuted = true;
+    muteBtn.textContent = "Unmute";
+  }
+
+  let viewCountText = "";
+  try {
+    const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${apiKey}`;
+    const statsRes = await fetch(statsUrl);
+    const statsData = await statsRes.json();
+    const viewCount = statsData.items?.[0]?.statistics?.viewCount;
+    if (viewCount) {
+      viewCountText = `Views: ${parseInt(viewCount).toLocaleString()}`;
     }
+  } catch (err) {
+    console.error("View count fetch error:", err);
+  }
 
-    async function showYouTubeVideo(videoId, description = "") {
-      const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
-      const iframe = document.createElement("iframe");
-      iframe.width = "100%";
-      iframe.height = "270";
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
-      iframe.allow = "autoplay; encrypted-media";
-      iframe.allowFullscreen = true;
-      container.innerHTML = "";
-      container.appendChild(iframe);
+  viewCountDiv.textContent = viewCountText;
+  document.getElementById("videoDescription").textContent = description;
+  document.getElementById("overlay").style.display = "block";
+  document.getElementById("videoPopup").style.display = "block";
+}
 
-      let viewCountText = "";
-      try {
-        const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${apiKey}`;
-        const statsRes = await fetch(statsUrl);
-        const statsData = await statsRes.json();
-        const viewCount = statsData.items?.[0]?.statistics?.viewCount;
-        if (viewCount) {
-          viewCountText = `Views: ${parseInt(viewCount).toLocaleString()}`;
-        }
-      } catch (err) {
-        console.error("View count fetch error:", err);
-      }
+function closeVideo() {
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("videoPopup").style.display = "none";
+  const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
+  container.innerHTML = "";
+  viewCountDiv.textContent = "";
+}
 
-      viewCountDiv.textContent = viewCountText;
-      document.getElementById("videoDescription").textContent = description;
-      document.getElementById("overlay").style.display = "block";
-      document.getElementById("videoPopup").style.display = "block";
-    }
+searchInput.addEventListener("input", renderMovies);
+toggleSortBtn.addEventListener("click", () => {
+  isNewestFirst = !isNewestFirst;
+  toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
+  renderMovies();
+});
 
-    function closeVideo() {
-      document.getElementById("overlay").style.display = "none";
-      document.getElementById("videoPopup").style.display = "none";
-      const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
-      container.innerHTML = "";
-      viewCountDiv.textContent = "";
-    }
-
-    searchInput.addEventListener("input", renderMovies);
-    toggleSortBtn.addEventListener("click", () => {
-      isNewestFirst = !isNewestFirst;
-      toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
-      renderMovies();
-    });
   </script>
 </body>
 </html>
