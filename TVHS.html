@@ -311,6 +311,7 @@ const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
       const iframe = document.createElement("iframe");
       iframe.width = "100%";
       iframe.height = "270";
+      iframe.volume = 0.2; // Set initial volume
       iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`;
       iframe.allow = "autoplay; encrypted-media";
       iframe.allowFullscreen = true;
