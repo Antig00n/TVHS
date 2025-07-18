@@ -22,8 +22,15 @@
 <div class="navvy">
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
+ <!--
+<audio id="siteAudio" autoplay loop>
+  <source src="veelmeeloop.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 
-
+<button id="toggleSiteAudio" class="btn btn-sm btn-secondary" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 9999;">
+  🔊 Sound On
+</button> -->
 
 
       <!-- Logo (TOP on mobile, CENTER on desktop) -->
@@ -146,13 +153,34 @@
   </footer>
 
 
- <!-- Bootstrap JS bundle (includes Popper) -->
+  <!--
+
+<script>
+  const audio = document.getElementById("siteAudio");
+  const toggleBtn = document.getElementById("toggleSiteAudio");
+
+  toggleBtn.addEventListener("click", () => {
+    audio.muted = !audio.muted;
+    toggleBtn.textContent = audio.muted ? "🔇 Sound Off" : "🔊 Sound On";
+  });
+
+  // Optional: Set initial button label based on mute state
+  window.addEventListener("DOMContentLoaded", () => {
+    const audio = document.getElementById("siteAudio");
+    audio.volume = 0.2;
+
+    if (audio.muted) {
+      toggleBtn.textContent = "🔇 Sound Off";
+    }
+
+    
+  });
+</script> -->
+
+  <!-- Bootstrap JS bundle (includes Popper) -->
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
   ></script>
-
-
- 
 
 <script>
 async function loadShows() {
@@ -220,54 +248,15 @@ async function loadShows() {
 loadShows();
 
 </script>
-<script>
-  const audio = document.getElementById("siteAudio");
-  const toggleBtn = document.getElementById("toggleSiteAudio");
 
-  toggleBtn.addEventListener("click", () => {
-    audio.muted = !audio.muted;
-    toggleBtn.textContent = audio.muted ? "🔇 Sound Off" : "🔊 Sound On";
-  });
-
-  window.addEventListener("DOMContentLoaded", () => {
-    audio.volume = 0.2;
-    toggleBtn.textContent = audio.muted ? "🔇 Sound Off" : "🔊 Sound On";
-  });
-
+ <script>
   const carousel = document.getElementById('weeklySpotlightCarousel');
+  const videos = carousel.querySelectorAll('video');
+
   const apiKey = 'AIzaSyAPaaNiKvRRV6NCvhRBOrQIOZP-EWbvbwc';
   const channelId = 'UCk3DsMaC1_4pDnqGcl9brBg';
+
   const maxResults = 3;
-
-  let players = [];
-
-  function onYouTubeIframeAPIReady() {
-    for (let i = 0; i < maxResults; i++) {
-      const iframeId = `video${i + 1}`;
-      const player = new YT.Player(iframeId, {
-        events: {
-          onStateChange: handleVideoStateChange
-        }
-      });
-      players.push(player);
-    }
-  }
-
-  function handleVideoStateChange(event) {
-    const isAnyPlaying = players.some(p => p.getPlayerState && p.getPlayerState() === YT.PlayerState.PLAYING);
-
-    if (isAnyPlaying) {
-      if (!audio.muted) {
-        audio.muted = true;
-        toggleBtn.textContent = "🔇 Sound Off";
-      }
-    } else {
-      if (audio.muted) {
-        audio.muted = false;
-        toggleBtn.textContent = "🔊 Sound On";
-      }
-    }
-  }
 
   async function loadLatestVideos() {
     try {
@@ -275,6 +264,7 @@ loadShows();
         `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
       );
       const playlistData = await playlistRes.json();
+      console.log('Playlist response:', playlistData);
 
       if (!playlistData.items || playlistData.items.length === 0) {
         throw new Error("No playlist data found — check your channel ID and API key.");
@@ -286,13 +276,13 @@ loadShows();
         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${apiKey}`
       );
       const videosData = await videosRes.json();
+      console.log('Videos:', videosData);
 
       videosData.items.forEach((item, index) => {
         const videoId = item.snippet.resourceId.videoId;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?origin=${location.origin}`;
         const iframe = document.getElementById(`video${index + 1}`);
-        if (iframe) {
-          iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${location.origin}`;
-        }
+        if (iframe) iframe.src = embedUrl;
       });
 
     } catch (error) {
@@ -300,14 +290,10 @@ loadShows();
     }
   }
 
-  // Load YouTube IFrame API
-  const tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
-
   loadLatestVideos();
-</script>
 
+
+</script>
 
 
 
