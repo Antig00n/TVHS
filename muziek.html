@@ -402,7 +402,7 @@
 
   function playNextTrack() {
     audio.src = playlist[currentTrack];
-    audio.volume = 0.5;
+    audio.volume = 0.2;
     audio.play().catch(err => {
       // Handle autoplay restrictions if needed
       console.warn("Autoplay blocked or error:", err);
