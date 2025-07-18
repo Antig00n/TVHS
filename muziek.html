@@ -118,10 +118,16 @@
 </head>
 
 <body>
+  <audio id="siteAudio"></audio>
   <!-- NAVBAR -->
 <div class="navvy">
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid d-flex flex-column flex-lg-row justify-content-center gap-3" style="margin-top: -2%;">
+
+
+<button id="toggleSiteAudio" class="btn btn-sm btn-secondary" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 9999;">
+  🔊 Sound On
+</button>
 
       <!-- Logo (TOP on mobile, CENTER on desktop) -->
       <a class="navbar-brand order-0 order-lg-2 my-2 my-lg-0 px-2" href="index.html">
@@ -379,5 +385,50 @@
   });
 
   </script>
+
+
+<script>
+  const audio = document.getElementById("siteAudio");
+  const toggleBtn = document.getElementById("toggleSiteAudio");
+
+  // List of MP3 clips (just change these URLs/paths to yours)
+  const playlist = [
+    "audio/clip1.mp3",
+    "audio/clip2.mp3",
+    "audio/clip3.mp3"
+  ];
+
+  let currentTrack = 0;
+
+  function playNextTrack() {
+    audio.src = playlist[currentTrack];
+    audio.volume = 0.5;
+    audio.play().catch(err => {
+      // Handle autoplay restrictions if needed
+      console.warn("Autoplay blocked or error:", err);
+    });
+
+    currentTrack = (currentTrack + 1) % playlist.length;
+  }
+
+  // Event: play next track after current ends
+  audio.addEventListener("ended", playNextTrack);
+
+  // Init: Start playback when DOM is ready
+  window.addEventListener("DOMContentLoaded", () => {
+    playNextTrack(); // Start first track
+
+    // Set button label based on mute state
+    if (audio.muted) {
+      toggleBtn.textContent = "🔇 Sound Off";
+    }
+  });
+
+  // Mute toggle button
+  toggleBtn.addEventListener("click", () => {
+    audio.muted = !audio.muted;
+    toggleBtn.textContent = audio.muted ? "🔇 Sound Off" : "🔊 Sound On";
+  });
+</script>
 </body>
 </html>
