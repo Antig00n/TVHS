@@ -350,6 +350,13 @@ function closeVideo() {
   const container = document.querySelector("#videoPopup .d-flex.justify-content-center");
   container.innerHTML = "";
   viewCountDiv.textContent = "";
+
+  // ✅ Unmute the top player again
+  if (youtubePlayer && typeof youtubePlayer.unMute === "function") {
+    youtubePlayer.unMute();
+    isMuted = false;
+    muteBtn.textContent = "Mute";
+  }
 }
 
 searchInput.addEventListener("input", renderMovies);
@@ -358,7 +365,7 @@ toggleSortBtn.addEventListener("click", () => {
   toggleSortBtn.textContent = `Sort: ${isNewestFirst ? "Newest" : "Oldest"}`;
   renderMovies();
 });
+</script>
 
-  </script>
 </body>
 </html>
