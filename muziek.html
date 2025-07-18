@@ -416,7 +416,10 @@
 
   // Init: Start playback when DOM is ready
   window.addEventListener("DOMContentLoaded", () => {
-    playNextTrack(); // Start first track
+    // 👇 Set starting track randomly
+    currentTrack = Math.floor(Math.random() * playlist.length);
+
+    playNextTrack(); // Start playback
 
     // Set button label based on mute state
     if (audio.muted) {
@@ -430,5 +433,6 @@
     toggleBtn.textContent = audio.muted ? "🔇 Sound Off" : "🔊 Sound On";
   });
 </script>
+
 </body>
 </html>
